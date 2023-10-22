@@ -18,16 +18,16 @@ async def api_get_nodes(db: AsyncSession = Depends(get_db)):
     return [{"id": node.id, "name": node.name} for node in nodes]
 
 
-@app.get("/api/devices")
-async def api_get_devices(db: AsyncSession = Depends(get_db)):
-    devices = await get_devices(db)
-    return [{"id": device.id, "name": device.name, "node_id": device.node_id} for device in devices]
-
-
 @app.post("/api/node")
 async def register_node(node_name: str, db: AsyncSession = Depends(get_db)):
     node = await create_node(node_name, db)
     return {"id": node.id, "name": node.name}
+
+
+@app.get("/api/devices")
+async def api_get_devices(db: AsyncSession = Depends(get_db)):
+    devices = await get_devices(db)
+    return [{"id": device.id, "name": device.name, "node_id": device.node_id} for device in devices]
 
 
 @app.post("/api/device")
