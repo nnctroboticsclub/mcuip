@@ -1,9 +1,11 @@
 FROM python:3.12.0
 
-WORKDIR /app
-ADD requirements.txt requirements.txt
-RUN pip install -r requirements.txt
+WORKDIR /tmp
 
+COPY requirements.txt requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-WORKDIR /mnt
-ENTRYPOINT [ "python3", "-m", "app" ]
+COPY startup.sh /startup.sh
+RUN chmod +x /startup.sh
+
+ENTRYPOINT ["/startup.sh"]

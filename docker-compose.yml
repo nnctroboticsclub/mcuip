@@ -1,8 +1,51 @@
 version: "3"
 services:
+  mysql:
+    image: mysql:8.0.27
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql
+      MYSQL_DATABASE: db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql:/var/lib/mysql
+    restart: always
+    networks:
+      - db
+      - external-debug
+
+  mysql-cli:
+    image: mysql:8.0.27
+    networks:
+      - db
+    command: mysql -hmysql -uuser -ppassword db
+    profiles:
+      - mysql-cli
+
   server:
     build: server/.docker
     ports:
       - 8080:8080
     volumes:
-      - ./server:/mnt/app
+      - ./server:/mnt/app/server
+    environment:
+      - DEBUG=1
+    networks:
+      - db
+      - external
+
+networks:
+  db:
+    driver: bridge
+    internal: true
+
+  external:
+    driver: bridge
+
+  external-debug:
+    driver: bridge
+
+volumes:
+  mysql:
