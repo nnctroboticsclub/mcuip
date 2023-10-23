@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "server"
+		},
+		{
+			"path": "bootloader/stm32-bootloader"
 		}
 	],
 	"settings": {
