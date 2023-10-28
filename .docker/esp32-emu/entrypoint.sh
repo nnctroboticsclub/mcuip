@@ -42,9 +42,10 @@ printf "\x1b[32m[Entrypoint|INFO]\x1b[33m Starting emulator...\e[m\n"
 QEMU_XTENSA_CORE_REGS_ONLY=1 qemu-system-xtensa
   -machine esp32
   -nographic
-  -gdb tcp:0.0.0.0:1234 -S
+  -gdb tcp::1234 -S
   -drive file=$EMU_ROOT/bin/flash.bin,if=mtd,format=raw
   -drive file=$EMU_ROOT/bin/efuse.bin,if=none,format=raw,id=efuse
   -global driver=nvram.esp32.efuse,property=drive,value=efuse
   -global driver=esp32.gpio,property=strap_mode,value=0x0f
   -serial tcp::5555,server,nowait
+  -monitor tcp::4444,server,nowait

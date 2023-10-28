@@ -7,19 +7,12 @@ services:
       MYSQL_DATABASE: db
       MYSQL_USER: user
       MYSQL_PASSWORD: password
-    ports:
-      - 3306:3306
     volumes:
       - mysql:/var/lib/mysql
     restart: always
-    networks:
-      - db
-      - external-debug
 
   mysql-cli:
     image: mysql:8.0.27
-    networks:
-      - db
     command: mysql -hmysql -uuser -ppassword db
 
   server:
@@ -30,9 +23,6 @@ services:
       - ./server:/mnt/app/server
     environment:
       - DEBUG=1
-    networks:
-      - db
-      - external
 
   # *****************
   # * [ESP32] Agent *
@@ -44,6 +34,7 @@ services:
       - NET_ADMIN
     ports:
       - 3034:1234
+      - 3044:4444
       - 3055:5555
     volumes:
       - ./esp32/app-agent:/app
@@ -52,16 +43,15 @@ services:
       - APP=/app
       - EMU_ROOT=/tmp/emulator
 
-networks:
-  db:
-    driver: bridge
-    internal: true
-
-  external:
-    driver: bridge
-
-  external-debug:
-    driver: bridge
+  esp32-cli:
+    build: .docker/esp32-cli
+    hostname: esp32-cli
+    volumes:
+      - ./esp32/app-agent:/app/agent
+      - ~/.ssh/id_rsa.pub:/tmp/host-ssh-key.pub
+    environment:
+      - AGENT_PROJ=/app/agent
+      - HOST_SSH_KEY=/tmp/host-ssh-key.pub
 
 volumes:
   mysql:
