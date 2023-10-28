@@ -10,10 +10,14 @@ services:
     volumes:
       - mysql:/var/lib/mysql
     restart: always
+    networks:
+      - default
 
   mysql-cli:
     image: mysql:8.0.27
     command: mysql -hmysql -uuser -ppassword db
+    networks:
+      - default
 
   server:
     build: .docker/server
@@ -23,6 +27,8 @@ services:
       - ./server:/mnt/app/server
     environment:
       - DEBUG=1
+    networks:
+      - default
 
   # *****************
   # * [ESP32] Agent *
@@ -30,6 +36,7 @@ services:
 
   agent-emulator:
     build: .docker/esp32-emu
+    hostname: agent-emulator
     cap_add:
       - NET_ADMIN
     ports:
@@ -42,6 +49,8 @@ services:
     environment:
       - APP=/app
       - EMU_ROOT=/tmp/emulator
+    networks:
+      - default
 
   esp32-cli:
     build: .docker/esp32-cli
@@ -52,6 +61,14 @@ services:
     environment:
       - AGENT_PROJ=/app/agent
       - HOST_SSH_KEY=/tmp/host-ssh-key.pub
+    networks:
+      - default
+
+networks:
+  default:
+    name: esp32-network
+    internal: false
+    driver: bridge
 
 volumes:
   mysql:

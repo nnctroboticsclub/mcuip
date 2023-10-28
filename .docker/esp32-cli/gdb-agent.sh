@@ -6,7 +6,7 @@ if [ -z "$AGENT_PROJ" ]; then
 fi
 
 xtensa-esp32-elf-gdb $AGENT_PROJ/build/*.elf \
-  -ex 'target remote agent-emulator:3034' \
+  -ex 'target remote agent-emulator:1234' \
   -ex 'monitor system_reset' \
   -ex 'tb app_main' -ex 'c'
 
