@@ -21,11 +21,9 @@ services:
     networks:
       - db
     command: mysql -hmysql -uuser -ppassword db
-    profiles:
-      - mysql-cli
 
   server:
-    build: server/.docker
+    build: .docker/server
     ports:
       - 8080:8080
     volumes:
@@ -35,6 +33,24 @@ services:
     networks:
       - db
       - external
+
+  # *****************
+  # * [ESP32] Agent *
+  # *****************
+
+  agent-emulator:
+    build: .docker/esp32-emu
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 3034:1234
+      - 3055:5555
+    volumes:
+      - ./esp32/app-agent:/app
+      - ./esp32/app-agent/emu:/tmp/emulator
+    environment:
+      - APP=/app
+      - EMU_ROOT=/tmp/emulator
 
 networks:
   db:

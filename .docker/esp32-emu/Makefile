@@ -24,7 +24,7 @@ all: $(FLASH_BIN) $(EFUSE_BIN)
 
 $(FLASH_BIN): $(APP_BIN)
 	@printf "\033[32m[Make|INFO]\033[1;33m Creating flash image [$@]...\033[m\n"
-	@printf "\033[2;32m[Make|INFO]\033[33m Due to $?\033[m\n"
+	@printf "\033[2;32m[Make|INFO]\033[33m   > Due to $?\033[m\n"
 
 	@dd if=/dev/zero of=$@ bs=1M count=16 conv=notrunc 2> /dev/null
 
@@ -33,7 +33,7 @@ $(FLASH_BIN): $(APP_BIN)
 
 $(EFUSE_BIN):
 	@printf "\033[32m[Make|INFO]\033[1;33m Creating efuse image [$@]...\033[m\n"
-	@printf "\033[2;32m[Make|INFO]\033[33m Due to $?\033[m\n"
+	@printf "\033[2;32m[Make|INFO]\033[33m   > Due to $?\033[m\n"
 
 	@dd if=/dev/zero of=$@ bs=4 count=31 conv=notrunc 2> /dev/null
 
@@ -43,9 +43,9 @@ $(APP_BIN): \
 		$(ESP32_BUILD_DIR)/partition_table/partition-table.bin
 
 	@printf "\033[32m[Make|INFO]\033[1;33m Creating app image [$@]...\033[m\n"
-	@printf "\033[2;32m[Make|INFO]\033[33m Due to $?\033[m\n"
+	@printf "\033[2;32m[Make|INFO]\033[33m   > Due to $?\033[m\n"
 	@cd $(ESP32_BUILD_DIR); \
-	python3 -m esptool \
+	esptool.py \
 	  --chip esp32 \
 		merge_bin \
 		--fill-flash-size 4MB \
