@@ -1,0 +1,9 @@
+{
+  "saveAndRun": {
+    "commands": [
+      {
+        "cmd": "node test.js"
+      }
+    ]
+  }
+}
