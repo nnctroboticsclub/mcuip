@@ -1,4 +1,4 @@
-import { MalformedDataError } from "./errors";
+import { InternalError } from "./errors";
 import { JSONRouter } from "./router";
 
 export class JSONRootRouterBase extends JSONRouter {
@@ -8,7 +8,7 @@ export class JSONRootRouterBase extends JSONRouter {
 
   back_routing(data: JSONObject): null {
     if (!data.hasOwnProperty("$__tag")) {
-      throw new MalformedDataError("Data does not have $__tag");
+      throw new InternalError("Data does not have $__tag");
     }
     data[this.key] = data["$__tag"];
     delete data["$__tag"];

@@ -12,9 +12,23 @@ export class RouteNotFoundError extends RouterError {
   }
 }
 
-export class MalformedDataError extends RouterError {
+export class InternalError extends RouterError {
   constructor(message: string) {
     super(message);
-    this.name = "MalformedDataError";
+    this.name = "InternalError";
+  }
+}
+
+export class KeyNotFoundError extends RouterError {
+  constructor(message: string) {
+    super(message);
+    this.name = "KeyNotFoundError";
+  }
+}
+
+export class KeyTypeError extends RouterError {
+  constructor(message: string) {
+    super(message);
+    this.name = "KeyTypeError";
   }
 }

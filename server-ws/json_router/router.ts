@@ -1,11 +1,13 @@
 import { JSONEndpoint } from "./endpoint";
-import { MalformedDataError, RouteNotFoundError } from "./errors";
+import { InternalError, KeyNotFoundError, KeyTypeError, RouteNotFoundError } from "./errors";
 
 export class JSONRouter implements JSONRouterBase {
   routes: JSONRouterBase[];
 
   constructor(public tag: string, public key: string, private backref: JSONRouter | undefined = undefined) {
     this.routes = [];
+
+    backref?.add_route(this);
   }
 
   add_route(route: JSONRouterBase) {
@@ -26,12 +28,12 @@ export class JSONRouter implements JSONRouterBase {
 
   route(data: { [key: string]: any }): JSONRouterBase | undefined {
     if (!data.hasOwnProperty(this.key)) {
-      throw new MalformedDataError(`Data does not have key ${this.key}`);
+      throw new KeyNotFoundError(this.key);
     }
 
     const val = data[this.key];
     if (typeof val !== 'string') {
-      throw new MalformedDataError(`Data key ${this.key} is not a string`);
+      throw new KeyTypeError(this.key);
     }
 
     for (let route of this.routes) {
@@ -49,7 +51,7 @@ export class JSONRouter implements JSONRouterBase {
     }
 
     if (!data.hasOwnProperty("$__tag")) {
-      throw new MalformedDataError("Data does not have $__tag");
+      throw new InternalError("Data does not have $__tag");
     }
 
     const child_tag = data["$__tag"];
