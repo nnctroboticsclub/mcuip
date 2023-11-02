@@ -25,7 +25,14 @@ export class SerialService extends McuIpService {
         throw new Error("port_name is not a string");
       }
 
-      self.serial_manager.port(port_name);
+      const port = self.serial_manager.port(port_name);
+
+      port.add_rx_callback(data => {
+        self.point_rx.back_routing({
+          "port_name": port_name,
+          "rx_data": data
+        });
+      });
     });
 
     this.point_tx = this.endpoint("tx", data => {
@@ -39,8 +46,8 @@ export class SerialService extends McuIpService {
         throw new Error(`Port ${port_name} not found`);
       }
 
-      const { data: string } = data as { [key: string]: any };
-      port.tx(data);
+      const { tx_data } = data as { [key: string]: any };
+      port.tx(tx_data);
     });
 
     this.point_connect = this.endpoint("connect", data => {
