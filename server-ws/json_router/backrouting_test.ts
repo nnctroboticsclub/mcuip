@@ -1,18 +1,5 @@
 import { expect, test } from "bun:test";
-import { JSONRootRouterBase } from ".";
-
-class TestJSONRootRouter extends JSONRootRouterBase {
-  data: { [key: string]: any } = {};
-
-  constructor(key: string) {
-    super(key);
-  }
-
-  handle_back_routing(data: JSONObject): null {
-    this.data = data;
-    return null;
-  }
-}
+import { TestJSONRootRouter } from "./test";
 
 test("Shallow back Routing", () => {
   const root = new TestJSONRootRouter("key1");
