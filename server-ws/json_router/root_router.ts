@@ -13,8 +13,13 @@ export class JSONRootRouterBase extends JSONRouter {
     data[this.key] = data["$__tag"];
     delete data["$__tag"];
 
+    return this.handle_back_routing(data);
+  }
+
+  handle_back_routing(data: JSONObject): null {
     console.log("Root router has no back routing");
     console.log("Data: ", data);
+
     return null;
   }
 }
