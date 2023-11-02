@@ -2,9 +2,13 @@ export class SerialPort {
   rx_callbacks: ((data: { [key: string]: any }) => void)[];
   tx_callbacks: ((data: { [key: string]: any }) => void)[];
 
-  constructor(private port: string) {
+  constructor(private port_name: string) {
     this.rx_callbacks = [];
     this.tx_callbacks = [];
+  }
+
+  get name() {
+    return this.port_name;
   }
 
   rx(data: { [key: string]: any }) {
@@ -24,7 +28,7 @@ export class SerialPort {
   }
 
   debug() {
-    this.add_rx_callback(data => console.log(`[${this.port}] RX: ${data}`));
-    this.add_tx_callback(data => console.log(`[${this.port}] TX: ${data}`));
+    this.add_rx_callback(data => console.log(`[${this.port_name}] RX: ${data}`));
+    this.add_tx_callback(data => console.log(`[${this.port_name}] TX: ${data}`));
   }
 }
