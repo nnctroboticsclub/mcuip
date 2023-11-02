@@ -3,8 +3,6 @@ import { McuIpService } from "../service_base";
 import { SerialPortManager } from "./manager";
 
 export class SerialService extends McuIpService {
-  serial_manager: SerialPortManager;
-
   // incoming commands
   point_new: JSONEndpoint;
   point_tx: JSONEndpoint;
@@ -13,9 +11,8 @@ export class SerialService extends McuIpService {
   // outgoing commands
   point_rx: JSONEndpoint;
 
-  constructor(backref: JSONRouter) {
+  constructor(backref: JSONRouter, private serial_manager: SerialPortManager) {
     super("serial", backref);
-    this.serial_manager = new SerialPortManager();
 
 
     let self = this;

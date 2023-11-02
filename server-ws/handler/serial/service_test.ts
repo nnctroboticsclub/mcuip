@@ -1,20 +1,23 @@
 import { expect, test } from "bun:test";
 import { SerialService } from "./service";
 import { TestJSONRootRouter } from "../../json_router/test";
+import { SerialPortManager } from "./manager";
 
 const port1_name = "COM1";
 const port2_name = "COM2";
 
 function getRouter() {
   const router = new TestJSONRootRouter("service");
-  let service = new SerialService(router);
+  const serial_manager = new SerialPortManager();
+  let service = new SerialService(router, serial_manager);
 
   return router;
 }
 
 test("New command test", () => {
   const router = new TestJSONRootRouter("service");
-  let service = new SerialService(router);
+  const serial_manager = new SerialPortManager();
+  let service = new SerialService(router, serial_manager);
 
   router.route({
     "service": "serial",
@@ -22,7 +25,7 @@ test("New command test", () => {
     "port_name": port1_name
   });
 
-  const port = service.serial_manager.get_port(port1_name);
+  const port = serial_manager.get_port(port1_name);
   expect(port).toBeDefined();
 });
 
