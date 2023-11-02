@@ -20,4 +20,14 @@ export class SerialPortManager {
     port1.add_tx_callback(data => port2.rx(data));
     port2.add_tx_callback(data => port1.rx(data));
   }
+
+  get_port(name: string): SerialPort | undefined {
+    for (let port of this.serial_ports) {
+      if (port.name === name) {
+        return port;
+      }
+    }
+
+    return undefined;
+  }
 }
