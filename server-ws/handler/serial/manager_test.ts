@@ -7,8 +7,17 @@ test("Port Creation", async () => {
   const port1 = manager.port("port1");
   const port2 = manager.port("port2");
 });
+test("Get#SerialPortManager", async () => {
+  const manager = new SerialPortManager();
 
-test("Port connecting A to B", async () => {
+  const port1 = manager.port("port1");
+  const port2 = manager.port("port2");
+
+  expect(port1.name).toBe(manager.get_port("port1")?.name);
+  expect(port2.name).toBe(manager.get_port("port2")?.name);
+});
+
+test("Port forwarding A to B", async () => {
   const manager = new SerialPortManager();
 
   const port1 = manager.port("port1");
@@ -26,7 +35,7 @@ test("Port connecting A to B", async () => {
   expect(port2_cb_data.data).toBe(3);
 });
 
-test("Port connecting B to A", async () => {
+test("Port forwarding B to A", async () => {
   const manager = new SerialPortManager();
 
   const port1 = manager.port("port1");
