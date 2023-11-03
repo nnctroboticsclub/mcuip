@@ -27,7 +27,7 @@ test("Port forwarding A to B", async () => {
 
   let port2_cb_data = { "data": 0 } as { [key: string]: any };
 
-  port2.add_rx_callback((data) => {
+  port2.on("rx", (data) => {
     port2_cb_data = data;
   });
 
@@ -45,7 +45,7 @@ test("Port forwarding B to A", async () => {
 
   let port2_cb_data = { "data": 0 } as { [key: string]: any };
 
-  port2.add_rx_callback((data) => {
+  port2.on("rx", (data) => {
     port2_cb_data = data;
   });
 

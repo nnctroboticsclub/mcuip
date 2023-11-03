@@ -7,7 +7,7 @@ test("Port rx callback", async () => {
   const port = new SerialPort("port");
 
   let data = { data: -1 } as Data;
-  port.add_rx_callback(x => data = x as Data);
+  port.on("rx", x => data = x as Data);
 
   port.rx({ "data": 2 });
   expect(data.data).toBe(2);
@@ -17,7 +17,7 @@ test("Port tx callback", async () => {
   const port = new SerialPort("port");
 
   let data = { data: -1 } as Data;
-  port.add_tx_callback(x => data = x as Data);
+  port.on("tx", x => data = x as Data);
 
   port.tx({ "data": 3 });
   expect(data.data).toBe(3);

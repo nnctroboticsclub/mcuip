@@ -17,8 +17,8 @@ export class SerialPortManager {
   }
 
   connect(port1: SerialPort, port2: SerialPort) {
-    port1.add_tx_callback(data => port2.rx(data));
-    port2.add_tx_callback(data => port1.rx(data));
+    port1.on("tx", data => port2.rx(data));
+    port2.on("tx", data => port1.rx(data));
   }
 
   get_port(name: string): SerialPort | undefined {

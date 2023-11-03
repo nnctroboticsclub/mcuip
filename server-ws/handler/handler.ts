@@ -1,4 +1,5 @@
 import { JSONRootRouterBase } from "../json_router";
+import { FlashService } from "./flash/service";
 import { GlobalState } from "./global_state";
 import { SerialService } from "./serial/service";
 
@@ -7,6 +8,7 @@ class McuIpRootHandler extends JSONRootRouterBase {
     super("service");
 
     new SerialService(this, GlobalState.getInstance().serial_manager);
+    new FlashService(this, GlobalState.getInstance().node_manager);
 
   }
   back_routing(data: JSONObject): null {

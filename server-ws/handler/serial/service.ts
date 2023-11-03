@@ -24,7 +24,7 @@ export class SerialService extends McuIpService {
 
       const port = self.serial_manager.port(port_name);
 
-      port.add_rx_callback(data => {
+      port.on("rx", data => {
         self.point_rx.back_routing({
           "port_name": port_name,
           "rx_data": data
