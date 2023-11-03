@@ -1,8 +1,8 @@
 import { JSONEndpoint, JSONRouter } from "../../json_router";
 import { McuIpService } from "../service_base";
-import { SerialPortManager } from "./manager";
+import { MonitorManager } from "./manager";
 
-export class SerialService extends McuIpService {
+export class MonitorService extends McuIpService {
   // incoming commands
   point_new: JSONEndpoint;
   point_tx: JSONEndpoint;
@@ -11,8 +11,8 @@ export class SerialService extends McuIpService {
   // outgoing commands
   point_rx: JSONEndpoint;
 
-  constructor(backref: JSONRouter, private serial_manager: SerialPortManager) {
-    super("serial", backref);
+  constructor(backref: JSONRouter, private serial_manager: MonitorManager) {
+    super("monitor", backref);
 
 
     let self = this;
@@ -22,7 +22,7 @@ export class SerialService extends McuIpService {
         throw new Error("port_name is not a string");
       }
 
-      const port = self.serial_manager.port(port_name);
+      const port = self.serial_manager.createMonitor(port_name);
 
       port.on("rx", data => {
         self.point_rx.back_routing({
@@ -38,7 +38,7 @@ export class SerialService extends McuIpService {
         throw new Error("port_name is not a string");
       }
 
-      const port = self.serial_manager.get_port(port_name);
+      const port = self.serial_manager.getMonitor(port_name);
       if (!port) {
         throw new Error(`Port ${port_name} not found`);
       }
@@ -60,8 +60,8 @@ export class SerialService extends McuIpService {
 
 
 
-      const portA = self.serial_manager.get_port(port_name_A);
-      const portB = self.serial_manager.get_port(port_name_B);
+      const portA = self.serial_manager.getMonitor(port_name_A);
+      const portB = self.serial_manager.getMonitor(port_name_B);
 
       if (!portA) {
         throw new Error(`Port ${port_name_A} not found`);

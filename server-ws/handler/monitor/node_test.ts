@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import { SerialPort } from "./port";
+import { SerialPort } from "./node";
 
 type Data = { data: number };
 

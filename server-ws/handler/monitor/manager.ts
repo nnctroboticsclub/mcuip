@@ -1,14 +1,14 @@
-import { SerialPort } from "./port";
+import { SerialPort } from "./node";
 
 
-export class SerialPortManager {
+export class MonitorManager {
   serial_ports: SerialPort[];
 
   constructor() {
     this.serial_ports = [];
   }
 
-  port(name: string): SerialPort {
+  createMonitor(name: string): SerialPort {
     const new_port = new SerialPort(name);
 
     this.serial_ports.push(new_port);
@@ -21,7 +21,7 @@ export class SerialPortManager {
     port2.on("tx", data => port1.rx(data));
   }
 
-  get_port(name: string): SerialPort | undefined {
+  getMonitor(name: string): SerialPort | undefined {
     for (let port of this.serial_ports) {
       if (port.name === name) {
         return port;
