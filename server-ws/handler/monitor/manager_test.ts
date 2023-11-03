@@ -1,6 +1,13 @@
 import { expect, test } from "bun:test";
 import { MonitorManager } from "./manager";
 
+const packet = {
+  "c": "0",
+  "d": {
+    a: "0"
+  }
+};
+
 test("Port Creation", async () => {
   const manager = new MonitorManager();
 
@@ -25,14 +32,14 @@ test("Port forwarding A to B", async () => {
 
   manager.connect(port1, port2);
 
-  let port2_cb_data = { "data": 0 } as { [key: string]: any };
+  let port2_cb_data = {};
 
   port2.on("rx", (data) => {
     port2_cb_data = data;
   });
 
-  port1.tx({ "data": 3 });
-  expect(port2_cb_data.data).toBe(3);
+  port1.tx(packet);
+  expect(port2_cb_data).toEqual(packet);
 });
 
 test("Port forwarding B to A", async () => {
@@ -43,12 +50,12 @@ test("Port forwarding B to A", async () => {
 
   manager.connect(port2, port1);
 
-  let port2_cb_data = { "data": 0 } as { [key: string]: any };
+  let port2_cb_data = {};
 
   port2.on("rx", (data) => {
     port2_cb_data = data;
   });
 
-  port1.tx({ "data": 3 });
-  expect(port2_cb_data.data).toBe(3);
+  port1.tx(packet);
+  expect(port2_cb_data).toEqual(packet);
 });

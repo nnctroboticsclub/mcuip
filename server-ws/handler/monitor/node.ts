@@ -1,7 +1,10 @@
 import EventEmitter from "events";
 import StrictEventEmitter from "strict-event-emitter-types";
 
-export type Data = { [key: string]: any };
+export type Data = {
+  c: string,
+  d: { [key: string]: any }
+};
 
 interface Events {
   rx: Data,
@@ -19,11 +22,11 @@ export class SerialPort extends (EventEmitter as { new(): Emitter }) {
     return this.port_name;
   }
 
-  rx(data: { [key: string]: any }) {
+  rx(data: Data) {
     this.emit("rx", data);
   }
 
-  tx(data: { [key: string]: any }) {
+  tx(data: Data) {
     this.emit("tx", data);
   }
 
