@@ -1,7 +1,7 @@
 import { JSONEndpoint, JSONRouter } from "../../json_router";
 import { McuIpService } from "../service_base";
 import { Flash } from "./device";
-import { NodeManager } from "./node_manager";
+import { NodeManager } from "./manager";
 
 export class FlashService extends McuIpService {
   point_new: JSONEndpoint;
@@ -32,7 +32,7 @@ export class FlashService extends McuIpService {
         throw new Error(`Device ${device_name} not found`);
       }
 
-      device.add_flash_callback(async flash => {
+      device.on("flash", flash => {
         self.point_flash.back_routing({
           device_name,
           flash

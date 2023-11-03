@@ -1,4 +1,4 @@
-import { NodeManager } from "./flash/node_manager";
+import { NodeManager } from "./flash/manager";
 import { SerialPortManager } from "./serial/manager";
 
 export class GlobalState {

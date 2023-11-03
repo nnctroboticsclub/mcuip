@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import { NodeManager } from "./node_manager";
+import { NodeManager } from "./manager";
 
 test("Register", () => {
   const manager = new NodeManager();

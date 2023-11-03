@@ -9,7 +9,7 @@ test("Device flash callback", async () => {
   }
 
   const device = new Device("Test device");
-  device.add_flash_callback(cb);
+  device.on("flash", cb);
 
   device.flash({
     data_base64: "",
