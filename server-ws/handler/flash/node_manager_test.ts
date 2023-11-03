@@ -1,8 +1,8 @@
 import { expect, test } from "bun:test";
-import { DeviceManager } from "./device_manager";
+import { NodeManager } from "./node_manager";
 
 test("Register", () => {
-  const manager = new DeviceManager();
+  const manager = new NodeManager();
 
   const device = manager.newDevice("Test device");
 
@@ -10,7 +10,7 @@ test("Register", () => {
 });
 
 test("Register (duplicated)", () => {
-  const manager = new DeviceManager();
+  const manager = new NodeManager();
 
   manager.newDevice("Test device");
 
@@ -25,7 +25,7 @@ test("Register (duplicated)", () => {
 });
 
 test("GetDevice", () => {
-  const manager = new DeviceManager();
+  const manager = new NodeManager();
 
   const device = manager.newDevice("Test device");
 
@@ -33,13 +33,13 @@ test("GetDevice", () => {
 });
 
 test("GetDevice (not found)", () => {
-  const manager = new DeviceManager();
+  const manager = new NodeManager();
 
   expect(manager.getDevice("Test device")).toBe(undefined);
 });
 
 test("GetDevices", () => {
-  const manager = new DeviceManager();
+  const manager = new NodeManager();
 
   const device = manager.newDevice("Test device1");
   const device2 = manager.newDevice("Test device2");
@@ -47,7 +47,7 @@ test("GetDevices", () => {
   expect(manager.getDevices()).toEqual([device, device2]);
 });
 test("GetDeviceNames", () => {
-  const manager = new DeviceManager();
+  const manager = new NodeManager();
 
   const device = manager.newDevice("Test device1");
   const device2 = manager.newDevice("Test device2");

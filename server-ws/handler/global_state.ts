@@ -1,4 +1,4 @@
-import { DeviceManager } from "./flash/device_manager";
+import { NodeManager } from "./flash/node_manager";
 import { SerialPortManager } from "./serial/manager";
 
 export class GlobalState {
@@ -11,15 +11,15 @@ export class GlobalState {
   }
 
   serial_manager: SerialPortManager;
-  device_manager: DeviceManager;
+  node_manager: NodeManager;
 
   constructor() {
     this.serial_manager = new SerialPortManager();
-    this.device_manager = new DeviceManager();
+    this.node_manager = new NodeManager();
   }
 
   reset() {
     this.serial_manager = new SerialPortManager();
-    this.device_manager = new DeviceManager();
+    this.node_manager = new NodeManager();
   }
 }

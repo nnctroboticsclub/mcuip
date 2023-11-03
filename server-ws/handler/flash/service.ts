@@ -1,14 +1,14 @@
 import { JSONEndpoint, JSONRouter } from "../../json_router";
 import { McuIpService } from "../service_base";
 import { Flash } from "./device";
-import { DeviceManager } from "./device_manager";
+import { NodeManager } from "./node_manager";
 
 export class FlashService extends McuIpService {
   point_new: JSONEndpoint;
   point_subscribe: JSONEndpoint;
   point_flash: JSONEndpoint;
 
-  constructor(backref: JSONRouter, private device_manager: DeviceManager) {
+  constructor(backref: JSONRouter, private node_manager: NodeManager) {
     super("flash", backref);
 
     const self = this;
@@ -18,7 +18,7 @@ export class FlashService extends McuIpService {
         throw new Error("device_name is not a string");
       }
 
-      self.device_manager.newDevice(device_name);
+      self.node_manager.newDevice(device_name);
     });
 
     this.point_subscribe = this.endpoint("subscribe", data => {
@@ -27,7 +27,7 @@ export class FlashService extends McuIpService {
         throw new Error("device_name is not a string");
       }
 
-      const device = self.device_manager.getDevice(device_name);
+      const device = self.node_manager.getDevice(device_name);
       if (!device) {
         throw new Error(`Device ${device_name} not found`);
       }
@@ -49,7 +49,7 @@ export class FlashService extends McuIpService {
         throw new Error("flash is not an object");
       }
 
-      const device = self.device_manager.getDevice(device_name);
+      const device = self.node_manager.getDevice(device_name);
       if (!device) {
         throw new Error(`Device ${device_name} not found`);
       }

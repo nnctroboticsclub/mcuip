@@ -5,8 +5,8 @@ import { FlashService } from "./service";
 
 function getRouter() {
   const router = new TestJSONRootRouter("service");
-  const device_manager = GlobalState.getInstance().device_manager;
-  new FlashService(router, device_manager);
+  const node_manager = GlobalState.getInstance().node_manager;
+  new FlashService(router, node_manager);
 
   return router;
 }
@@ -49,7 +49,7 @@ test("Node creation test", () => {
   const router = getRouter();
   router.route(commands.create);
 
-  const device = GlobalState.getInstance().device_manager.getDevice(device_name);
+  const device = GlobalState.getInstance().node_manager.getDevice(device_name);
   expect(device).toBeDefined();
 });
 

@@ -1,6 +1,6 @@
 import { Device } from "./device";
 
-export class DeviceManager {
+export class NodeManager {
   private devices: { [key: string]: Device } = {}
 
   constructor() { }
