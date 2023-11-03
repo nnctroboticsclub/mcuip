@@ -48,25 +48,30 @@ export class SerialService extends McuIpService {
     });
 
     this.point_connect = this.endpoint("connect", data => {
-      const { port_name_A } = data as { [key: string]: any };
+      const { port_name_A, port_name_B } = data as { [key: string]: any };
+
       if (typeof port_name_A !== 'string') {
         throw new Error("port_name_A is not a string");
       }
 
-      const { port_name_B } = data as { [key: string]: any };
       if (typeof port_name_B !== 'string') {
         throw new Error("port_name_B is not a string");
       }
 
+
+
       const portA = self.serial_manager.get_port(port_name_A);
+      const portB = self.serial_manager.get_port(port_name_B);
+
       if (!portA) {
         throw new Error(`Port ${port_name_A} not found`);
       }
 
-      const portB = self.serial_manager.get_port(port_name_B);
       if (!portB) {
         throw new Error(`Port ${port_name_B} not found`);
       }
+
+
 
       self.serial_manager.connect(portA, portB);
     });

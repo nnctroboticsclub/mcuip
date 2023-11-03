@@ -14,4 +14,8 @@ export class GlobalState {
   constructor() {
     this.serial_manager = new SerialPortManager();
   }
+
+  reset() {
+    this.serial_manager = new SerialPortManager();
+  }
 }
