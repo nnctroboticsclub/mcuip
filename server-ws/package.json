@@ -10,5 +10,8 @@
   "license": "ISC",
   "devDependencies": {
     "bun-types": "^0.4.0"
+  },
+  "dependencies": {
+    "strict-event-emitter-types": "^2.0.0"
   }
 }
