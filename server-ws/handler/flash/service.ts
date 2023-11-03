@@ -5,6 +5,7 @@ import { DeviceManager } from "./device_manager";
 
 export class FlashService extends McuIpService {
   point_new: JSONEndpoint;
+  point_subscribe: JSONEndpoint;
   point_flash: JSONEndpoint;
 
   constructor(backref: JSONRouter, private device_manager: DeviceManager) {
@@ -18,6 +19,25 @@ export class FlashService extends McuIpService {
       }
 
       self.device_manager.newDevice(device_name);
+    });
+
+    this.point_subscribe = this.endpoint("subscribe", data => {
+      const { device_name } = data as { [key: string]: any };
+      if (typeof device_name !== 'string') {
+        throw new Error("device_name is not a string");
+      }
+
+      const device = self.device_manager.getDevice(device_name);
+      if (!device) {
+        throw new Error(`Device ${device_name} not found`);
+      }
+
+      device.add_flash_callback(async flash => {
+        self.point_flash.back_routing({
+          device_name,
+          flash
+        });
+      });
     });
 
     this.point_flash = this.endpoint("flash", data => {
