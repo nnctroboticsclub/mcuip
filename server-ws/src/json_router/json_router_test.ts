@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import { JSONRootRouterBase } from "../json_router";
+import { JSONRootRouterBase } from ".";
 
 test("Shallow Routing", () => {
   const root = new JSONRootRouterBase("key1");
