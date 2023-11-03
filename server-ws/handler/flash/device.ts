@@ -1,3 +1,7 @@
+import { EventEmitter } from "stream";
+import { StrictEventEmitter } from "strict-event-emitter-types";
+
+
 export type Flash = {
   tag: string,
   data_base64: string
@@ -5,14 +9,17 @@ export type Flash = {
 
 type FlashCallback = (flash: Flash) => Promise<void>;
 
-export class Device {
+interface Events {
+  flash: Flash
+};
+
+type DeviceEvents = StrictEventEmitter<EventEmitter, Events>;
+
+export class Device extends (EventEmitter as { new(): DeviceEvents }) {
   private in_flashing: boolean = false;
-  private flash_callback: FlashCallback[] = [];
 
-  constructor(public name: string) { }
-
-  public add_flash_callback(callback: FlashCallback) {
-    this.flash_callback.push(callback);
+  constructor(public name: string) {
+    super()
   }
 
   public async flash(flash: Flash) {
@@ -21,8 +28,9 @@ export class Device {
     }
 
     this.in_flashing = true;
+
     try {
-      await Promise.all(this.flash_callback.map(callback => callback(flash)));
+      this.emit("flash", flash);
     } finally {
       this.in_flashing = false;
     }
