@@ -13,12 +13,6 @@ test("Port Creation", async () => {
 
   const port1 = manager.createMonitor("port1");
   const port2 = manager.createMonitor("port2");
-});
-test("Get#SerialPortManager", async () => {
-  const manager = new MonitorManager();
-
-  const port1 = manager.createMonitor("port1");
-  const port2 = manager.createMonitor("port2");
 
   expect(port1.name).toBe(manager.getMonitor("port1")?.name);
   expect(port2.name).toBe(manager.getMonitor("port2")?.name);
