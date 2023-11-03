@@ -17,7 +17,6 @@ export class SerialPortManager {
   }
 
   connect(port1: SerialPort, port2: SerialPort) {
-    console.log(`Connecting ${port1.name} to ${port2.name}`);
     port1.add_tx_callback(data => port2.rx(data));
     port2.add_tx_callback(data => port1.rx(data));
   }
