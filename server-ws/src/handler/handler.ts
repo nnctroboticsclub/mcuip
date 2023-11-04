@@ -3,7 +3,7 @@ import { FlashService } from "./flash/service";
 import { GlobalState } from "./global_state";
 import { MonitorService } from "./monitor/service";
 
-class McuIpRootHandler extends JSONRootRouterBase {
+export class McuIpRootHandler extends JSONRootRouterBase {
   constructor() {
     super("service");
 
