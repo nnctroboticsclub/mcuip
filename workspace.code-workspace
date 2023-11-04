@@ -4,10 +4,7 @@
 			"path": "."
 		},
 		{
-			"path": "server"
-		},
-		{
-			"path": "bootloader/stm32-bootloader"
+			"path": "server/server-ws"
 		}
 	],
 	"settings": {
@@ -15,6 +12,9 @@
 			"editor.defaultFormatter": "ms-python.autopep8"
 		},
 		"python.formatting.provider": "none",
-		"dotnet.defaultSolution": "disable"
+		"dotnet.defaultSolution": "disable",
+		"cSpell.words": [
+			"fastapi"
+		]
 	}
 }

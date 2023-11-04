@@ -1,5 +1,5 @@
 Bun.serve({
-  port: 3000,
+  port: 80,
   websocket: {
     open: (ws) => {
       console.log(`New client connected: ${ws.remoteAddress}`);
