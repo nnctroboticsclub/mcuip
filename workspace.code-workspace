@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "server/server-ws"
+		},
+		{
+			"path": "server/public"
 		}
 	],
 	"settings": {

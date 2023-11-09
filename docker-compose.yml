@@ -21,13 +21,22 @@ services:
 
   server:
     image: nginx:latest
-    container_name: nginx
     ports:
       - "8080:80"
       - "8081:8080"
     volumes:
       - ./server/nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - ./server/public:/app/public
+      - ./server/public/dist:/app/public
+    networks:
+      - default
+
+  pub-server:
+    image: oven/bun:1.0.8
+    init: true
+    command: bash -c "cd /app && ./entry.sh"
+    restart: always
+    volumes:
+      - ./server/public:/app
     networks:
       - default
 
@@ -35,6 +44,7 @@ services:
     image: oven/bun:1.0.8
     init: true
     command: bash -c "cd /app && ./entry.sh"
+    restart: always
     volumes:
       - ./server/server-ws:/app
     networks:
