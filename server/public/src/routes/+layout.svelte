@@ -1,11 +1,17 @@
 <script lang="ts">
+  import { global_state } from "../global_state";
   import { theme } from "../theme";
 
-  const background = theme.app_background;
+  const background = theme.app_background_color;
+  const title_bar_color = theme.title_bar_color;
+  const app_name = global_state.app_name;
 </script>
 
 <main style="background-color: {$background};">
-  <slot />
+  <div style="background-color: {$title_bar_color};" class="app-bar">
+    {$app_name}
+  </div>
+  <div class="container"><slot /></div>
 </main>
 
 <style>
@@ -17,5 +23,25 @@
     display: block;
     height: 100%;
     width: 100%;
+  }
+
+  div.container {
+    position: fixed;
+    top: 2em;
+    left: 0;
+    right: 0;
+    height: calc(100% - 2em);
+
+    padding: 5px;
+  }
+
+  div.app-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2em;
+
+    display: inline-block;
   }
 </style>

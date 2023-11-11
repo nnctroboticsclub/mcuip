@@ -29,6 +29,9 @@ services:
       - ./server/public/dist:/app/public
     networks:
       - default
+    depends_on:
+      - pub-server
+      - server-ws
 
   pub-server:
     image: oven/bun:1.0.8
