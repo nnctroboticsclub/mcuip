@@ -1,8 +1,11 @@
 <script lang="ts">
-  import { getWindowIndex, type WindowConfig } from "$lib/window/window";
+  import { getWindowIndex } from "$lib/window/window";
   import { windows } from "$lib/window/windows";
   import { onDestroy } from "svelte";
   import { derived, get } from "svelte/store";
+  import { theme } from "../../theme";
+
+  const app_background_color = theme.app_background_color;
 
   let container: HTMLDivElement;
   const index: number = getWindowIndex();
@@ -48,7 +51,11 @@
 
 <svelte:window on:mouseup={applyChanges} on:touchend={applyChanges} />
 
-<div class="container" bind:this={container} style={$style}>
+<div
+  class="container"
+  bind:this={container}
+  style="{$style}; background-color: {$app_background_color};"
+>
   <div class="title-bar">
     <slot name="title" />
   </div>

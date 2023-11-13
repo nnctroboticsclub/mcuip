@@ -3,7 +3,7 @@ import type { WindowConfig } from "./window";
 
 export const windows: WindowConfig[] = [
   {
-    top: writable(0), left: writable(600), width: writable(300), height: writable(600), app: writable({
+    top: writable(0), left: writable(600), width: writable(300), height: writable(590), app: writable({
       name: "window_inspector",
       data: {}
     })

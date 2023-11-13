@@ -2,7 +2,7 @@
   import { global_state } from "../global_state";
   import { theme } from "../theme";
 
-  const background = theme.app_background_color;
+  const background = theme.global_background_color;
   const title_bar_color = theme.title_bar_color;
   const app_name = global_state.app_name;
 </script>
