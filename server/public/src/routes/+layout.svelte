@@ -32,7 +32,7 @@
     right: 0;
     height: calc(100% - 2em);
 
-    padding: 5px;
+    margin: 10px;
   }
 
   div.app-bar {

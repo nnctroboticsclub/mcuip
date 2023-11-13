@@ -1,7 +1,8 @@
 <script lang="ts">
+  import WindowWrapper from "$lib/apps/window_wrapper.svelte";
+  import { windows } from "$lib/window/windows";
 </script>
 
-mcuip
-
-<style>
-</style>
+{#each windows as window, i}
+  <WindowWrapper window_index={i} />
+{/each}
