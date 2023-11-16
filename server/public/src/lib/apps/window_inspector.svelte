@@ -57,10 +57,8 @@
   >
   <svelte:fragment slot="app">
     <div class="container">
-      {window_debug_info.length}<br />
       {#each window_debug_info as line}
         <div>
-          {line.tag} <br />
           {#each line.text as l}
             {l} <br />
           {/each}
