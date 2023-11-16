@@ -35,21 +35,22 @@
   };
 
   function whileCapture(x: number, y: number) {
-    if (!drag.capturing) return;
-
     const old_window_config = window;
-    let current_top = y - drag.base.touch.y + drag.base.position.y;
-    let current_left = x - drag.base.touch.x + drag.base.position.x;
+    if (drag.capturing) {
+      let current_top = y - drag.base.touch.y + drag.base.position.y;
+      let current_left = x - drag.base.touch.x + drag.base.position.x;
+
+      if (current_top != get(old_window_config.top)) {
+        window.top.set(current_top);
+      }
+
+      if (current_left != get(old_window_config.left)) {
+        window.left.set(current_left);
+      }
+    }
+
     let current_width = parseInt(container.style.width.replace("px", ""));
     let current_height = parseInt(container.style.height.replace("px", ""));
-
-    if (current_top != get(old_window_config.top)) {
-      window.top.set(current_top);
-    }
-
-    if (current_left != get(old_window_config.left)) {
-      window.left.set(current_left);
-    }
 
     if (current_width != get(old_window_config.width)) {
       window.width.set(current_width);
