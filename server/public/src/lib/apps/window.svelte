@@ -20,10 +20,26 @@
       `top: ${top}px; left: ${left}px; width: ${width}px; height: ${height}px;`
   );
 
-  function applyChanges() {
+  let drag = {
+    capturing: false,
+    base: {
+      touch: {
+        x: 0,
+        y: 0,
+      },
+      position: {
+        x: 0,
+        y: 0,
+      },
+    },
+  };
+
+  function whileCapture(x: number, y: number) {
+    if (!drag.capturing) return;
+
     const old_window_config = window;
-    let current_top = parseInt(container.style.top.replace("px", ""));
-    let current_left = parseInt(container.style.left.replace("px", ""));
+    let current_top = y - drag.base.touch.y + drag.base.position.y;
+    let current_left = x - drag.base.touch.x + drag.base.position.x;
     let current_width = parseInt(container.style.width.replace("px", ""));
     let current_height = parseInt(container.style.height.replace("px", ""));
 
@@ -44,19 +60,45 @@
     }
   }
 
+  function startCapturing(x: number, y: number) {
+    if (drag.capturing) return;
+
+    drag.capturing = true;
+    drag.base.touch.x = x;
+    drag.base.touch.y = y;
+    drag.base.position.x = get(window.left);
+    drag.base.position.y = get(window.top);
+  }
+
+  function endCapturing() {
+    if (!drag.capturing) return;
+
+    drag.capturing = false;
+  }
+
   onDestroy(() => {
     defer_functions.forEach((func) => func());
   });
 </script>
 
-<svelte:window on:mouseup={applyChanges} on:touchend={applyChanges} />
+<svelte:window
+  on:mousemove={(e) => whileCapture(e.clientX, e.pageY)}
+  on:touchmove={(e) => whileCapture(e.touches[0].clientX, e.touches[0].clientY)}
+  on:mouseup={endCapturing}
+  on:touchend={endCapturing}
+/>
 
 <div
   class="container"
   bind:this={container}
   style="{$style}; background-color: {$app_background_color};"
 >
-  <div class="title-bar">
+  <div
+    class="title-bar"
+    on:touchstart={(e) =>
+      startCapturing(e.touches[0].clientX, e.touches[0].clientY)}
+    on:mousedown={(e) => startCapturing(e.clientX, e.clientY)}
+  >
     <slot name="title" />
   </div>
   <div class="content">
@@ -68,7 +110,6 @@
   div.container {
     position: absolute;
     display: block;
-    border: 1px solid black;
     border-radius: 10px;
     box-sizing: border-box;
 
