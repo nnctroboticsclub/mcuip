@@ -1,5 +1,5 @@
 import { getContext, setContext } from "svelte";
-import { writable, type Writable } from "svelte/store";
+import type { Writable } from "svelte/store";
 
 export type WindowConfig = {
   top: Writable<number>;
@@ -10,23 +10,11 @@ export type WindowConfig = {
   window_data: Writable<any>;
 };
 
-export function setWindowIndex(index: number) {
-  setContext("window-index", index);
+export function setWindow(index: WindowConfig) {
+  setContext("window", index);
   return index;
 }
 
-export function getWindowIndex(): number {
-  return getContext("window-index") as number;
-}
-
-
-export function setAppData(data: any) {
-  let store = writable(data);
-  setContext("app-data", store);
-
-  return store;
-}
-
-export function getAppData<T>(): Writable<T> {
-  return getContext("app-data") as Writable<T>;
+export function getWindow(): WindowConfig {
+  return getContext("window");
 }

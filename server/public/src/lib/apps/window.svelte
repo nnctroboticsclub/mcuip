@@ -1,16 +1,14 @@
 <script lang="ts">
-  import { getWindowIndex } from "$lib/window/window";
   import { windows } from "$lib/window/windows";
   import { onDestroy } from "svelte";
   import { derived, get } from "svelte/store";
   import { theme } from "../../theme";
+  import { getWindow } from "$lib/window/window";
 
   const app_background_color = theme.app_background_color;
 
+  let window = getWindow();
   let container: HTMLDivElement;
-  const index: number = getWindowIndex();
-
-  let window = windows[index];
 
   let defer_functions: (() => void)[] = [];
 

@@ -3,6 +3,6 @@
   import { windows } from "$lib/window/windows";
 </script>
 
-{#each windows as window, i}
-  <WindowWrapper window_index={i} />
+{#each windows as window}
+  <WindowWrapper {window} />
 {/each}
