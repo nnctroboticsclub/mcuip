@@ -6,10 +6,8 @@ export type WindowConfig = {
   left: Writable<number>;
   width: Writable<number>;
   height: Writable<number>;
-  app: Writable<{
-    name: string;
-    data: any;
-  }>;
+  app_name: string;
+  window_data: Writable<any>;
 };
 
 export function setWindowIndex(index: number) {

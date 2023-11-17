@@ -13,20 +13,20 @@
   let window: WindowConfig;
   $: window = windows[window_index];
 
-  let app_store = window && window.app;
-  $: app_store = window && window.app;
+  let app_store = window && window.window_data;
+  $: app_store = window && window.window_data;
 
   $: setWindowIndex(window_index);
-  $: setAppData($app_store.data);
+  $: setAppData($app_store);
 </script>
 
 {#if !window}
   <p>Specified window not found (index = {window_index})</p>
-{:else if !window.app}
+{:else if !window.app_name}
   <p>App not found</p>
 {:else}
-  {#await getAppComponent(window, $app_store.name)}
-    <p>Loading app... ({$app_store.name})</p>
+  {#await getAppComponent(window, window.app_name)}
+    <p>Loading app... ({window.app_name})</p>
   {:then app}
     <svelte:component this={app} />
   {:catch error}
