@@ -10,3 +10,9 @@ class Theme {
 
 
 export const theme = new Theme();
+
+setTimeout(() => {
+  theme.global_background_color.set('#eef');
+  theme.title_bar_color.set('#efe');
+  theme.app_background_color.set('#ddf');
+}, 2000);

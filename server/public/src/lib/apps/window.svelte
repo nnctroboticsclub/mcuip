@@ -92,6 +92,7 @@
 <div
   class="container"
   bind:this={container}
+  class:dragging={drag.capturing}
   style="{$style}; background-color: {$app_background_color};"
 >
   <div
@@ -108,6 +109,15 @@
 </div>
 
 <style>
+  @keyframes drag {
+    0% {
+      box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+    }
+    100% {
+      box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.75);
+    }
+  }
+
   div.container {
     position: absolute;
     display: block;
@@ -117,6 +127,13 @@
     padding: 5px;
     overflow: hidden;
     resize: both;
+
+    transition: box-shadow 0.2s;
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+  }
+  div.container.dragging {
+    cursor: grabbing;
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.75);
   }
 
   div.title-bar {

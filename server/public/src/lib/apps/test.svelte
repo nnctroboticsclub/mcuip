@@ -1,5 +1,6 @@
 <script lang="ts">
   import Window from "./window.svelte";
+  console.log("Test rendered");
 </script>
 
 <Window>

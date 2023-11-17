@@ -29,7 +29,6 @@
 
 <style>
   div.container {
-    background-color: #ccc;
     height: 100%;
     width: 100%;
   }
