@@ -30,6 +30,7 @@
         ([top, left, width, height, app]) => [
           `Name: ${app.name}`,
           `(${top}, ${left}) +(${width}, ${height})`,
+          JSON.stringify(app.data, null, 2),
         ]
       );
 

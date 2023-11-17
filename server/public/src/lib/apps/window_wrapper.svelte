@@ -1,5 +1,9 @@
 <script lang="ts">
-  import { setWindowIndex, type WindowConfig } from "$lib/window/window";
+  import {
+    setAppData,
+    setWindowIndex,
+    type WindowConfig,
+  } from "$lib/window/window";
   import { getAppComponent } from "$lib/window/window_resolver";
   import { windows } from "$lib/window/windows";
   import type { Writable } from "svelte/store";
@@ -13,6 +17,7 @@
   $: app_store = window && window.app;
 
   $: setWindowIndex(window_index);
+  $: setAppData($app_store.data);
 </script>
 
 {#if !window}
@@ -23,7 +28,7 @@
   {#await getAppComponent(window, $app_store.name)}
     <p>Loading app... ({$app_store.name})</p>
   {:then app}
-    <svelte:component this={app} data={$app_store.data} />
+    <svelte:component this={app} />
   {:catch error}
     <p>An error has occurred when loading component</p>
     <p>error: {error.message}</p>

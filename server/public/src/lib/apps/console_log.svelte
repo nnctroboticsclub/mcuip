@@ -20,6 +20,7 @@
         data.lines = [];
       }
       data.lines.push(text);
+      data = data;
     });
 
     return () => {
@@ -34,7 +35,7 @@
   <div class="container" slot="app">
     {#if data.lines}
       {#each data.lines as line}
-        {line}
+        {line}<br />
       {/each}
     {:else}
       Loading...
