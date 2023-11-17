@@ -5,20 +5,12 @@
   import Window from "./window.svelte";
 
   let unsubscribes: (() => void)[] = [];
-  export let data: {
-    window_debug_info: { tag: string; text: string[] }[];
-  };
-
-  if (data == undefined) {
-    data = {
-      window_debug_info: [],
-    };
-  }
+  let window_data: { tag: string; text: string[] }[] = [];
 
   function loadWindows() {
     console.log("Loading Windows");
     unsubscribes.forEach((unsubscribe) => unsubscribe());
-    data.window_debug_info = [];
+    window_data = [];
 
     const appendWindowInfo = (window: WindowConfig) => {
       const tag = [...new Array(2)]
@@ -41,15 +33,17 @@
         ]
       );
 
-      data.window_debug_info.push({ tag, text: ["Loading..."] });
+      window_data.push({
+        tag,
+        text: [],
+      });
 
       return line_store.subscribe((text) => {
-        const index = data.window_debug_info.findIndex(
-          (info) => info.tag == tag
-        );
+        const index = window_data.findIndex((d) => d.tag == tag);
         if (index != -1) {
-          data.window_debug_info[index].text = text;
+          window_data[index].text = text;
         }
+        return window_data;
       });
     };
 
@@ -75,7 +69,7 @@
   >
   <svelte:fragment slot="app">
     <div class="container">
-      {#each data.window_debug_info as line}
+      {#each window_data as line}
         <div>
           {#each line.text as l}
             {l} <br />

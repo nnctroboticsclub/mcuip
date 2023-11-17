@@ -3,24 +3,12 @@
   import Window from "./window.svelte";
   import { onMount } from "svelte";
 
-  export let data: {
-    lines: string[];
-  };
-
-  if (data == undefined) {
-    data = {
-      lines: [],
-    };
-  }
+  let lines: string[] = [];
 
   onMount(() => {
     patch_console_log();
     let unsubscribe = subscribe_console_log((text) => {
-      if (!data.lines) {
-        data.lines = [];
-      }
-      data.lines.push(text);
-      data = data;
+      lines = [...lines, text].slice(-100);
     });
 
     return () => {
@@ -33,13 +21,9 @@
   <svelte:fragment slot="title">Console</svelte:fragment>
 
   <div class="container" slot="app">
-    {#if data.lines}
-      {#each data.lines as line}
-        {line}<br />
-      {/each}
-    {:else}
-      Loading...
-    {/if}
+    {#each lines as line}
+      {line}<br />
+    {/each}
   </div>
 </Window>
 
