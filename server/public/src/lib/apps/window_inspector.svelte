@@ -74,4 +74,8 @@
     height: 100%;
     width: 100%;
   }
+
+  div.container div:not(:last-child) {
+    border-bottom: 1px solid #aaa;
+  }
 </style>
