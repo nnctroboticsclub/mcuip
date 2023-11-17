@@ -21,7 +21,7 @@
   <p>App not found</p>
 {:else}
   {#await getAppComponent(window, $app_store.name)}
-    <p>Loading app... ({window.app})</p>
+    <p>Loading app... ({$app_store.name})</p>
   {:then app}
     <svelte:component this={app} data={$app_store.data} />
   {:catch error}

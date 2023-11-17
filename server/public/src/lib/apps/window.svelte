@@ -131,6 +131,7 @@
     transition: box-shadow 0.2s;
     box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
   }
+
   div.container.dragging {
     cursor: grabbing;
     box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.75);
@@ -141,6 +142,7 @@
     width: 100%;
     height: 20px;
   }
+
   div.title-bar::after {
     display: block;
     width: 100%;
@@ -150,10 +152,11 @@
     background-color: black;
     opacity: 0.25;
   }
+
   div.content {
     display: block;
-    width: 100%;
+    width: calc(100% - 20px);
     height: calc(100% - 21px);
-    margin: 10px;
+    padding: 10px;
   }
 </style>

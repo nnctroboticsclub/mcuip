@@ -4,13 +4,21 @@
   import { derived } from "svelte/store";
   import Window from "./window.svelte";
 
-  let window_debug_info: { tag: string; text: string[] }[] = [];
   let unsubscribes: (() => void)[] = [];
+  export let data: {
+    window_debug_info: { tag: string; text: string[] }[];
+  };
+
+  if (data == undefined) {
+    data = {
+      window_debug_info: [],
+    };
+  }
 
   function loadWindows() {
     console.log("Loading Windows");
     unsubscribes.forEach((unsubscribe) => unsubscribe());
-    window_debug_info = [];
+    data.window_debug_info = [];
 
     const appendWindowInfo = (window: WindowConfig) => {
       const tag = [...new Array(2)]
@@ -20,17 +28,19 @@
       const line_store = derived(
         [window.top, window.left, window.width, window.height, window.app],
         ([top, left, width, height, app]) => [
-          `name: ${app.name}`,
+          `Name: ${app.name}`,
           `(${top}, ${left}) +(${width}, ${height})`,
         ]
       );
 
-      window_debug_info.push({ tag, text: ["Loading..."] });
+      data.window_debug_info.push({ tag, text: ["Loading..."] });
 
       return line_store.subscribe((text) => {
-        const index = window_debug_info.findIndex((info) => info.tag == tag);
+        const index = data.window_debug_info.findIndex(
+          (info) => info.tag == tag
+        );
         if (index != -1) {
-          window_debug_info[index].text = text;
+          data.window_debug_info[index].text = text;
         }
       });
     };
@@ -57,7 +67,7 @@
   >
   <svelte:fragment slot="app">
     <div class="container">
-      {#each window_debug_info as line}
+      {#each data.window_debug_info as line}
         <div>
           {#each line.text as l}
             {l} <br />
