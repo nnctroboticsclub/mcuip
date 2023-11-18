@@ -8,6 +8,9 @@
 		},
 		{
 			"path": "server/public"
+		},
+		{
+			"path": "esp32/app-agent"
 		}
 	],
 	"settings": {
