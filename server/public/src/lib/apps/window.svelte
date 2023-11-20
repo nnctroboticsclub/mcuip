@@ -12,6 +12,8 @@
 
   let defer_functions: (() => void)[] = [];
 
+  const snapness = 50;
+
   let style = derived(
     [window.top, window.left, window.width, window.height],
     ([top, left, width, height]) =>
@@ -32,11 +34,21 @@
     },
   };
 
+  function snap_position(value: number, snapness: number) {
+    return Math.round(value / snapness) * snapness;
+  }
+
   function whileCapture(x: number, y: number) {
     const old_window_config = window;
     if (drag.capturing) {
-      let current_top = y - drag.base.touch.y + drag.base.position.y;
-      let current_left = x - drag.base.touch.x + drag.base.position.x;
+      const current_top = snap_position(
+        y - drag.base.touch.y + drag.base.position.y,
+        snapness
+      );
+      const current_left = snap_position(
+        x - drag.base.touch.x + drag.base.position.x,
+        snapness
+      );
 
       if (current_top != get(old_window_config.top)) {
         window.top.set(current_top);
@@ -47,8 +59,14 @@
       }
     }
 
-    let current_width = parseInt(container.style.width.replace("px", ""));
-    let current_height = parseInt(container.style.height.replace("px", ""));
+    const current_width = snap_position(
+      parseInt(container.style.width.replace("px", "")),
+      snapness
+    );
+    const current_height = snap_position(
+      parseInt(container.style.height.replace("px", "")),
+      snapness
+    );
 
     if (current_width != get(old_window_config.width)) {
       window.width.set(current_width);
@@ -124,7 +142,6 @@
 
     padding: 5px;
     overflow: hidden;
-    resize: both;
 
     transition: box-shadow 0.2s;
     box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);

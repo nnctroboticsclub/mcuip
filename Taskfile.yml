@@ -4,4 +4,12 @@ tasks:
   server:
     cmds:
       - docker compose up -d server
-      - docker compose logs -f server pub-server server-ws
+      - docker compose logs -f server-ws pub-server
+
+  server-stop:
+    cmds:
+      - docker compose down
+
+  docker-stop:
+    cmds:
+      - docker compose down
