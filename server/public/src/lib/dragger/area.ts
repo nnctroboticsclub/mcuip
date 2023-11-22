@@ -1,5 +1,5 @@
 import { Position } from "./position";
-
+import { terminal } from "virtual:terminal";
 export class Area {
   constructor(private top_: number, private left_: number, private width_: number, private height_: number) { }
 
@@ -34,15 +34,22 @@ export class Area {
   }
 
   fitInArea(other: Area): Area | null {
-    if (this.width_ > other.width_ || this.height_ > other.height_) {
+    if (this.width_ < other.width_ || this.height_ < other.height_) {
       return null;
     }
 
+    const upper_boundary = this.sizeVector()
+      .subtract(other.sizeVector());
+
+    const lower_boundary = new Position(0, 0);
+
     return other.moveTo(
-      this
-        .getPosition()
-        .subtract(this.sizeVector())
-        .min(other.getPosition())
+      other.getPosition()
+        .max(lower_boundary)
+        .min(upper_boundary)
     )
+  }
+  toString(): string {
+    return `{(${this.top_}, ${this.left_}) + (${this.width_}, ${this.height_})}`;
   }
 }

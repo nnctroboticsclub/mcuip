@@ -1,5 +1,5 @@
 import { getContext, setContext } from "svelte";
-import { writable, type Readable, type Writable, derived } from "svelte/store"
+import { writable, type Readable, type Writable, derived, get } from "svelte/store"
 import type { Position } from "./position";
 import { Area } from "./area";
 
@@ -12,6 +12,13 @@ export class DragTargetContext {
   }
 
   updatePos(pos: Position) {
+
+    const { x: x1, y: y1 } = get(this.pos).components();
+    const { x: x2, y: y2 } = pos.components();
+    if (x1 == x2 && y1 == y2) {
+      return;
+    }
+
     this.pos.set(pos);
   }
 
@@ -49,6 +56,10 @@ export class DragContainerContext {
 
   subscribeArea(fn: (value: Area) => void) {
     return this.area.subscribe(fn);
+  }
+
+  getArea(): Readable<Area> {
+    return this.area;
   }
 
   setArea(area: Area) {
