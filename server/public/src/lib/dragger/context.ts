@@ -1,17 +1,41 @@
 import { getContext, setContext } from "svelte";
-import { get, writable, type Writable } from "svelte/store"
+import { get, writable, type Readable, type Writable, derived } from "svelte/store"
 
-export class DragItemContext {
-  private top: Writable<number>;
-  private left: Writable<number>;
-  private width: Writable<number>;
-  private height: Writable<number>;
+export type DragTargetPosition = {
+  x: number,
+  y: number
+}
 
-  constructor(top: number, left: number, width: number, height: number) {
-    this.top = writable(top);
-    this.left = writable(left);
-    this.width = writable(width);
-    this.height = writable(height);
+export class DragTargetContext {
+  private pos: Writable<DragTargetPosition>;
+
+  constructor(pos: DragTargetPosition) {
+    this.pos = writable(pos);
+  }
+
+  updatePos(pos: DragTargetPosition) {
+    this.pos.set(pos);
+  }
+
+  getPos(): Writable<DragTargetPosition> {
+    return this.pos;
+  }
+
+  getStyle(): Readable<string> {
+    return derived(this.pos, (pos: DragTargetPosition) => {
+      return `top: ${pos.y}px; left: ${pos.x}px;`;
+    });
+  }
+
+  public static setContext(tag: string, pos: DragTargetPosition) {
+    const ctx = new DragTargetContext(pos);
+    setContext(`dragTarget/${tag}`, ctx);
+
+    return ctx;
+  }
+
+  public static getContext(tag: string): DragTargetContext {
+    return getContext<DragTargetContext>(`dragTarget/${tag}`);
   }
 }
 
@@ -33,6 +57,6 @@ export class DragContainerContext {
   }
 
   static getContext(): DragContainerContext {
-    return get(<Writable<DragContainerContext>>getContext("dragContainer"));
+    return getContext<DragContainerContext>("dragContainer");
   }
 }

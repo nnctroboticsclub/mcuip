@@ -1,6 +1,7 @@
 <script lang="ts">
   import { setContext } from "svelte";
   import { DragContainerContext } from "./context";
+  import { global_state } from "../../global_state";
 
   export let top: number;
   export let left: number;
@@ -12,7 +13,19 @@
 
 <div
   class="drag-container"
+  class:debug={global_state.config.debug.dragger}
   style="top: {top}px; left: {left}px; width: {width}px; height: {height}px;"
 >
   <slot />
 </div>
+
+<style>
+  .drag-container {
+    position: relative;
+  }
+
+  .drag-container.debug {
+    border: 1px solid purple;
+    box-sizing: border-box;
+  }
+</style>
