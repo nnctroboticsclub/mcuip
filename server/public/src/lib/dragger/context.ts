@@ -44,7 +44,7 @@ export class DragContainerContext {
   }
 
   fitToArea(pos: Position): Readable<Position> {
-    return derived(this.area, x => x.fitToArea(pos));
+    return derived(this.area, x => x.relativeArea().fitToArea(pos));
   }
 
   subscribeArea(fn: (value: Area) => void) {
