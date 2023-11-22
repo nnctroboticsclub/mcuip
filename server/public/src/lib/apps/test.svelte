@@ -1,7 +1,7 @@
 <script lang="ts">
   import { getWindow } from "$lib/window/window";
   import type { Writable } from "svelte/store";
-  import Window from "./window.svelte";
+  import Window from "../window/window.svelte";
   import { onMount } from "svelte";
 
   const data = getWindow().window_data as Writable<{

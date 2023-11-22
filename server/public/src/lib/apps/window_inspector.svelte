@@ -2,7 +2,7 @@
   import type { WindowConfig } from "$lib/window/window";
   import { windows } from "$lib/window/windows";
   import { derived } from "svelte/store";
-  import Window from "./window.svelte";
+  import Window from "../window/window.svelte";
 
   let unsubscribes: (() => void)[] = [];
   let window_data: { tag: string; text: string[] }[] = [];

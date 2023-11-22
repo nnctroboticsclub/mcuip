@@ -4,7 +4,10 @@ export class Position {
   constructor(private x_: number, private y_: number) { }
 
   getStyle(): string {
-    return `top: ${this.y_}px; left: ${this.x_}px;`;
+    const x_style = this.x_ < 0 ? `right: ${-this.x_}px;` : `left: ${this.x_}px;`;
+    const y_style = this.y_ < 0 ? `bottom: ${-this.y_}px;` : `top: ${this.y_}px;`;
+
+    return x_style + y_style;
   }
 
   subtract(right_operand: Position): Position {

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { patch_console_log, subscribe_console_log } from "$lib/console_patch";
-  import Window from "./window.svelte";
+  import Window from "../window/window.svelte";
   import { onMount } from "svelte";
 
   let lines: string[] = [];
