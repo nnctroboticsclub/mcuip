@@ -1,9 +1,10 @@
 <script lang="ts">
   import { get } from "svelte/store";
-  import { type DragTargetPosition, DragTargetContext } from "./context";
+  import { DragTargetContext } from "./context";
+  import type { Position } from "./position";
 
   export let tag: string = "target";
-  export let pos: DragTargetPosition = {
+  export let pos: Position = {
     x: 0,
     y: 0,
   };
@@ -18,11 +19,11 @@
       touch: {
         x: 0,
         y: 0,
-      } as DragTargetPosition,
+      } as Position,
       position: {
         x: 0,
         y: 0,
-      } as DragTargetPosition,
+      } as Position,
     },
   };
 
@@ -34,7 +35,7 @@
     const new_x = drag.base.position.x + dx;
     const new_y = drag.base.position.y + dy;
 
-    const new_position: DragTargetPosition = {
+    const new_position: Position = {
       x: new_x,
       y: new_y,
     };

@@ -1,33 +1,30 @@
 import { getContext, setContext } from "svelte";
 import { get, writable, type Readable, type Writable, derived } from "svelte/store"
+import type { Position } from "./position";
 
-export type DragTargetPosition = {
-  x: number,
-  y: number
-}
 
 export class DragTargetContext {
-  private pos: Writable<DragTargetPosition>;
+  private pos: Writable<Position>;
 
-  constructor(pos: DragTargetPosition) {
+  constructor(pos: Position) {
     this.pos = writable(pos);
   }
 
-  updatePos(pos: DragTargetPosition) {
+  updatePos(pos: Position) {
     this.pos.set(pos);
   }
 
-  getPos(): Writable<DragTargetPosition> {
+  getPos(): Writable<Position> {
     return this.pos;
   }
 
   getStyle(): Readable<string> {
-    return derived(this.pos, (pos: DragTargetPosition) => {
+    return derived(this.pos, (pos: Position) => {
       return `top: ${pos.y}px; left: ${pos.x}px;`;
     });
   }
 
-  public static setContext(tag: string, pos: DragTargetPosition) {
+  public static setContext(tag: string, pos: Position) {
     const ctx = new DragTargetContext(pos);
     setContext(`dragTarget/${tag}`, ctx);
 
