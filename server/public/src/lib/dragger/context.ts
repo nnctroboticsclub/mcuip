@@ -44,6 +44,7 @@ export class DragTargetContext {
 
 export class DragContainerContext {
   private is_unavailable: Writable<boolean> = writable(false);
+  private is_dragging: Writable<boolean> = writable(false);
   private area: Writable<Area>
 
   constructor(top: number, left: number, width: number, height: number) {
@@ -60,6 +61,14 @@ export class DragContainerContext {
 
   getIsUnavailable(): Readable<boolean> {
     return this.is_unavailable;
+  }
+
+  setDragging(is_dragging: boolean) {
+    this.is_dragging.set(is_dragging);
+  }
+
+  getDragging(): Readable<boolean> {
+    return this.is_dragging;
   }
 
   static initContext() {

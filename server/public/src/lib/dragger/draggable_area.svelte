@@ -11,13 +11,14 @@
 
   DragContainerContext.initContext();
 
+  const ctx = DragContainerContext.getContext();
+  const is_dragging = ctx.getDragging();
+
   $: {
     if (!top || !left || !width || !height) {
       DragContainerContext.clearContext();
     } else {
-      DragContainerContext.getContext().setArea(
-        new Area(top, left, width, height)
-      );
+      ctx.setArea(new Area(top, left, width, height));
     }
   }
 </script>
@@ -25,6 +26,7 @@
 <div
   class="drag-container"
   class:debug={global_state.config.debug.dragger}
+  class:dragging={$is_dragging}
   style="top: {top}px; left: {left}px; width: {width}px; height: {height}px;"
 >
   <slot />
@@ -38,5 +40,9 @@
   .drag-container.debug {
     border: 1px solid purple;
     box-sizing: border-box;
+  }
+
+  .drag-container.dragging {
+    user-select: none;
   }
 </style>

@@ -12,7 +12,6 @@
   const area_unavailable = area_ctx.getIsUnavailable();
 
   const style = target_ctx.getStyle();
-  $: console.log(`\x1b[31mstyle: ${$style}\x1b[m`);
 
   let element_width = -1;
   let element_height = -1;
@@ -43,23 +42,18 @@
 
     drag.touch_base = new Position(x, y);
     drag.position_base = get(target_ctx.getPos());
+
+    area_ctx.setDragging(true);
   }
 
   function endCapturing() {
     if (!drag.capturing) return;
     drag.capturing = false;
+    area_ctx.setDragging(false);
   }
 </script>
 
-<svelte:window
-  on:touchstart={(e) =>
-    startCapturing(e.touches[0].clientX, e.touches[0].clientY)}
-  on:mousedown={(e) => startCapturing(e.clientX, e.clientY)}
-  on:mousemove={(e) => whileCapture(e.clientX, e.pageY)}
-  on:touchmove={(e) => whileCapture(e.touches[0].clientX, e.touches[0].clientY)}
-  on:mouseup={endCapturing}
-  on:touchend={endCapturing}
-/>
+<svelte:window />
 
 {#if $area_unavailable}
   <div
@@ -67,6 +61,18 @@
     bind:clientHeight={element_height}
     class="wrapper"
     style={$style}
+    role="scrollbar"
+    aria-controls="draggable"
+    aria-valuenow={-1}
+    tabindex={0}
+    on:touchstart={(e) =>
+      startCapturing(e.touches[0].clientX, e.touches[0].clientY)}
+    on:mousedown={(e) => startCapturing(e.clientX, e.clientY)}
+    on:mousemove={(e) => whileCapture(e.clientX, e.pageY)}
+    on:touchmove={(e) =>
+      whileCapture(e.touches[0].clientX, e.touches[0].clientY)}
+    on:mouseup={endCapturing}
+    on:touchend={endCapturing}
   >
     <slot />
   </div>
@@ -77,5 +83,6 @@
 <style>
   .wrapper {
     position: absolute;
+    z-index: 1000;
   }
 </style>
