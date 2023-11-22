@@ -1,54 +1,38 @@
-import type { Invalidator, Subscriber, Unsubscriber, Updater, Writable } from "svelte/store";
+import { getContext, setContext } from "svelte";
+import { get, writable, type Writable } from "svelte/store"
 
-export type WidgetLocationDescriptor = {
-  top: number;
-  left: number;
-  width: number;
-  height: number;
-};
+export class DragItemContext {
+  private top: Writable<number>;
+  private left: Writable<number>;
+  private width: Writable<number>;
+  private height: Writable<number>;
 
-class AreaLimitedStore implements Writable<WidgetLocationDescriptor>{
-  constructor(private store: Writable<WidgetLocationDescriptor>, private limits: AreaLimits) {
-  }
-
-  set(value: WidgetLocationDescriptor): void {
-    this.store.set(this.limits.fit_in(value));
-  }
-
-  subscribe(run: Subscriber<WidgetLocationDescriptor>, invalidate?: Invalidator<WidgetLocationDescriptor> | undefined): Unsubscriber {
-    return this.store.subscribe(run, invalidate);
-  }
-
-  update(updater: Updater<WidgetLocationDescriptor>): void {
-    this.store.update(updater);
+  constructor(top: number, left: number, width: number, height: number) {
+    this.top = writable(top);
+    this.left = writable(left);
+    this.width = writable(width);
+    this.height = writable(height);
   }
 }
 
-export class AreaLimits {
-  constructor(public top: number, public left: number, public right: number, public bottom: number) {
+export class DragContainerContext {
+  private top_: Writable<number>;
+  private left_: Writable<number>;
+  private width_: Writable<number>;
+  private height_: Writable<number>;
+
+  constructor(top: number, left: number, width: number, height: number) {
+    this.top_ = writable(top);
+    this.left_ = writable(left);
+    this.width_ = writable(width);
+    this.height_ = writable(height);
   }
 
-  fit_in(descriptor: WidgetLocationDescriptor) {
-    // Snap position
-    if (descriptor.top < this.top) {
-      descriptor.top = this.top;
-    }
-    if (descriptor.left < this.left) {
-      descriptor.left = this.left;
-    }
-
-    // Resize to fit the limits
-    if (descriptor.top + descriptor.height > this.bottom) {
-      descriptor.height = this.bottom - descriptor.top;
-    }
-    if (descriptor.left + descriptor.width > this.right) {
-      descriptor.width = this.right - descriptor.left;
-    }
-
-    return descriptor;
+  static setContext(top: number, left: number, width: number, height: number) {
+    setContext("dragContainer", new DragContainerContext(top, left, width, height));
   }
 
-  as_store(descriptor: Writable<WidgetLocationDescriptor>) {
-    return new AreaLimitedStore(descriptor, this);
+  static getContext(): DragContainerContext {
+    return get(<Writable<DragContainerContext>>getContext("dragContainer"));
   }
-};
+}

@@ -1,22 +1,18 @@
 <script lang="ts">
   import { setContext } from "svelte";
+  import { DragContainerContext } from "./context";
 
-  export let style: {
-    top: string;
-    left: string;
-    width: string;
-    height: string;
-  };
+  export let top: number;
+  export let left: number;
+  export let width: number;
+  export let height: number;
 
-  let window_width: number;
-  let window_height: number;
-
-  setContext("window_style", style);
+  DragContainerContext.setContext(top, left, width, height);
 </script>
 
-<svelte:window
-  bind:innerWidth={window_width}
-  bind:innerHeight={window_height}
-/>0
-
-<slot />
+<div
+  class="drag-container"
+  style="top: {top}px; left: {left}px; width: {width}px; height: {height}px;"
+>
+  <slot />
+</div>
