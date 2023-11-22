@@ -24,4 +24,8 @@ export class Position {
   toString(): string {
     return `(${this.x_}, ${this.y_})`;
   }
+
+  components(): { x: number, y: number } {
+    return { x: this.x_, y: this.y_ };
+  }
 }
