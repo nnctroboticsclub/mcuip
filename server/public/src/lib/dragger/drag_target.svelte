@@ -53,7 +53,10 @@
   }
 </script>
 
-<svelte:window />
+<svelte:window
+  on:mousemove={(e) => whileCapture(e.clientX, e.pageY)}
+  on:touchmove={(e) => whileCapture(e.touches[0].clientX, e.touches[0].clientY)}
+/>
 
 {#if $area_unavailable}
   <div
@@ -68,9 +71,6 @@
     on:touchstart={(e) =>
       startCapturing(e.touches[0].clientX, e.touches[0].clientY)}
     on:mousedown={(e) => startCapturing(e.clientX, e.clientY)}
-    on:mousemove={(e) => whileCapture(e.clientX, e.pageY)}
-    on:touchmove={(e) =>
-      whileCapture(e.touches[0].clientX, e.touches[0].clientY)}
     on:mouseup={endCapturing}
     on:touchend={endCapturing}
   >
