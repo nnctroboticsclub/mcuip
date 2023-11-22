@@ -2,13 +2,30 @@
   import { setContext } from "svelte";
   import { DragContainerContext } from "./context";
   import { global_state } from "../../global_state";
+  import { Area } from "./area";
 
   export let top: number;
   export let left: number;
   export let width: number;
   export let height: number;
 
-  DragContainerContext.setContext(top, left, width, height);
+  DragContainerContext.initContext();
+
+  $: {
+    console.log("Setting context");
+    console.log(
+      `  top: ${top}, left: ${left}, width: ${width}, height: ${height}`
+    );
+    if (!top || !left || !width || !height) {
+      console.log("====> Clearing context");
+      DragContainerContext.clearContext();
+    } else {
+      console.log("====> Setting context");
+      DragContainerContext.getContext().setArea(
+        new Area(top, left, width, height)
+      );
+    }
+  }
 </script>
 
 <div

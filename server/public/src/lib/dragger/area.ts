@@ -10,6 +10,9 @@ export class Area {
   fitToArea(pos: Position): Position {
     const tl = new Position(this.left_, this.top_);
     const br = new Position(this.left_ + this.width_, this.top_ + this.height_);
-    return pos.max(tl).min(br);
+    const new_pos = pos.max(tl).min(br);
+    console.log(`fitToArea: ${pos.toString()} -> ${new_pos.toString()} (tl: ${tl.toString()}, br: ${br.toString()})`);
+    console.log(`-> top: ${this.top_}, left: ${this.left_}, width: ${this.width_}, height: ${this.height_}`)
+    return new_pos;
   }
 }

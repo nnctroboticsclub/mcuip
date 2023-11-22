@@ -36,16 +36,37 @@ export class DragTargetContext {
 }
 
 export class DragContainerContext {
+  private is_unavailable: Writable<boolean> = writable(false);
   private area: Writable<Area>
 
   constructor(top: number, left: number, width: number, height: number) {
     this.area = writable(new Area(top, left, width, height));
   }
 
+  fitToArea(pos: Position): Readable<Position> {
+    return derived(this.area, x => x.fitToArea(pos));
+  }
 
+  subscribeArea(fn: (value: Area) => void) {
+    return this.area.subscribe(fn);
+  }
 
-  static setContext(top: number, left: number, width: number, height: number) {
-    setContext("dragContainer", new DragContainerContext(top, left, width, height));
+  setArea(area: Area) {
+    this.area.set(area);
+  }
+
+  getIsUnavailable(): Readable<boolean> {
+    return this.is_unavailable;
+  }
+
+  static initContext() {
+    const ctx = new DragContainerContext(0, 0, 0, 0);
+    ctx.is_unavailable.set(true);
+    setContext("dragContainer", ctx);
+  }
+
+  static clearContext() {
+    DragContainerContext.getContext().is_unavailable.set(true);
   }
 
   static getContext(): DragContainerContext {

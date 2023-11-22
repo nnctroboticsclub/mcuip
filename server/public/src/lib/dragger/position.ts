@@ -20,4 +20,8 @@ export class Position {
   min(right_operand: Position): Position {
     return new Position(Math.min(this.x_, right_operand.x_), Math.min(this.y_, right_operand.y_));
   }
+
+  toString(): string {
+    return `(${this.x_}, ${this.y_})`;
+  }
 }
