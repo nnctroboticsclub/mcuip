@@ -49,6 +49,11 @@ export class Area {
         .min(upper_boundary)
     )
   }
+
+  smaller(x: number, y: number): Area {
+    return new Area(this.top_ + x, this.left_ + x, this.width_ - 2 * x, this.height_ - 2 * y);
+  }
+
   toString(): string {
     return `{(${this.top_}, ${this.left_}) + (${this.width_}, ${this.height_})}`;
   }

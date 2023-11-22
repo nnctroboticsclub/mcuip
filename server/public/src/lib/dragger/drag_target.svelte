@@ -31,7 +31,7 @@
       .add(drag.position_base);
 
     const area = new_pos.toArea(element_width, element_height);
-    const new_area = dragger_area.fitInArea(area);
+    const new_area = dragger_area.smaller(10, 10).fitInArea(area);
 
     target_ctx.updatePos(new_area?.getPosition() ?? new_pos);
   }
