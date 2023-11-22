@@ -12,15 +12,9 @@
   DragContainerContext.initContext();
 
   $: {
-    console.log("Setting context");
-    console.log(
-      `  top: ${top}, left: ${left}, width: ${width}, height: ${height}`
-    );
     if (!top || !left || !width || !height) {
-      console.log("====> Clearing context");
       DragContainerContext.clearContext();
     } else {
-      console.log("====> Setting context");
       DragContainerContext.getContext().setArea(
         new Area(top, left, width, height)
       );
