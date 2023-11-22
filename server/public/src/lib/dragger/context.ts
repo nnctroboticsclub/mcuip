@@ -1,6 +1,7 @@
 import { getContext, setContext } from "svelte";
-import { get, writable, type Readable, type Writable, derived } from "svelte/store"
+import { writable, type Readable, type Writable, derived } from "svelte/store"
 import type { Position } from "./position";
+import { Area } from "./area";
 
 
 export class DragTargetContext {
@@ -19,9 +20,7 @@ export class DragTargetContext {
   }
 
   getStyle(): Readable<string> {
-    return derived(this.pos, (pos: Position) => {
-      return `top: ${pos.y}px; left: ${pos.x}px;`;
-    });
+    return derived(this.pos, x => x.getStyle());
   }
 
   public static setContext(tag: string, pos: Position) {
@@ -37,17 +36,13 @@ export class DragTargetContext {
 }
 
 export class DragContainerContext {
-  private top_: Writable<number>;
-  private left_: Writable<number>;
-  private width_: Writable<number>;
-  private height_: Writable<number>;
+  private area: Writable<Area>
 
   constructor(top: number, left: number, width: number, height: number) {
-    this.top_ = writable(top);
-    this.left_ = writable(left);
-    this.width_ = writable(width);
-    this.height_ = writable(height);
+    this.area = writable(new Area(top, left, width, height));
   }
+
+
 
   static setContext(top: number, left: number, width: number, height: number) {
     setContext("dragContainer", new DragContainerContext(top, left, width, height));

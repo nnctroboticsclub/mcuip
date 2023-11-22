@@ -1,44 +1,29 @@
 <script lang="ts">
   import { get } from "svelte/store";
   import { DragTargetContext } from "./context";
-  import type { Position } from "./position";
+  import { Position } from "./position";
 
   export let tag: string = "target";
-  export let pos: Position = {
-    x: 0,
-    y: 0,
-  };
+  export let pos: Position = new Position(0, 0);
 
-  let ctx = DragTargetContext.setContext(tag, pos);
+  const ctx = DragTargetContext.setContext(tag, pos);
 
   const style = ctx.getStyle();
 
   let drag = {
     capturing: false,
     base: {
-      touch: {
-        x: 0,
-        y: 0,
-      } as Position,
-      position: {
-        x: 0,
-        y: 0,
-      } as Position,
+      touch: new Position(0, 0),
+      position: new Position(0, 0),
     },
   };
 
   function whileCapture(x: number, y: number) {
     if (!drag.capturing) return;
-    const dx = x - drag.base.touch.x;
-    const dy = y - drag.base.touch.y;
 
-    const new_x = drag.base.position.x + dx;
-    const new_y = drag.base.position.y + dy;
-
-    const new_position: Position = {
-      x: new_x,
-      y: new_y,
-    };
+    const new_position = new Position(x, y)
+      .subtract(drag.base.touch) // relative to touch
+      .add(drag.base.position);
 
     ctx.updatePos(new_position);
   }
@@ -47,8 +32,7 @@
     if (drag.capturing) return;
     drag.capturing = true;
 
-    drag.base.touch.x = x;
-    drag.base.touch.y = y;
+    drag.base.touch = new Position(x, y);
     drag.base.position = get(ctx.getPos());
   }
 
