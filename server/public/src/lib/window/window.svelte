@@ -19,30 +19,16 @@
   const resizer_ctx = DragTargetContext.getContext(resizer_tag);
   const title_bar_ctx = DragTargetContext.getContext(title_bar_tag);
 
+  window.area;
+
   window.status.set("Component Loaded");
 
-  const container_style = derived(
-    [window.top, window.left, window.width, window.height],
-    ([top, left, width, height]) =>
-      `top: ${top}px; left: ${left}px; width: ${width}px; height: ${height}px;`
-  );
+  const container_style = derived([window.area], ([area]) => area.getStyle());
 
   const title_bar_style = derived(
-    [window.width],
-    ([width]) => `width: ${width}px;`
+    [window.area],
+    ([area]) => `width: ${area.getWidth()}px;`
   );
-
-  onMount(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    window.status.set("Initializing Window (2)");
-    title_bar_ctx.getPos().subscribe((pos) => {
-      const { x, y } = pos.components();
-      console.log(`${tag}: ${x}, ${y}`);
-      window.top.set(y);
-      window.left.set(x);
-    });
-    window.status.set("Initializing Window (Done)");
-  });
 </script>
 
 <div

@@ -3,7 +3,6 @@ import { writable, type Readable, type Writable, derived, get } from "svelte/sto
 import type { Position } from "../ui/position";
 import { Area } from "../ui/area";
 
-
 export class DragTargetContext {
   private pos: Writable<Position>;
 

@@ -1,7 +1,12 @@
 import { Position } from "./position";
 import { terminal } from "virtual:terminal";
+
 export class Area {
   constructor(private top_: number, private left_: number, private width_: number, private height_: number) { }
+
+  getWidth(): number {
+    return this.width_;
+  }
 
   getStyle(): string {
     return `top: ${this.top_}px; left: ${this.left_}px; width: ${this.width_}px; height: ${this.height_}px;`;

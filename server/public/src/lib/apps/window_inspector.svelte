@@ -18,16 +18,10 @@
         .join("");
 
       const line_store = derived(
-        [
-          window.top,
-          window.left,
-          window.width,
-          window.height,
-          window.window_data,
-        ],
-        ([top, left, width, height, data]) => [
+        [window.area, window.window_data],
+        ([area, data]) => [
           `Name: ${window.app_name}`,
-          `(${top}, ${left}) +(${width}, ${height})`,
+          `Area: ${area.toString()}`,
           "WindowData:",
           JSON.stringify(data, null, 2),
         ]

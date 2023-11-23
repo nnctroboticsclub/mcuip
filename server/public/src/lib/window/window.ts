@@ -1,14 +1,38 @@
+import type { Area } from "$lib/ui/area";
 import { getContext, setContext } from "svelte";
-import type { Writable } from "svelte/store";
+import { writable, type Writable } from "svelte/store";
 
-export type WindowConfig = {
-  top: Writable<number>;
-  left: Writable<number>;
-  width: Writable<number>;
-  height: Writable<number>;
-  app_name: string;
-  window_data: Writable<any>;
-  status: Writable<string>;
+export class WindowConfig {
+  private area_: Writable<Area>;
+  private app_name_: string;
+  private window_data_: Writable<any>;
+  private status_: Writable<string> = writable("Uninitialized");
+
+  constructor(area: Writable<Area>, app_name: string, window_data: Writable<any>) {
+    this.area_ = area;
+    this.app_name_ = app_name;
+    this.window_data_ = window_data;
+  }
+
+  setStatus(status: string) {
+    this.status_.set(status);
+  }
+
+  get area(): Writable<Area> {
+    return this.area_;
+  }
+
+  get app_name(): string {
+    return this.app_name_;
+  }
+
+  get window_data(): Writable<any> {
+    return this.window_data_;
+  }
+
+  get status(): Writable<string> {
+    return this.status_;
+  }
 };
 
 export function setWindow(index: WindowConfig) {
