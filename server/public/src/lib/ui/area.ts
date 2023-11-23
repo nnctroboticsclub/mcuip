@@ -1,5 +1,4 @@
 import { Position } from "./position";
-import { terminal } from "virtual:terminal";
 
 export class Area {
   constructor(private top_: number, private left_: number, private width_: number, private height_: number) { }

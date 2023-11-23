@@ -1,20 +1,18 @@
 <script lang="ts">
-  import { derived, get, writable, type Writable } from "svelte/store";
+  import { get, readable, writable, type Writable } from "svelte/store";
   import { DragTargetContext, DragContainerContext } from "./context";
   import { Position } from "../ui/position";
 
   export let tag: string = "target";
   export let pos: Writable<Position> = writable(new Position(0, 0));
-  export let sticky: boolean = false; // used for Knob
+  export let sticky: Position | null = null; // used for Knob
 
   const target_ctx = DragTargetContext.setContext(tag, pos);
 
   const area_ctx = DragContainerContext.getContext();
   const area_unavailable = area_ctx.getIsUnavailable();
 
-  const style = sticky
-    ? writable(get(target_ctx.getStyle()))
-    : target_ctx.getStyle();
+  const style = sticky ? readable(sticky.getStyle()) : target_ctx.getStyle();
 
   let element_width = -1;
   let element_height = -1;

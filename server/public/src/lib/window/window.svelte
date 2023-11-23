@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { derived, writable } from "svelte/store";
+  import { derived, writable, type Writable } from "svelte/store";
   import { theme } from "../../theme";
   import { getWindow } from "$lib/window/window";
   import DragTarget from "$lib/dragger/drag_target.svelte";
@@ -19,7 +19,7 @@
   const resizer_ctx = DragTargetContext.getContext(resizer_tag);
   const title_bar_ctx = DragTargetContext.getContext(title_bar_tag);
 
-  window.area;
+  const window_position_store = window.area.getPositionStore();
 
   window.status.set("Component Loaded");
 
@@ -37,8 +37,8 @@
 >
   <DragTarget
     tag={title_bar_tag}
-    pos={writable(new Position(0, 0))}
-    sticky={true}
+    pos={window_position_store}
+    sticky={new Position(0, 0)}
   >
     <div class="title-bar" style={$title_bar_style}>
       <slot name="title" />
@@ -54,7 +54,7 @@
   <DragTarget
     tag={resizer_tag}
     pos={writable(new Position(-1, -1))}
-    sticky={true}
+    sticky={new Position(-1, -1)}
   >
     <div class="resizer"></div>
   </DragTarget>
