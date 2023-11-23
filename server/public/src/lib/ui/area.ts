@@ -19,7 +19,7 @@ export class Area {
     return new Position(this.width_, this.height_);
   }
 
-  moveTo(pos: Position): Area {
+  movedTo(pos: Position): Area {
     const { x, y } = pos.components();
     return new Area(y, x, this.width_, this.height_);
   }
@@ -47,7 +47,7 @@ export class Area {
 
     const lower_boundary = new Position(0, 0);
 
-    return other.moveTo(
+    return other.movedTo(
       other.getPosition()
         .max(lower_boundary)
         .min(upper_boundary)

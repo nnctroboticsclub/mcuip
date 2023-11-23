@@ -19,14 +19,14 @@ export class PositionStoreFromArea implements Writable<Position> {
 
   set(value: Position) {
     this.area_.update(x => {
-      return x.moveTo(value);
+      return x.movedTo(value);
     });
   }
 
   update(fn: (value: Position) => Position) {
     this.area_.update(x => {
       const new_position = fn(x.getPosition());
-      return x.moveTo(new_position);
+      return x.movedTo(new_position);
     });
   }
 }
