@@ -1,36 +1,75 @@
 <script lang="ts">
-  import { derived } from "svelte/store";
+  import { derived, writable } from "svelte/store";
   import { theme } from "../../theme";
   import { getWindow } from "$lib/window/window";
   import DragTarget from "$lib/dragger/drag_target.svelte";
   import { Position } from "$lib/dragger/position";
+  import { DragTargetContext } from "$lib/dragger/context";
+  import { onMount } from "svelte";
 
   const app_background_color = theme.app_background_color;
 
   const tag = Math.random().toString(36).slice(2, 10);
+  const title_bar_tag = `window[${tag}]-title-bar`;
+  const resizer_tag = `window[${tag}]-resizer`;
 
-  let window = getWindow();
-  let style = derived(
+  const window = getWindow();
+  const status = window.status;
+
+  const resizer_ctx = DragTargetContext.getContext(resizer_tag);
+  const title_bar_ctx = DragTargetContext.getContext(title_bar_tag);
+
+  window.status.set("Component Loaded");
+
+  const container_style = derived(
     [window.top, window.left, window.width, window.height],
     ([top, left, width, height]) =>
       `top: ${top}px; left: ${left}px; width: ${width}px; height: ${height}px;`
   );
+
+  const title_bar_style = derived(
+    [window.width],
+    ([width]) => `width: ${width}px;`
+  );
+
+  onMount(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    window.status.set("Initializing Window (2)");
+    title_bar_ctx.getPos().subscribe((pos) => {
+      const { x, y } = pos.components();
+      console.log(`${tag}: ${x}, ${y}`);
+      window.top.set(y);
+      window.left.set(x);
+    });
+    window.status.set("Initializing Window (Done)");
+  });
 </script>
 
 <div
   class="container"
-  style="{$style}; background-color: {$app_background_color};"
+  style="{$container_style}; background-color: {$app_background_color};"
 >
-  <DragTarget tag="window[{tag}]-title-bar" pos={new Position(0, 0)}>
-    <div class="title-bar">
+  <DragTarget
+    tag={title_bar_tag}
+    pos={writable(new Position(0, 0))}
+    sticky={true}
+  >
+    <div class="title-bar" style={$title_bar_style}>
       <slot name="title" />
-      (Tag: {tag})
     </div>
   </DragTarget>
   <div class="content">
     <slot name="app" />
   </div>
-  <DragTarget tag="window[{tag}]-resizer" pos={new Position(-1, -1)}>
+  <div class="hover">
+    status: {$status} <br />
+    tag: {tag}
+  </div>
+  <DragTarget
+    tag={resizer_tag}
+    pos={writable(new Position(-1, -1))}
+    sticky={true}
+  >
     <div class="resizer"></div>
   </DragTarget>
 </div>
@@ -56,7 +95,6 @@
 
   div.title-bar {
     display: block;
-    width: 100%;
     height: 20px;
   }
 
@@ -77,6 +115,38 @@
     width: calc(100% - 20px);
     height: calc(100% - 21px);
     padding: 10px;
+  }
+
+  div.hover {
+    position: absolute;
+    top: 70%;
+    left: 10%;
+    bottom: 10%;
+    right: 10%;
+
+    display: block;
+    background-color: #fff;
+
+    padding: 10px;
+
+    font-size: 14px;
+    text-align: end;
+
+    border: 1px solid #eee;
+    border-radius: 10px;
+
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+
+    opacity: 0;
+    z-index: 1000;
+
+    transition: opacity 0.2s;
+
+    user-select: none;
+  }
+
+  div.hover:hover {
+    opacity: 1;
   }
 
   div.resizer {

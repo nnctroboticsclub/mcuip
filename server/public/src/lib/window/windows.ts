@@ -8,7 +8,8 @@ export const windows: WindowConfig[] = [
     width: writable(300),
     height: writable(590),
     app_name: "window_inspector",
-    window_data: writable(undefined)
+    window_data: writable(undefined),
+    status: writable("Uninitialized")
   },
   {
     top: writable(600),
@@ -16,7 +17,8 @@ export const windows: WindowConfig[] = [
     width: writable(900),
     height: writable(300),
     app_name: "console_log",
-    window_data: writable(undefined)
+    window_data: writable(undefined),
+    status: writable("Uninitialized")
   },
   {
     top: writable(0),
@@ -24,6 +26,7 @@ export const windows: WindowConfig[] = [
     width: writable(300),
     height: writable(300),
     app_name: "test",
-    window_data: writable(undefined)
+    window_data: writable(undefined),
+    status: writable("Uninitialized")
   },
 ];

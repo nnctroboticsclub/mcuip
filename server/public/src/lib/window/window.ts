@@ -8,6 +8,7 @@ export type WindowConfig = {
   height: Writable<number>;
   app_name: string;
   window_data: Writable<any>;
+  status: Writable<string>;
 };
 
 export function setWindow(index: WindowConfig) {
