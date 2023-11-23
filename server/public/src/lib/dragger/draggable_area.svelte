@@ -2,7 +2,7 @@
   import { setContext } from "svelte";
   import { DragContainerContext } from "./context";
   import { global_state } from "../../global_state";
-  import { Area } from "./area";
+  import { Area } from "../ui/area";
 
   export let top: number;
   export let left: number;

@@ -1,7 +1,7 @@
 import { getContext, setContext } from "svelte";
 import { writable, type Readable, type Writable, derived, get } from "svelte/store"
-import type { Position } from "./position";
-import { Area } from "./area";
+import type { Position } from "../ui/position";
+import { Area } from "../ui/area";
 
 
 export class DragTargetContext {

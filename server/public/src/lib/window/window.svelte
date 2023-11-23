@@ -3,7 +3,7 @@
   import { theme } from "../../theme";
   import { getWindow } from "$lib/window/window";
   import DragTarget from "$lib/dragger/drag_target.svelte";
-  import { Position } from "$lib/dragger/position";
+  import { Position } from "$lib/ui/position";
   import { DragTargetContext } from "$lib/dragger/context";
   import { onMount } from "svelte";
 

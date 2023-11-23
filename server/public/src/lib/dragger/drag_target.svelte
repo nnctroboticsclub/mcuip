@@ -1,7 +1,7 @@
 <script lang="ts">
   import { derived, get, writable, type Writable } from "svelte/store";
   import { DragTargetContext, DragContainerContext } from "./context";
-  import { Position } from "./position";
+  import { Position } from "../ui/position";
 
   export let tag: string = "target";
   export let pos: Writable<Position> = writable(new Position(0, 0));

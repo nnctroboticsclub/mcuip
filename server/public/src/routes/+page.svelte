@@ -4,7 +4,7 @@
 
   import DraggableArea from "$lib/dragger/draggable_area.svelte";
   import DragTarget from "$lib/dragger/drag_target.svelte";
-  import { Position } from "$lib/dragger/position";
+  import { Position } from "$lib/ui/position";
 
   let width: number, height: number;
 </script>
