@@ -8,7 +8,7 @@
   onMount(() => {
     patch_console_log();
     let unsubscribe = subscribe_console_log((text) => {
-      lines = [...lines, text].slice(-100);
+      lines = [...lines, text].slice(-10);
     });
 
     return () => {
@@ -21,8 +21,8 @@
   <svelte:fragment slot="title">Console</svelte:fragment>
 
   <div class="container" slot="app">
-    {#each lines as line}
-      {line}<br />
+    {#each lines as line, i}
+      {i}: {line}<br />
     {/each}
   </div>
 </Window>
