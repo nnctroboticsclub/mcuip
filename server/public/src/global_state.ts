@@ -8,7 +8,7 @@ export const global_state = {
   config: {
     debug: {
       dragger: {
-        visual: writable(true)
+        visual: writable(false)
       }
     }
   }
