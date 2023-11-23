@@ -16,9 +16,6 @@
   const window = getWindow();
   const status = window.status;
 
-  const resizer_ctx = DragTargetContext.getContext(resizer_tag);
-  const title_bar_ctx = DragTargetContext.getContext(title_bar_tag);
-
   const window_position_store = window.area.getPositionStore();
 
   window.status.set("Component Loaded");
@@ -53,7 +50,7 @@
   </div>
   <DragTarget
     tag={resizer_tag}
-    pos={writable(new Position(-1, -1))}
+    pos={window.area.getSizeStore()}
     sticky={new Position(-1, -1)}
   >
     <div class="resizer"></div>

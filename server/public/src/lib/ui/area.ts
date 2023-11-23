@@ -15,6 +15,7 @@ export class Area {
     return new Position(this.left_, this.top_);
   }
 
+  // TODO: rename this to `getSize`
   sizeVector(): Position {
     return new Position(this.width_, this.height_);
   }
@@ -22,6 +23,11 @@ export class Area {
   movedTo(pos: Position): Area {
     const { x, y } = pos.components();
     return new Area(y, x, this.width_, this.height_);
+  }
+
+  resizedTo(size: Position): Area {
+    const { x, y } = size.components();
+    return new Area(this.top_, this.left_, x, y);
   }
 
   relativeArea(): Area {
