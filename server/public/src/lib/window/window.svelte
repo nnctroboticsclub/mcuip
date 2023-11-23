@@ -1,11 +1,9 @@
 <script lang="ts">
-  import { derived, writable, type Writable } from "svelte/store";
+  import { derived } from "svelte/store";
   import { theme } from "../../theme";
   import { getWindow } from "$lib/window/window";
   import DragTarget from "$lib/dragger/drag_target.svelte";
   import { Position } from "$lib/ui/position";
-  import { DragTargetContext } from "$lib/dragger/context";
-  import { onMount } from "svelte";
 
   const app_background_color = theme.app_background_color;
 
@@ -15,8 +13,6 @@
 
   const window = getWindow();
   const status = window.status;
-
-  const window_position_store = window.area.getPositionStore();
 
   window.status.set("Component Loaded");
 
@@ -34,7 +30,7 @@
 >
   <DragTarget
     tag={title_bar_tag}
-    pos={window_position_store}
+    pos={window.area.getPositionStore()}
     sticky={new Position(0, 0)}
   >
     <div class="title-bar" style={$title_bar_style}>
