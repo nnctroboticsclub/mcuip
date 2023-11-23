@@ -30,7 +30,7 @@
     top: 2em;
     left: 0;
     right: 0;
-    height: calc(100% - 2em);
+    bottom: 0;
 
     margin: 10px;
   }

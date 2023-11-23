@@ -3,16 +3,21 @@
   import { windows } from "$lib/window/windows";
 
   import DraggableArea from "$lib/dragger/draggable_area.svelte";
-  import DragTarget from "$lib/dragger/drag_target.svelte";
-  import { Position } from "$lib/ui/position";
 
   let width: number, height: number;
 </script>
 
-<svelte:window bind:innerWidth={width} bind:innerHeight={height} />
+<div class="container" bind:clientWidth={width} bind:clientHeight={height}>
+  <DraggableArea top={0} left={0} {width} {height}>
+    {#each windows as window}
+      <WindowWrapper {window} />
+    {/each}
+  </DraggableArea>
+</div>
 
-<DraggableArea top={0} left={0} width={width * 0.95} height={height * 0.95}>
-  {#each windows as window}
-    <WindowWrapper {window} />
-  {/each}
-</DraggableArea>
+<style>
+  .container {
+    width: 100%;
+    height: 100%;
+  }
+</style>
