@@ -1,17 +1,20 @@
 <script lang="ts">
-  import { get } from "svelte/store";
+  import { derived, get, writable, type Writable } from "svelte/store";
   import { DragTargetContext, DragContainerContext } from "./context";
   import { Position } from "./position";
 
   export let tag: string = "target";
-  export let pos: Position = new Position(0, 0);
+  export let pos: Writable<Position> = writable(new Position(0, 0));
+  export let sticky: boolean = false; // used for Knob
 
   const target_ctx = DragTargetContext.setContext(tag, pos);
 
   const area_ctx = DragContainerContext.getContext();
   const area_unavailable = area_ctx.getIsUnavailable();
 
-  const style = target_ctx.getStyle();
+  const style = sticky
+    ? writable(get(target_ctx.getStyle()))
+    : target_ctx.getStyle();
 
   let element_width = -1;
   let element_height = -1;
@@ -32,6 +35,8 @@
 
     const area = new_pos.toArea(element_width, element_height);
     const new_area = dragger_area.smaller(10, 10).fitInArea(area);
+
+    console.log(`${tag} - ${new_pos.toString()}`);
 
     target_ctx.updatePos(new_area?.getPosition() ?? new_pos);
   }

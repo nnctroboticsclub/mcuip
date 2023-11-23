@@ -7,8 +7,8 @@ import { Area } from "./area";
 export class DragTargetContext {
   private pos: Writable<Position>;
 
-  constructor(pos: Position) {
-    this.pos = writable(pos);
+  constructor(pos: Writable<Position>) {
+    this.pos = pos;
   }
 
   updatePos(pos: Position) {
@@ -30,7 +30,7 @@ export class DragTargetContext {
     return derived(this.pos, x => x.getStyle());
   }
 
-  public static setContext(tag: string, pos: Position) {
+  public static setContext(tag: string, pos: Writable<Position>) {
     const ctx = new DragTargetContext(pos);
     setContext(`dragTarget/${tag}`, ctx);
 
