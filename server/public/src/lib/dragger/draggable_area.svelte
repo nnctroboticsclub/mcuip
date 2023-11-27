@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { setContext } from "svelte";
   import { DragContainerContext } from "./context";
   import { global_state } from "../../global_state";
   import { Area } from "../ui/area";
@@ -14,6 +13,8 @@
   const ctx = DragContainerContext.getContext();
   const is_dragging = ctx.getDragging();
 
+  const debug_visual = global_state.config.debug.dragger.visual;
+
   $: {
     if (!top || !left || !width || !height) {
       DragContainerContext.clearContext();
@@ -25,7 +26,7 @@
 
 <div
   class="drag-container"
-  class:debug={global_state.config.debug.dragger}
+  class:debug={$debug_visual}
   class:dragging={$is_dragging}
   style="top: {top}px; left: {left}px; width: {width}px; height: {height}px;"
 >
