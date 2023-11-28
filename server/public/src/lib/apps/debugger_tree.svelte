@@ -1,7 +1,5 @@
 <script lang="ts">
   import type { Writable } from "svelte/store";
-  import { global_state } from "../../global_state";
-  import { DerivedWritable } from "$lib/stores/derived_writable";
   import Toggle from "$lib/components/ui/toggle.svelte";
   import { PropertyWritable } from "$lib/stores/property_writable";
 
@@ -9,7 +7,6 @@
   export let key: string | null = null;
 </script>
 
-{(console.log(`Use ${typeof object}`), "")}
 {#if typeof $object === "string"}
   {key}: {$object}
 {:else if typeof $object === "number"}

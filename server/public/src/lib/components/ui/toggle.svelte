@@ -12,8 +12,11 @@
     padding: 0;
     margin: 0;
     position: relative;
-    height: 20px;
+    height: 1.5em;
     width: 40px;
+
+    vertical-align: middle;
+
     background-color: rgba(0, 0, 0, 0.25);
     border-radius: 10px;
   }
@@ -26,7 +29,7 @@
     left: 0px;
     display: inline-block;
     width: 20px;
-    height: 20px;
+    height: 100%;
     margin: 0;
 
     box-sizing: border-box;

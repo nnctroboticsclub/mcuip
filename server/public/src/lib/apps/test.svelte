@@ -3,6 +3,7 @@
   import type { Writable } from "svelte/store";
   import Window from "../window/window.svelte";
   import { onMount } from "svelte";
+  import Toggle from "$lib/components/ui/toggle.svelte";
 
   const data = getWindow().window_data as Writable<{
     time: number;
@@ -24,12 +25,15 @@
     };
   });
 
-  console.log("Test rendered");
+  let value = false;
 </script>
 
 <Window>
   <svelte:fragment slot="title">Title</svelte:fragment>
   <svelte:fragment slot="app">
-    Time: {$data.time}
+    Time: {$data.time}<br />
+
+    <Toggle bind:value /> <br />
+    value: {value}
   </svelte:fragment>
 </Window>
