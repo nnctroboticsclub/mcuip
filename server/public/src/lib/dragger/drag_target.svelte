@@ -6,6 +6,7 @@
   export let tag: string = "target";
   export let pos: Writable<Position> = writable(new Position(0, 0));
   export let sticky: Position | null = null; // used for Knob
+  export let dragging: boolean = false;
 
   const target_ctx = DragTargetContext.setContext(tag, pos);
 
@@ -18,13 +19,12 @@
   let element_height = -1;
 
   let drag = {
-    capturing: false,
     touch_base: new Position(0, 0),
     position_base: new Position(0, 0),
   };
 
   function whileCapture(x: number, y: number) {
-    if (!drag.capturing) return;
+    if (!dragging) return;
     const dragger_area = get(area_ctx.getArea());
 
     const new_pos = new Position(x, y)
@@ -38,8 +38,8 @@
   }
 
   function startCapturing(x: number, y: number) {
-    if (drag.capturing) return;
-    drag.capturing = true;
+    if (dragging) return;
+    dragging = true;
 
     drag.touch_base = new Position(x, y);
     drag.position_base = get(target_ctx.getPos());
@@ -48,8 +48,8 @@
   }
 
   function endCapturing() {
-    if (!drag.capturing) return;
-    drag.capturing = false;
+    if (!dragging) return;
+    dragging = false;
     area_ctx.setDragging(false);
   }
 </script>
