@@ -5,7 +5,6 @@ import { getContext, setContext } from "svelte";
 export class WindowManagerContext {
   private windows_: Writable<WindowConfig[]> = writable([]);
 
-  constructor() { }
 
   get windows(): Writable<WindowConfig[]> {
     return this.windows_;

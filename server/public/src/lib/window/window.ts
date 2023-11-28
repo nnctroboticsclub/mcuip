@@ -2,7 +2,6 @@ import type { Area } from "$lib/ui/area";
 import { AreaStore } from "$lib/ui/area_store";
 import { getContext, setContext } from "svelte";
 import { writable, type Writable } from "svelte/store";
-import { WindowManagerContext } from "./windows";
 
 export type WindowStatus = "Uninitialized" | "Closing" | "Loaded";
 

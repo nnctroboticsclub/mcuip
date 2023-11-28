@@ -4,7 +4,7 @@
   import DragTarget from "$lib/dragger/drag_target.svelte";
   import { Position } from "$lib/ui/position";
   import { global_state } from "../../global_state";
-  import XmarkSolid from "svelte-awesome-icons/XmarkSolid.svelte";
+  import { XmarkSolid } from "svelte-awesome-icons";
 
   const hover_enabled = global_state.config.window.hover_enabled;
   const title_bar_centered = global_state.config.window.centered_title_bar;
