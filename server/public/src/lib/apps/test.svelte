@@ -3,9 +3,9 @@
   import type { Writable } from "svelte/store";
   import Window from "../window/window.svelte";
   import { onMount } from "svelte";
-  import Toggle from "$lib/components/ui/toggle.svelte";
   import { global_state } from "../../global_state";
-  import Button from "$lib/components/ui/button.svelte";
+  import Toggle from "$lib/ui/toggle.svelte";
+  import Button from "$lib/ui/button.svelte";
 
   const data = getWindow().window_data as Writable<{
     time: number;

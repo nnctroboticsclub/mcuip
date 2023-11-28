@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Writable } from "svelte/store";
-  import Toggle from "$lib/components/ui/toggle.svelte";
+  import Toggle from "$lib/ui/toggle.svelte";
   import { PropertyWritable } from "$lib/stores/property_writable";
 
   export let object: Writable<object>;
