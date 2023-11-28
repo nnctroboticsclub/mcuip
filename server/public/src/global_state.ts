@@ -6,6 +6,9 @@ export const global_state = {
     debug: {
       dragger: {
         visual: writable(false)
+      },
+      window: {
+        hover_enabled: writable(false)
       }
     }
   },

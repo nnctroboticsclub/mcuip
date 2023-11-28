@@ -6,6 +6,7 @@
   import { global_state } from "../../global_state";
 
   const app_background_color = global_state.theme.global_background_color;
+  const hover_enabled = global_state.config.debug.window.hover_enabled;
 
   const tag = Math.random().toString(36).slice(2, 10);
   const title_bar_tag = `window[${tag}]-title-bar`;
@@ -40,10 +41,12 @@
   <div class="content">
     <slot name="app" />
   </div>
-  <div class="hover">
-    status: {$status} <br />
-    tag: {tag}
-  </div>
+  {#if $hover_enabled}
+    <div class="hover">
+      status: {$status} <br />
+      tag: {tag}
+    </div>
+  {/if}
   <DragTarget
     tag={resizer_tag}
     pos={window.area.getSizeStore()}
