@@ -8,11 +8,10 @@
   const hover_enabled = global_state.config.window.hover_enabled;
   const title_bar_centered = global_state.config.window.centered_title_bar;
 
-  const tag = Math.random().toString(36).slice(2, 10);
-  const title_bar_tag = `window[${tag}]-title-bar`;
-  const resizer_tag = `window[${tag}]-resizer`;
-
   const window = getWindow();
+  const title_bar_tag = `window[${window.tag}]-title-bar`;
+  const resizer_tag = `window[${window.tag}]-resizer`;
+
   const status = window.status;
   window.status.set("Component Loaded");
 
@@ -50,7 +49,7 @@
   {#if $hover_enabled}
     <div class="hover">
       status: {$status} <br />
-      tag: {tag}
+      tag: {window.tag}
     </div>
   {/if}
   <DragTarget

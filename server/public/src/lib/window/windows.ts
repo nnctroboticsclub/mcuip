@@ -1,10 +1,34 @@
-import { writable } from "svelte/store";
-import { WindowConfig } from "./window";
-import { Area } from "$lib/ui/area";
+import { writable, type Writable } from "svelte/store";
+import type { WindowConfig } from "./window";
+import { getContext, setContext } from "svelte";
 
-export const windows: WindowConfig[] = [
-  new WindowConfig(writable(new Area(0, 300, 300, 590)), "window_inspector", writable(undefined)),
-  new WindowConfig(writable(new Area(600, 0, 600, 300)), "console_log", writable(undefined)),
-  new WindowConfig(writable(new Area(0, 0, 300, 300)), "test", writable(undefined)),
-  new WindowConfig(writable(new Area(0, 600, 300, 900)), "debugger", writable(undefined)),
-];
+export class WindowManagerContext {
+  private windows_: Writable<WindowConfig[]> = writable([]);
+
+  constructor() { }
+
+  get windows(): Writable<WindowConfig[]> {
+    return this.windows_;
+  }
+
+  addWindow(window: WindowConfig) {
+    this.windows_.update(windows => {
+      windows.push(window);
+      return windows;
+    });
+  }
+
+
+  static getContext(): WindowManagerContext {
+    const context = getContext<WindowManagerContext>("windowManager");
+    if (context == undefined) {
+      return WindowManagerContext.setContext(new WindowManagerContext());
+    }
+    return context;
+  }
+
+  static setContext(context: WindowManagerContext): WindowManagerContext {
+    setContext("windowManager", context);
+    return context;
+  }
+}

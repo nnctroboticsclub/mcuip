@@ -8,11 +8,13 @@ export class WindowConfig {
   private app_name_: string;
   private window_data_: Writable<any>;
   private status_: Writable<string> = writable("Uninitialized");
+  private tag_: string = "window";
 
   constructor(area: Writable<Area>, app_name: string, window_data: Writable<any>) {
     this.area_ = new AreaStore(area);
     this.app_name_ = app_name;
     this.window_data_ = window_data;
+    this.tag_ = Math.random().toString(36).slice(2, 10);
   }
 
   setStatus(status: string) {
@@ -33,6 +35,10 @@ export class WindowConfig {
 
   get status(): Writable<string> {
     return this.status_;
+  }
+
+  get tag(): string {
+    return this.tag_;
   }
 };
 
