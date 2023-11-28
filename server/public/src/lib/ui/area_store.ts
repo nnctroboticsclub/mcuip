@@ -24,6 +24,6 @@ export class AreaStore implements Writable<Area> {
   }
 
   public getSizeStore(): Writable<Position> {
-    return new DerivedWritable(this, x => x.sizeVector(), (x, y) => x.resizedTo(y));
+    return new DerivedWritable(this, x => x.getSize(), (x, y) => x.resizedTo(y));
   }
 }

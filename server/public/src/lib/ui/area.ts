@@ -15,8 +15,7 @@ export class Area {
     return new Position(this.left_, this.top_);
   }
 
-  // TODO: rename this to `getSize`
-  sizeVector(): Position {
+  getSize(): Position {
     return new Position(this.width_, this.height_);
   }
 
@@ -48,8 +47,8 @@ export class Area {
       return null;
     }
 
-    const upper_boundary = this.sizeVector()
-      .subtract(other.sizeVector());
+    const upper_boundary = this.getSize()
+      .subtract(other.getSize());
 
     const lower_boundary = new Position(0, 0);
 
