@@ -5,7 +5,6 @@
   import { Position } from "$lib/ui/position";
   import { global_state } from "../../global_state";
 
-  const app_background_color = global_state.theme.global_background_color;
   const hover_enabled = global_state.config.window.hover_enabled;
   const title_bar_centered = global_state.config.window.centered_title_bar;
 
@@ -17,21 +16,20 @@
   const status = window.status;
   window.status.set("Component Loaded");
 
-  const container_style = derived([window.area], ([area]) => area.getStyle());
+  const container_style = derived(
+    [window.area, global_state.theme.window.background_color],
+    ([area, bk]) => `${area.getStyle()} background-color: ${bk};`
+  );
 
   const title_bar_style = derived(
     [window.area],
-    ([area]) => `width: ${area.getWidth()}px;`
+    ([area]) => `width: ${area.getWidth()}px`
   );
 
   let dragging: boolean = false;
 </script>
 
-<div
-  class="container"
-  class:dragging
-  style="{$container_style}; background-color: {$app_background_color};"
->
+<div class="container" class:dragging style={$container_style}>
   <DragTarget
     tag={title_bar_tag}
     pos={window.area.getPositionStore()}

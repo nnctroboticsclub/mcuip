@@ -10,12 +10,16 @@ export const global_state = {
     },
     window: {
       hover_enabled: writable(false),
-      centered_title_bar: writable(false),
+      centered_title_bar: writable(true),
     }
   },
   theme: {
-    global_background_color: writable('#eee'),
-    title_bar_color: writable('#fcc'),
-    app_background_color: writable('#ccc'),
+    window: {
+      background_color: writable('#ccc')
+    },
+    app: {
+      background_color: writable('#eee'),
+      appbar_color: writable('#fcc'),
+    }
   }
 };

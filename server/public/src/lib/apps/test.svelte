@@ -30,15 +30,15 @@
   let value = false;
 
   function switchTheme1() {
-    global_state.theme.global_background_color.set("#eef");
-    global_state.theme.title_bar_color.set("#efe");
-    global_state.theme.app_background_color.set("#ddf");
+    global_state.theme.app.background_color.set("#eef");
+    global_state.theme.app.appbar_color.set("#efe");
+    global_state.theme.window.background_color.set("#ddf");
   }
 
   function switchTheme2() {
-    global_state.theme.global_background_color.set("#eee");
-    global_state.theme.title_bar_color.set("#fcc");
-    global_state.theme.app_background_color.set("#ccc");
+    global_state.theme.app.background_color.set("#eee");
+    global_state.theme.app.appbar_color.set("#fcc");
+    global_state.theme.window.background_color.set("#ccc");
   }
 </script>
 
