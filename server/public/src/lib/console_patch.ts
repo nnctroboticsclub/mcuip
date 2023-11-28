@@ -1,6 +1,6 @@
-let patched = false;
+import { writable } from "svelte/store";
 
-let subscribers: ((text: string) => void)[] = [];
+export const console_texts = writable<string[]>([]);
 
 function stringify(obj: object) {
   if (typeof obj === "string") {
@@ -10,18 +10,13 @@ function stringify(obj: object) {
   return JSON.stringify(obj);
 }
 
-export function subscribe_console_log(func: (text: string) => void) {
-  subscribers.push(func);
-
-  return () => {
-    subscribers = subscribers.filter((f) => f !== func);
-  };
-}
-
 export function patch_console_log() {
-  if (patched) {
+  if (Object.hasOwn(console, "__patched")) {
     console.warn('W: console logging functions are already patched');
   }
+
+  // @ts-ignore
+  console["__patched"] = true;
 
   const targets = [
     "log",
@@ -41,10 +36,10 @@ export function patch_console_log() {
       original_function(...data);
 
       let logging_string = data.map(stringify).join(" ");
-      subscribers.forEach((func) => func(logging_string));
-
+      console_texts.update(texts => {
+        texts.push(logging_string);
+        return texts;
+      });
     }
-
   }
-
 }
