@@ -4,10 +4,14 @@
   const dispatch = createEventDispatcher<{ click: void }>();
 
   export let width: string = "100px";
+  export let height: string = "1.5em";
+
+  export let tooltip: string = "";
 </script>
 
 <button
-  style="width: {width};"
+  style="width: {width}; height: {height};"
+  title={tooltip}
   on:click={() => {
     dispatch("click");
   }}
@@ -21,7 +25,6 @@
     padding: 0;
     margin: 0;
     position: relative;
-    height: 1.5em;
 
     vertical-align: middle;
 

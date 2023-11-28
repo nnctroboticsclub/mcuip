@@ -13,14 +13,25 @@
   <svelte:fragment slot="title">AppLauncher</svelte:fragment>
   <svelte:fragment slot="app">
     {#each application_list as app_name}
-      <div>
+      <div class="button-container">
         <Button
-          width="300px"
+          width="100%"
+          height="100%"
           on:click={() => {
             windows.launch(app_name);
-          }}>Launch '{app_name}'</Button
+          }}
+          tooltip={app_name}>Launch</Button
         >
       </div>
     {/each}
   </svelte:fragment>
 </Window>
+
+<style>
+  div.button-container {
+    height: 70px;
+    width: 70px;
+
+    display: inline-block;
+  }
+</style>
