@@ -7,9 +7,10 @@ export const global_state = {
       dragger: {
         visual: writable(false)
       },
-      window: {
-        hover_enabled: writable(false)
-      }
+    },
+    window: {
+      hover_enabled: writable(false),
+      centered_title_bar: writable(false),
     }
   },
   theme: {

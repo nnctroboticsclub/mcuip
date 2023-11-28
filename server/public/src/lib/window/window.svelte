@@ -6,7 +6,8 @@
   import { global_state } from "../../global_state";
 
   const app_background_color = global_state.theme.global_background_color;
-  const hover_enabled = global_state.config.debug.window.hover_enabled;
+  const hover_enabled = global_state.config.window.hover_enabled;
+  const title_bar_centered = global_state.config.window.centered_title_bar;
 
   const tag = Math.random().toString(36).slice(2, 10);
   const title_bar_tag = `window[${tag}]-title-bar`;
@@ -34,7 +35,11 @@
     pos={window.area.getPositionStore()}
     sticky={new Position(0, 0)}
   >
-    <div class="title-bar" style={$title_bar_style}>
+    <div
+      class="title-bar"
+      style={$title_bar_style}
+      class:centered={$title_bar_centered}
+    >
       <slot name="title" />
     </div>
   </DragTarget>
@@ -78,6 +83,10 @@
   div.title-bar {
     display: block;
     height: 20px;
+  }
+
+  div.title-bar.centered {
+    text-align: center;
   }
 
   div.title-bar::after {
