@@ -1,11 +1,11 @@
 <script lang="ts">
   import { derived } from "svelte/store";
-  import { theme } from "../../theme";
   import { getWindow } from "$lib/window/window";
   import DragTarget from "$lib/dragger/drag_target.svelte";
   import { Position } from "$lib/ui/position";
+  import { global_state } from "../../global_state";
 
-  const app_background_color = theme.app_background_color;
+  const app_background_color = global_state.theme.global_background_color;
 
   const tag = Math.random().toString(36).slice(2, 10);
   const title_bar_tag = `window[${tag}]-title-bar`;

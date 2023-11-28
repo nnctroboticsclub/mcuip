@@ -26,8 +26,11 @@
     /
   {/if}
   <div class="object">
-    {#each Object.entries($object) as [key]}
-      <svelte:self {key} object={new PropertyWritable(object, key)} /><br />
+    {#each Object.entries($object) as [key], i}
+      {#if i != 0}
+        <br />
+      {/if}
+      <svelte:self {key} object={new PropertyWritable(object, key)} />
     {/each}
   </div>
 {/if}

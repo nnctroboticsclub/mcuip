@@ -1,9 +1,8 @@
 <script lang="ts">
   import { global_state } from "../global_state";
-  import { theme } from "../theme";
 
-  const background = theme.global_background_color;
-  const title_bar_color = theme.title_bar_color;
+  const background = global_state.theme.global_background_color;
+  const title_bar_color = global_state.theme.title_bar_color;
   const app_name = global_state.app_name;
 </script>
 

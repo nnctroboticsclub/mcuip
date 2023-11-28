@@ -1,8 +1,5 @@
 import { writable } from "svelte/store";
 
-export { theme } from "./theme";
-
-
 export const global_state = {
   app_name: writable("McuIP Web Client"),
   config: {
@@ -11,5 +8,10 @@ export const global_state = {
         visual: writable(false)
       }
     }
+  },
+  theme: {
+    global_background_color: writable('#eee'),
+    title_bar_color: writable('#fcc'),
+    app_background_color: writable('#ccc'),
   }
 };
