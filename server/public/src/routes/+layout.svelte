@@ -1,6 +1,6 @@
 <script lang="ts">
   import { global_state } from "../global_state";
-  import "ress/ress.css?inline";
+  import "ress/ress.css";
 
   const background = global_state.theme.global_background_color;
   const title_bar_color = global_state.theme.title_bar_color;

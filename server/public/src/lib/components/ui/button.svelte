@@ -27,6 +27,8 @@
 
     background-color: #79beeeff;
     border-radius: 10px;
+
+    cursor: pointer;
   }
 
   button:active {

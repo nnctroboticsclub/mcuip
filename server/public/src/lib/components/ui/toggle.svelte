@@ -19,6 +19,8 @@
 
     background-color: rgba(0, 0, 0, 0.25);
     border-radius: 10px;
+
+    cursor: pointer;
   }
   button.enabled {
     background-color: rgba(0, 0, 127, 0.5);
