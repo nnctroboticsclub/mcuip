@@ -20,7 +20,8 @@
 		"python.formatting.provider": "none",
 		"dotnet.defaultSolution": "disable",
 		"cSpell.words": [
-			"fastapi"
+			"fastapi",
+			"ress"
 		]
 	}
 }
