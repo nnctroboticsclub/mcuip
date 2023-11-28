@@ -15,6 +15,7 @@
     {#each application_list as app_name}
       <div>
         <Button
+          width="300px"
           on:click={() => {
             windows.launch(app_name);
           }}>Launch '{app_name}'</Button
