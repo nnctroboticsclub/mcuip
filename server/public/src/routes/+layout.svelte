@@ -1,15 +1,11 @@
 <script lang="ts">
   import { global_state } from "../global_state";
-  import ress from "ress/ress.css";
+  import "ress/ress.css?inline";
 
   const background = global_state.theme.global_background_color;
   const title_bar_color = global_state.theme.title_bar_color;
   const app_name = global_state.app_name;
 </script>
-
-<svelte:head>
-  <link rel="stylesheet" href={ress} />
-</svelte:head>
 
 <main style="background-color: {$background};">
   <div style="background-color: {$title_bar_color};" class="app-bar">

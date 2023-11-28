@@ -5,6 +5,7 @@
   import { onMount } from "svelte";
   import Toggle from "$lib/components/ui/toggle.svelte";
   import { global_state } from "../../global_state";
+  import Button from "$lib/components/ui/button.svelte";
 
   const data = getWindow().window_data as Writable<{
     time: number;
@@ -47,9 +48,11 @@
     Time: {$data.time}<br />
 
     <Toggle bind:value /> <br />
-    value: {value}
+    value: {value} <br />
 
-    <button on:click={switchTheme1}>Switch theme (1)</button>
-    <button on:click={switchTheme2}>Switch theme (2)</button>
+    <Button width="200px" on:click={switchTheme1}>Switch theme (1)</Button><br
+    />
+    <Button width="200px" on:click={switchTheme2}>Switch theme (2)</Button><br
+    />
   </svelte:fragment>
 </Window>
