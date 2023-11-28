@@ -12,7 +12,7 @@ function stringify(obj: object) {
 
 export function patch_console_log() {
   if (Object.hasOwn(console, "__patched")) {
-    console.warn('W: console logging functions are already patched');
+    return;
   }
 
   // @ts-ignore

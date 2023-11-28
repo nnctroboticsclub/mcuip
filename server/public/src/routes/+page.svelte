@@ -4,8 +4,11 @@
   import { WindowConfig } from "$lib/window/window";
   import { Area } from "$lib/ui/area";
   import Windows from "$lib/window/windows.svelte";
+  import { patch_console_log } from "$lib/console_patch";
 
   let width: number, height: number;
+
+  patch_console_log();
 
   const window_manager = WindowManagerContext.getContext();
   window_manager.addWindow(

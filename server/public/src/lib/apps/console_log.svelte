@@ -12,7 +12,7 @@
   <svelte:fragment slot="title">Console</svelte:fragment>
 
   <div class="container" slot="app">
-    {#each $console_texts as line, i}
+    {#each $console_texts.slice(-10) as line, i}
       {i}: {line}<br />
     {/each}
   </div>
