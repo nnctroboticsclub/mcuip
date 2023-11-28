@@ -30,6 +30,7 @@
   },
   "type": "module",
   "dependencies": {
-    "ress": "^5.0.2"
+    "ress": "^5.0.2",
+    "svelte-awesome-icons": "^0.6.6"
   }
 }

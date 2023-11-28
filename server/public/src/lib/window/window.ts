@@ -2,12 +2,15 @@ import type { Area } from "$lib/ui/area";
 import { AreaStore } from "$lib/ui/area_store";
 import { getContext, setContext } from "svelte";
 import { writable, type Writable } from "svelte/store";
+import { WindowManagerContext } from "./windows";
+
+export type WindowStatus = "Uninitialized" | "Closing" | "Loaded";
 
 export class WindowConfig {
   private area_: AreaStore;
   private app_name_: string;
   private window_data_: Writable<any>;
-  private status_: Writable<string> = writable("Uninitialized");
+  private status_: Writable<WindowStatus> = writable("Uninitialized");
   private tag_: string = "window";
 
   constructor(area: Writable<Area>, app_name: string, window_data: Writable<any>) {
@@ -17,7 +20,7 @@ export class WindowConfig {
     this.tag_ = Math.random().toString(36).slice(2, 10);
   }
 
-  setStatus(status: string) {
+  setStatus(status: WindowStatus) {
     this.status_.set(status);
   }
 
@@ -33,7 +36,7 @@ export class WindowConfig {
     return this.window_data_;
   }
 
-  get status(): Writable<string> {
+  get status(): Writable<WindowStatus> {
     return this.status_;
   }
 

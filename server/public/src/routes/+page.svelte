@@ -1,11 +1,9 @@
 <script lang="ts">
-  import WindowWrapper from "$lib/window/window_wrapper.svelte";
-
-  import DraggableArea from "$lib/dragger/draggable_area.svelte";
   import { WindowManagerContext } from "$lib/window/windows";
   import { writable } from "svelte/store";
   import { WindowConfig } from "$lib/window/window";
   import { Area } from "$lib/ui/area";
+  import Windows from "$lib/window/windows.svelte";
 
   let width: number, height: number;
 
@@ -38,16 +36,10 @@
       writable(undefined)
     )
   );
-
-  const windows = window_manager.windows;
 </script>
 
 <div class="container" bind:clientWidth={width} bind:clientHeight={height}>
-  <DraggableArea top={0} left={0} {width} {height}>
-    {#each $windows as window}
-      <WindowWrapper {window} />
-    {/each}
-  </DraggableArea>
+  <Windows {width} {height} />
 </div>
 
 <style>

@@ -4,6 +4,7 @@
   import DragTarget from "$lib/dragger/drag_target.svelte";
   import { Position } from "$lib/ui/position";
   import { global_state } from "../../global_state";
+  import XmarkSolid from "svelte-awesome-icons/XmarkSolid.svelte";
 
   const hover_enabled = global_state.config.window.hover_enabled;
   const title_bar_centered = global_state.config.window.centered_title_bar;
@@ -13,7 +14,7 @@
   const resizer_tag = `window[${window.tag}]-resizer`;
 
   const status = window.status;
-  window.status.set("Component Loaded");
+  window.status.set("Loaded");
 
   const container_style = derived(
     [window.area, global_state.theme.window.background_color],
@@ -41,6 +42,13 @@
       class:centered={$title_bar_centered}
     >
       <slot name="title" />
+      <div class="right">
+        <XmarkSolid
+          on:click={() => {
+            window.status.set("Closing");
+          }}
+        />
+      </div>
     </div>
   </DragTarget>
   <div class="content">
@@ -97,6 +105,22 @@
     content: "";
     background-color: black;
     opacity: 0.25;
+  }
+
+  div.title-bar > div.right {
+    position: absolute;
+    top: 0px;
+    right: 5px;
+    bottom: 0px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 20px;
+    height: 100%;
+
+    cursor: pointer;
   }
 
   div.content {

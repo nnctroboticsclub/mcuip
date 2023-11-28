@@ -18,6 +18,12 @@ export class WindowManagerContext {
     });
   }
 
+  removeWindow(tag: string) {
+    this.windows_.update(windows => {
+      return windows.filter(window => window.tag != tag);
+    });
+  }
+
 
   static getContext(): WindowManagerContext {
     const context = getContext<WindowManagerContext>("windowManager");
