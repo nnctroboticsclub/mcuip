@@ -23,6 +23,11 @@ export class WindowManagerContext {
     });
   }
 
+  launch(app_name: string, window_data: Writable<any> = writable({})) {
+    console.log(`Launching ${app_name} with data:`, window_data);
+    return window;
+  }
+
 
   static getContext(): WindowManagerContext {
     const context = getContext<WindowManagerContext>("windowManager");

@@ -10,29 +10,36 @@
   const window_manager = WindowManagerContext.getContext();
   window_manager.addWindow(
     new WindowConfig(
-      writable(new Area(0, 300, 300, 590)),
-      "window_inspector",
-      writable(undefined)
-    )
-  );
-  window_manager.addWindow(
-    new WindowConfig(
-      writable(new Area(600, 0, 600, 300)),
+      writable(new Area(20 + 600, 0, 600, 300)),
       "console_log",
       writable(undefined)
     )
   );
   window_manager.addWindow(
     new WindowConfig(
-      writable(new Area(0, 0, 300, 300)),
+      writable(new Area(20 + 0, 300, 300, 590)),
+      "window_inspector",
+      writable(undefined)
+    )
+  );
+  window_manager.addWindow(
+    new WindowConfig(
+      writable(new Area(20 + 0, 0, 300, 300)),
       "test",
       writable(undefined)
     )
   );
   window_manager.addWindow(
     new WindowConfig(
-      writable(new Area(0, 600, 300, 900)),
+      writable(new Area(20 + 0, 600, 300, 900)),
       "debugger",
+      writable(undefined)
+    )
+  );
+  window_manager.addWindow(
+    new WindowConfig(
+      writable(new Area(0, 0, 900, 20)),
+      "launcher",
       writable(undefined)
     )
   );
