@@ -15,7 +15,6 @@
 
   const window = getWindow();
   const status = window.status;
-
   window.status.set("Component Loaded");
 
   const container_style = derived([window.area], ([area]) => area.getStyle());
@@ -24,16 +23,20 @@
     [window.area],
     ([area]) => `width: ${area.getWidth()}px;`
   );
+
+  let dragging: boolean = false;
 </script>
 
 <div
   class="container"
+  class:dragging
   style="{$container_style}; background-color: {$app_background_color};"
 >
   <DragTarget
     tag={title_bar_tag}
     pos={window.area.getPositionStore()}
     sticky={new Position(0, 0)}
+    bind:dragging
   >
     <div
       class="title-bar"
