@@ -8,6 +8,8 @@
 
   const hover_enabled = global_state.config.window.hover_enabled;
   const title_bar_centered = global_state.config.window.centered_title_bar;
+  const title_bar_with_z_index =
+    global_state.config.window.title_bar_with_z_index;
 
   const window = getWindow();
   const title_bar_tag = `window[${window.tag}]-title-bar`;
@@ -52,6 +54,9 @@
     >
       <slot name="title" />
       <div class="right">
+        {#if $title_bar_with_z_index}
+          Z: {window.z_index}
+        {/if}
         <XmarkSolid
           on:click={() => {
             window.status.set("Closing");
@@ -67,7 +72,6 @@
     <div class="hover">
       status: {$status} <br />
       tag: {window.tag}<br />
-      z-index: {window.z_index}
     </div>
   {/if}
   <DragTarget
@@ -127,7 +131,6 @@
     align-items: center;
     justify-content: center;
 
-    width: 20px;
     height: 100%;
 
     cursor: pointer;

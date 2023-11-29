@@ -11,6 +11,7 @@ export const global_state = {
     window: {
       hover_enabled: writable(false),
       centered_title_bar: writable(true),
+      title_bar_with_z_index: writable(false),
     }
   },
   theme: {
