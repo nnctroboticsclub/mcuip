@@ -3,7 +3,7 @@
 
   export let window: WindowConfig;
 
-  const { status, area, window_data: data } = window;
+  const { area, window_data: data } = window;
 </script>
 
 {#if !window}
@@ -11,7 +11,6 @@
 {:else}
   Name: {window.app_name} <br />
   Area: {$area.toString()} <br />
-  Status: {$status}<br />
   WindowData: <br />
   {JSON.stringify($data, null, 2)}
 {/if}

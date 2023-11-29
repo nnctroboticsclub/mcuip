@@ -18,7 +18,8 @@
 
   const container_style = derived(
     [window.area, global_state.theme.window.background_color],
-    ([area, bk]) => `${area.getStyle()} background-color: ${bk};`
+    ([area, bk]) =>
+      `${area.getStyle()} background-color: ${bk}; z-index: ${window.z_index}`
   );
 
   const title_bar_style = derived(
@@ -29,7 +30,15 @@
   let dragging: boolean = false;
 </script>
 
-<div class="container" class:dragging style={$container_style}>
+<div
+  class="container"
+  class:dragging
+  style={$container_style}
+  on:click={() => {
+    window.z_index = 10000000;
+  }}
+  role="dialog"
+>
   <DragTarget
     tag={title_bar_tag}
     pos={window.area.getPositionStore()}
@@ -57,7 +66,8 @@
   {#if $hover_enabled}
     <div class="hover">
       status: {$status} <br />
-      tag: {window.tag}
+      tag: {window.tag}<br />
+      z-index: {window.z_index}
     </div>
   {/if}
   <DragTarget

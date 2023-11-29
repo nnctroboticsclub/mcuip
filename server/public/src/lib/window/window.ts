@@ -11,6 +11,7 @@ export class WindowConfig {
   private window_data_: Writable<any>;
   private status_: Writable<WindowStatus> = writable("Uninitialized");
   private tag_: string = "window";
+  private z_index_: number = 0;
 
   constructor(area: Writable<Area>, app_name: string, window_data: Writable<any>) {
     this.area_ = new AreaStore(area);
@@ -41,6 +42,14 @@ export class WindowConfig {
 
   get tag(): string {
     return this.tag_;
+  }
+
+  get z_index(): number {
+    return this.z_index_;
+  }
+
+  set z_index(z_index: number) {
+    this.z_index_ = z_index;
   }
 };
 
