@@ -21,7 +21,9 @@
   const container_style = derived(
     [window.area, global_state.theme.window.background_color],
     ([area, bk]) =>
-      `${area.getStyle()} background-color: ${bk}; z-index: ${window.z_index}`
+      `${area.getStyle()} background-color: ${bk}; z-index: ${
+        window.z_index === Infinity ? 999 : window.z_index
+      }`
   );
 
   const title_bar_style = derived(
@@ -37,7 +39,7 @@
   class:dragging
   style={$container_style}
   on:click={() => {
-    window.z_index = 10000000;
+    window.z_index = Infinity;
   }}
   role="dialog"
 >

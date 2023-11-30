@@ -5,6 +5,7 @@
   import { WindowManagerContext } from "./windows";
   import Button from "$lib/ui/button.svelte";
   import type { WindowConfig } from "./window";
+  import { onMount } from "svelte";
 
   export let width: number;
   export let height: number;
@@ -13,6 +14,25 @@
   const windows = context.windows;
 
   // Window life cycle
+  function applyInfinityZindex(
+    $windows: WindowConfig[]
+  ): [boolean, WindowConfig[]] {
+    const max_z_index = Math.max(
+      ...$windows.map((window) => window.z_index).filter((x) => x !== Infinity)
+    );
+
+    let updated = false;
+    const new_windows = $windows.map((window) => {
+      if (window.z_index === Infinity) {
+        window.z_index = max_z_index + 1;
+        updated = true;
+      }
+      return window;
+    });
+
+    return [updated, new_windows];
+  }
+
   function deleteClosedWindow(
     $windows: WindowConfig[]
   ): [boolean, WindowConfig[]] {
@@ -64,28 +84,23 @@
     return [true, new_windows];
   }
 
-  function reduceZIndexGaps(
-    $windows: WindowConfig[]
-  ): [boolean, WindowConfig[]] {
-    // むずい
-    return [false, $windows];
-  }
-
   function lifecycle() {
-    console.log("===== Doing lifecycle()");
-    console.log("==> Delete closed window");
-    const [stage1_updated, stage1_windows] = deleteClosedWindow($windows);
-    console.log("==> Delete fix conflict");
-    const [stage2_updated, stage2_windows] = fixZIndexConflict(stage1_windows);
-    console.log("==> Reduce z-index gaps");
-    const [stage3_updated, stage3_windows] = reduceZIndexGaps(stage2_windows);
+    const [stage1_updated, stage1_windows] = applyInfinityZindex($windows);
+    const [stage2_updated, stage2_windows] = deleteClosedWindow(stage1_windows);
+    const [stage3_updated, stage3_windows] = fixZIndexConflict(stage2_windows);
 
     if (stage1_updated || stage2_updated || stage3_updated) {
+      console.log(
+        `Updated windows [${stage1_updated}, ${stage2_updated}, ${stage3_updated}]`
+      );
       context.windows.set(stage3_windows);
     }
   }
 
-  setTimeout(lifecycle, 200);
+  onMount(() => {
+    const interval = setInterval(lifecycle, 200);
+    return () => clearInterval(interval);
+  });
 </script>
 
 <Button on:click={lifecycle}>Lifecycle</Button>
