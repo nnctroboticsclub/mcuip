@@ -1,6 +1,6 @@
 import { writable } from "svelte/store";
 
-export const console_texts = writable<string[]>([]);
+export const console_texts = writable<{ text: string, time: Date }[]>([]);
 
 function stringify(obj: object) {
   if (typeof obj === "string") {
@@ -37,7 +37,11 @@ export function patch_console_log() {
 
       let logging_string = data.map(stringify).join(" ");
       console_texts.update(texts => {
-        texts.push(logging_string);
+        const now = new Date();
+        texts.push({
+          text: logging_string,
+          time: now
+        });
         return texts;
       });
     }

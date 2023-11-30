@@ -8,8 +8,8 @@
   <svelte:fragment slot="title">Console</svelte:fragment>
 
   <div class="container" slot="app">
-    {#each $console_texts.slice(-10) as line, i}
-      {i}: {line}<br />
+    {#each $console_texts.slice(-20) as line}
+      {line.time.toISOString()}: {line.text}<br />
     {/each}
   </div>
 </Window>
