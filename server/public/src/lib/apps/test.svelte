@@ -43,16 +43,18 @@
 <Window>
   <svelte:fragment slot="title">Title</svelte:fragment>
   <svelte:fragment slot="app">
-    <TabContainer names={["Theme Switch", "UI Test", "Window state"]}>
-      <TabContent name="ThemeSwitch">
+    <TabContainer
+      names={["Theme Switch", "UI Test", "Window state"]}
+      tag="main-tab"
+    >
+      <TabContent name="Theme Switch">
         <Button width="200px" on:click={switchTheme1}>Switch theme (1)</Button
         ><br />
         <Button width="200px" on:click={switchTheme2}>Switch theme (2)</Button
         ><br />
       </TabContent>
 
-      <TabContent name="UITest">
-        <h2>Toggle</h2>
+      <TabContent name="UI Test">
         <Toggle bind:value /> <br />
         value: {value} <br />
       </TabContent>

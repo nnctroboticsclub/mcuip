@@ -3,6 +3,7 @@
   import Window from "$lib/window/window.svelte";
   import { app_import_map } from "$lib/window/window_resolver";
   import { WindowManagerContext } from "$lib/window/windows";
+  import { writable } from "svelte/store";
 
   const application_list = Object.keys(app_import_map);
 
@@ -18,7 +19,7 @@
           width="100%"
           height="100%"
           on:click={() => {
-            windows.launch(app_name);
+            windows.launch(app_name, writable({}));
           }}
           tooltip={app_name}>Launch</Button
         >
