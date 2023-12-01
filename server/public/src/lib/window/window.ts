@@ -1,3 +1,4 @@
+import { PropertyWritable } from "$lib/stores/property_writable";
 import type { Area } from "$lib/ui/area";
 import { AreaStore } from "$lib/ui/area_store";
 import { getContext, setContext } from "svelte";
@@ -32,10 +33,6 @@ export class WindowConfig {
     return this.app_name_;
   }
 
-  get window_data(): Writable<any> {
-    return this.window_data_;
-  }
-
   get status(): Writable<WindowStatus> {
     return this.status_;
   }
@@ -50,6 +47,10 @@ export class WindowConfig {
 
   set z_index(z_index: number) {
     this.z_index_ = z_index;
+  }
+
+  getDataStore(key: string): Writable<any> {
+    return new PropertyWritable(this.window_data_, key);
   }
 };
 
