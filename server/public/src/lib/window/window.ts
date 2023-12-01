@@ -37,6 +37,10 @@ export class WindowConfig {
     return this.status_;
   }
 
+  get window_data(): Writable<any> {
+    return this.window_data_;
+  }
+
   get tag(): string {
     return this.tag_;
   }
