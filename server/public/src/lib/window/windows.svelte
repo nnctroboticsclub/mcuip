@@ -41,9 +41,6 @@
     );
 
     if (new_windows.length !== $windows.length) {
-      console.log(
-        `Found ${$windows.length - new_windows.length} closed window`
-      );
       return [true, new_windows];
     }
     return [false, $windows];
@@ -80,7 +77,6 @@
 
       return window;
     });
-    console.log(`Found ${edited_z_indexes} conflict`);
     return [true, new_windows];
   }
 
@@ -122,7 +118,6 @@
     updated ||= stage4_updated;
 
     if (updated) {
-      console.log("Updating windows");
       context.windows.set(stage4_windows);
     }
   }

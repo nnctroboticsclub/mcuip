@@ -11,7 +11,7 @@
     time: number;
   }>;
 
-  if (!$data) {
+  if (!$data.time) {
     data.set({
       time: 0,
     });
