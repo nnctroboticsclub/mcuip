@@ -6,20 +6,18 @@
   import { global_state } from "../../global_state";
   import Toggle from "$lib/ui/toggle.svelte";
   import Button from "$lib/ui/button.svelte";
+  import TabContent from "$lib/ui/tab/tab-content.svelte";
+  import TabContainer from "$lib/ui/tab/tab-container.svelte";
 
-  const data = getWindow().window_data as Writable<{
-    time: number;
-  }>;
+  const data = getWindow().getDataStore("time") as Writable<number>;
 
-  if (!$data.time) {
-    data.set({
-      time: 0,
-    });
+  if (!$data) {
+    data.set(0);
   }
 
   onMount(() => {
     let interval = setInterval(() => {
-      $data.time += 1;
+      $data += 1;
     }, 1000);
 
     return () => {
@@ -45,14 +43,22 @@
 <Window>
   <svelte:fragment slot="title">Title</svelte:fragment>
   <svelte:fragment slot="app">
-    Time: {$data.time}<br />
+    <TabContainer names={["Theme Switch", "UI Test", "Window state"]}>
+      <TabContent name="ThemeSwitch">
+        <Button width="200px" on:click={switchTheme1}>Switch theme (1)</Button
+        ><br />
+        <Button width="200px" on:click={switchTheme2}>Switch theme (2)</Button
+        ><br />
+      </TabContent>
 
-    <Toggle bind:value /> <br />
-    value: {value} <br />
-
-    <Button width="200px" on:click={switchTheme1}>Switch theme (1)</Button><br
-    />
-    <Button width="200px" on:click={switchTheme2}>Switch theme (2)</Button><br
-    />
+      <TabContent name="UITest">
+        <h2>Toggle</h2>
+        <Toggle bind:value /> <br />
+        value: {value} <br />
+      </TabContent>
+      <TabContent name="Window state">
+        Time: {$data}<br />
+      </TabContent>
+    </TabContainer>
   </svelte:fragment>
 </Window>
