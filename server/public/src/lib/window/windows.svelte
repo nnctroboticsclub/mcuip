@@ -84,21 +84,51 @@
     return [true, new_windows];
   }
 
-  function lifecycle() {
-    const [stage1_updated, stage1_windows] = applyInfinityZindex($windows);
-    const [stage2_updated, stage2_windows] = deleteClosedWindow(stage1_windows);
-    const [stage3_updated, stage3_windows] = fixZIndexConflict(stage2_windows);
+  function removeHeadEmptyZIndexes(
+    $windows: WindowConfig[],
+    updated: boolean
+  ): [boolean, WindowConfig[]] {
+    if (updated === false) {
+      return [false, $windows];
+    }
 
-    if (stage1_updated || stage2_updated || stage3_updated) {
-      console.log(
-        `Updated windows [${stage1_updated}, ${stage2_updated}, ${stage3_updated}]`
-      );
-      context.windows.set(stage3_windows);
+    const min_z_index = Math.min(
+      ...$windows.map((window) => window.z_index).filter((x) => x !== Infinity)
+    );
+
+    const new_windows = $windows.map((window) => {
+      window.z_index = window.z_index - min_z_index;
+      return window;
+    });
+
+    return [min_z_index != 0, new_windows];
+  }
+
+  function lifecycle() {
+    let updated = false;
+    const [stage1_updated, stage1_windows] = applyInfinityZindex($windows);
+    updated ||= stage1_updated;
+
+    const [stage2_updated, stage2_windows] = deleteClosedWindow(stage1_windows);
+    updated ||= stage2_updated;
+
+    const [stage3_updated, stage3_windows] = fixZIndexConflict(stage2_windows);
+    updated ||= stage3_updated;
+
+    const [stage4_updated, stage4_windows] = removeHeadEmptyZIndexes(
+      stage3_windows,
+      updated
+    );
+    updated ||= stage4_updated;
+
+    if (updated) {
+      console.log("Updating windows");
+      context.windows.set(stage4_windows);
     }
   }
 
   onMount(() => {
-    const interval = setInterval(lifecycle, 200);
+    const interval = setInterval(lifecycle, 10);
     return () => clearInterval(interval);
   });
 </script>
