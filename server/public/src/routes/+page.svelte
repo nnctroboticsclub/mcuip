@@ -12,27 +12,19 @@
 
   const window_manager = WindowManagerContext.getContext();
   window_manager.addWindow(
-    new WindowConfig(
-      writable(new Area(600, 0, 600, 300)),
-      "console_log",
-      writable({})
-    )
+    new WindowConfig(writable(new Area(600, 0, 600, 300)), "console_log", {})
   );
   window_manager.addWindow(
-    new WindowConfig(
-      writable(new Area(0, 0, 400, 110)),
-      "launcher",
-      writable({})
-    )
+    new WindowConfig(writable(new Area(0, 0, 600, 110)), "launcher", {})
   );
   window_manager.addWindow(
-    new WindowConfig(writable(new Area(130, 0, 400, 400)), "test", writable({}))
+    new WindowConfig(writable(new Area(130, 0, 600, 400)), "mcuip-ctrl", {})
   );
   window_manager.addWindow(
     new WindowConfig(
       writable(new Area(0, 620, 300, 800)),
       "window_inspector",
-      writable({})
+      {}
     )
   );
 </script>

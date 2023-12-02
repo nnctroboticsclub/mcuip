@@ -1,4 +1,3 @@
-import { PropertyWritable } from "$lib/stores/property_writable";
 import type { Area } from "$lib/ui/area";
 import { AreaStore } from "$lib/ui/area_store";
 import { getContext, setContext } from "svelte";
@@ -6,15 +5,17 @@ import { writable, type Writable } from "svelte/store";
 
 export type WindowStatus = "Uninitialized" | "Closing" | "Loaded";
 
+export type DataStore = { [key: string]: Writable<any> };
+
 export class WindowConfig {
   private area_: AreaStore;
   private app_name_: string;
-  private window_data_: Writable<any>;
+  private window_data_: DataStore;
   private status_: Writable<WindowStatus> = writable("Uninitialized");
   private tag_: string = "window";
   private z_index_: number = 0;
 
-  constructor(area: Writable<Area>, app_name: string, window_data: Writable<any>) {
+  constructor(area: Writable<Area>, app_name: string, window_data: DataStore) {
     this.area_ = new AreaStore(area);
     this.app_name_ = app_name;
     this.window_data_ = window_data;
@@ -37,7 +38,7 @@ export class WindowConfig {
     return this.status_;
   }
 
-  get window_data(): Writable<any> {
+  get window_data(): { [key: string]: Writable<any> } {
     return this.window_data_;
   }
 
@@ -53,8 +54,12 @@ export class WindowConfig {
     this.z_index_ = z_index;
   }
 
-  getDataStore(key: string): Writable<any> {
-    return new PropertyWritable(this.window_data_, key);
+  getDataStore<T>(key: string): Writable<T> {
+    if (!this.window_data_[key]) {
+      this.window_data_[key] = writable();
+    }
+
+    return this.window_data_[key];
   }
 };
 

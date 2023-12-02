@@ -19,7 +19,7 @@
           width="100%"
           height="100%"
           on:click={() => {
-            windows.launch(app_name, writable({}));
+            windows.launch(app_name, {});
           }}
           tooltip={app_name}>Launch</Button
         >
