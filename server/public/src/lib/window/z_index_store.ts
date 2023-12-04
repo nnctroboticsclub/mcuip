@@ -25,7 +25,7 @@ type ZIndexList = { tag: string, z_index: number, store: ZIndexStore }[];
 export class ZIndexStoreParent {
   list: Writable<ZIndexList> = writable([]);
 
-  new_store() {
+  createZIndexStore() {
     const tag = Math.random().toString(36).substring(2, 7);
     const store = new ZIndexStore(this, tag);
     this.list.update(list => [...list, { tag, z_index: Infinity, store }]);
@@ -34,11 +34,7 @@ export class ZIndexStoreParent {
   }
 
   set(tag: string, value: number): void {
-    this.list.update(
-      list => list.map(
-        item => item.tag === tag ? { ...item, z_index: value } : item
-      )
-    );
+    this.update(tag, () => value);
   }
 
   subscribe(tag: string, run: Subscriber<number>, invalidate?: Invalidator<number> | undefined): Unsubscriber {
@@ -49,9 +45,12 @@ export class ZIndexStoreParent {
 
   update(tag: string, updater: Updater<number>): void {
     this.list.update(
-      list => list.map(
-        item => item.tag === tag ? { ...item, z_index: updater(item.z_index) } : item
-      )
+      list => list
+        .map(
+          item => item.tag === tag ? { ...item, z_index: updater(item.z_index) } : item
+        )
+        .sort((a, b) => a.z_index - b.z_index)
+        .map((item, i) => ({ ...item, z_index: i }))
     );
   }
 }

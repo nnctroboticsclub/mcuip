@@ -9,16 +9,16 @@ export type DataStore = { [key: string]: Writable<any> };
 
 export class WindowConfig {
   private area_: AreaStore;
-  private app_name_: string;
-  private window_data_: DataStore;
   private status_: Writable<WindowStatus> = writable("Uninitialized");
   private tag_: string = "window";
-  private z_index_: Writable<number> = writable(0);
 
-  constructor(area: Writable<Area>, app_name: string, window_data: DataStore) {
+  constructor(
+    area: Writable<Area>,
+    private app_name_: string,
+    private window_data_: DataStore,
+    private z_index_: Writable<number>
+  ) {
     this.area_ = new AreaStore(area);
-    this.app_name_ = app_name;
-    this.window_data_ = window_data;
     this.tag_ = Math.random().toString(36).slice(2, 10);
   }
 
@@ -50,8 +50,8 @@ export class WindowConfig {
     return this.z_index_;
   }
 
-  set z_index(z_index: number) {
-    this.z_index_.set(z_index);
+  set z_index(z_index: Writable<number>) {
+    this.z_index_ = z_index;
   }
 
   getDataStore<T>(key: string): Writable<T> {

@@ -2,6 +2,7 @@ import { derived, writable, type Readable, type Writable } from "svelte/store";
 import { WindowConfig, type DataStore } from "./window";
 import { getContext, setContext } from "svelte";
 import { Area } from "$lib/ui/area";
+import { ZIndexStoreParent } from "./z_index_store";
 
 class WindowPositionCalculator {
   private i = 0;
@@ -22,8 +23,11 @@ export class WindowManagerContext {
   private windows_: WindowConfig[] = [];
   private windows_count_: Writable<number> = writable(0);
 
+  private z_index_store_parent: ZIndexStoreParent;
+
   constructor() {
     this.position_calculator = new WindowPositionCalculator();
+    this.z_index_store_parent = new ZIndexStoreParent();
   }
 
   getWindowsStore(): Readable<WindowConfig[]> {
@@ -34,7 +38,15 @@ export class WindowManagerContext {
     return this.windows_;
   }
 
-  addWindow(window: WindowConfig) {
+  addWindow(pos: Area, app_name: string, window_data: DataStore = {}) {
+    const z_index = this.z_index_store_parent.createZIndexStore();
+    const window = new WindowConfig(
+      writable(pos),
+      app_name,
+      window_data,
+      z_index
+    );
+
     this.windows_.push(window);
     this.windows_count_.update(x => x + 1);
   }
@@ -51,12 +63,8 @@ export class WindowManagerContext {
     console.log("launching window");
     console.log(`  - app_name: ${app_name}`);
     console.log(`  - area: ${area}`);
-    const window = new WindowConfig(
-      writable(area),
-      app_name,
-      window_data
-    );
-    this.addWindow(window);
+
+    this.addWindow(area, app_name, window_data);
     return window;
   }
 

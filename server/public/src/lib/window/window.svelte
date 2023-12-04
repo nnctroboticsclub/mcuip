@@ -39,7 +39,7 @@
   class:dragging
   style={$container_style}
   on:click={() => {
-    window.z_index = Infinity;
+    window.z_index.set(Infinity);
   }}
   role="dialog"
 >

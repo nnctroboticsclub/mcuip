@@ -1,10 +1,11 @@
 export function makeCached<T, S extends {
   subscribe: (run: (value: T) => void, invalidate?: (value?: T) => void) => () => void;
 }>(store: S): S {
+  return store;
+
   let cached_value: T;
   let cached = false;
-
-  return {
+  const new_store: S = {
     ...store,
     subscribe: (run, invalidate) => {
       return store.subscribe((value) => {
@@ -14,5 +15,7 @@ export function makeCached<T, S extends {
         run(value);
       }, invalidate);
     }
-  } as S;
+  };
+
+  return new_store;
 }
