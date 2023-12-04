@@ -11,7 +11,7 @@
   export let height: number;
 
   const context = WindowManagerContext.getContext();
-  const windows = context.windows;
+  const windows = context.getWindowsStore();
 
   // Window life cycle
   function deleteClosedWindow(
@@ -28,7 +28,7 @@
   }
 
   function lifecycle() {
-    deleteClosedWindow(windows);
+    deleteClosedWindow($windows);
   }
 
   onMount(() => {
@@ -39,7 +39,7 @@
 
 <Button on:click={lifecycle}>Lifecycle</Button>
 <DraggableArea top={0} left={0} {width} {height}>
-  {#each windows as window}
+  {#each $windows as window}
     <WindowWrapper {window} />
   {/each}
 </DraggableArea>
