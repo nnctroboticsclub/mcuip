@@ -47,6 +47,12 @@ export class WindowManagerContext {
       z_index
     );
 
+    window.status.subscribe(($status) => {
+      if ($status === "Closing") {
+        this.removeWindow(window.tag);
+      }
+    })
+
     this.windows_.push(window);
     this.windows_count_.update(x => x + 1);
   }
