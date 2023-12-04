@@ -1,11 +1,11 @@
-import { get, writable, type Writable } from "svelte/store";
+import { derived, writable, type Readable, type Writable } from "svelte/store";
 import { WindowConfig, type DataStore } from "./window";
 import { getContext, setContext } from "svelte";
 import { Area } from "$lib/ui/area";
 
 class WindowPositionCalculator {
   private i = 0;
-  constructor(private windows: WindowConfig[]) { }
+  constructor() { }
 
   GeneratePosition() {
     const x = 10 + 20 * this.i;
@@ -23,7 +23,11 @@ export class WindowManagerContext {
   private windows_count_: Writable<number> = writable(0);
 
   constructor() {
-    this.position_calculator = new WindowPositionCalculator(this.windows_);
+    this.position_calculator = new WindowPositionCalculator();
+  }
+
+  getWindowsStore(): Readable<WindowConfig[]> {
+    return derived(this.windows_count_, () => this.windows_);
   }
 
   get windows(): WindowConfig[] {
