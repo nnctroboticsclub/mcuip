@@ -15,3 +15,13 @@
 {:else}
   [WARN]: TabContext is not found<br />
 {/if}
+
+<style>
+  div {
+    display: none;
+  }
+
+  div.active {
+    display: block;
+  }
+</style>
