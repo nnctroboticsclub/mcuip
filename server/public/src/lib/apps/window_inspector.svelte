@@ -9,11 +9,11 @@
 
 <Window>
   <svelte:fragment slot="title"
-    >Window status ({$windows.length})</svelte:fragment
+    >Window status ({windows.length})</svelte:fragment
   >
   <svelte:fragment slot="app">
     <div class="container">
-      {#each $windows as window}
+      {#each windows as window}
         <div>
           <WindowInspectorPart {window} />
         </div>
