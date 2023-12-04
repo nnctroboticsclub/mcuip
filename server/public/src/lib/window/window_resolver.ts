@@ -6,6 +6,7 @@ export const app_import_map = {
   console_log: () => import("$lib/apps/console_log.svelte"),
   debugger: () => import("$lib/apps/debugger.svelte"),
   launcher: () => import("$lib/apps/launcher.svelte"),
+  global_data_list: () => import("$lib/apps/global_data_list.svelte"),
   "mcuip-ctrl": () => import("$lib/apps/mcuip-controller.svelte"),
 } as { [key: string]: () => Promise<any> };
 
