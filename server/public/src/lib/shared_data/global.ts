@@ -1,33 +1,46 @@
-import { writable, type Writable } from "svelte/store";
+import { derived, writable, type Writable } from "svelte/store";
+
+export interface SharedDataInterface {
+  getDataState(): Writable<string>;
+}
 
 class SharedDataStore {
-  _data: { [key: string]: Writable<undefined | object> };
+  _data: { [key: string]: SharedDataInterface };
   keys_: Writable<string[]>;
+
   constructor() {
     this._data = {};
     this.keys_ = writable([]);
   }
 
-  getData<T>(key: string): Writable<T> {
+  getData<T extends SharedDataInterface>(key: string) {
     if (!this._data[key]) {
-      this._data[key] = writable();
-      this.keys_.update((keys) => [...keys, key]);
+      return null;
     }
-    return this._data[key] as Writable<T>;
+    return this._data[key] as T;
   }
 
-  setData<T>(key: string, value: T) {
-    this.getData<T>(key).set(value);
+  setData<T extends SharedDataInterface>(key: string, value: T): T {
+    this._data[key] = value;
+    this.keys_.set(Object.keys(this._data));
+
+    return value;
   }
 
   dataList(): string[] {
     return Object.keys(this._data);
   }
 
-  dataListStore(): Writable<string[]> {
-    return this.keys_;
+  dataListStore() {
+    return derived(this.keys_, (keys) =>
+      keys.map((key) => {
+        return {
+          key: key,
+          value: this._data[key].getDataState()
+        }
+      })
+    );
   }
-
 }
 
 export const shared_data = new SharedDataStore();

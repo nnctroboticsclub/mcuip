@@ -6,14 +6,21 @@
   import TextInput from "$lib/ui/text_input.svelte";
   import Button from "$lib/ui/button.svelte";
   import { get } from "svelte/store";
+  import { shared_data } from "$lib/shared_data/global";
+  import { McuIpClient } from "$lib/mcuip";
 
-  const ip_address = getWindow().getDataStore<string>("ip");
-  if (!$ip_address) {
-    ip_address.set("");
+  const server = getWindow().getDataStore<string>("ip");
+  if (!$server) {
+    server.set("ws://localhost:8080/ws");
   }
 
   function connect() {
-    console.log(`Connecting to ${get(ip_address)}`);
+    const server_url = get(server);
+    console.log(`Connecting to ${server_url}`);
+
+    const client = new McuIpClient(server_url);
+
+    shared_data.setData("syoch/mcuip/client", client);
   }
 </script>
 
@@ -23,7 +30,7 @@
     <TabContainer names={["Connection", "Device status"]} tag="main-tab">
       <TabContent name="Connection">
         <div class="action-bar">
-          <TextInput bind:value={$ip_address} width="calc(100% - 150px)" />
+          <TextInput bind:value={$server} width="calc(100% - 150px)" />
           <Button on:click={() => connect()} width="140px" height="100%"
             >Connect</Button
           >
