@@ -13,5 +13,7 @@
     outline: none;
     background-color: #333333;
     color: white;
+
+    padding: 0.5em;
   }
 </style>
