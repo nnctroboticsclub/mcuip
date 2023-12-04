@@ -8,7 +8,6 @@
 
 <style>
   input {
-    font-size: 1.5em;
     border: none;
     outline: none;
     background-color: #333333;
