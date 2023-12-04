@@ -40,4 +40,8 @@
     border: 1px solid #888;
     border-radius: 5px;
   }
+
+  div.contents {
+    padding: 7px;
+  }
 </style>

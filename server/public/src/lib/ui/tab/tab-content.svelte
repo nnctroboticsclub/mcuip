@@ -9,9 +9,9 @@
 </script>
 
 {#if active_tab_name}
-  {#if $active_tab_name === name}
+  <div class:active={$active_tab_name === name}>
     <slot />
-  {/if}
+  </div>
 {:else}
   [WARN]: TabContext is not found<br />
 {/if}
