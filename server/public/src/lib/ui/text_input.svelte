@@ -1,13 +1,13 @@
 <script lang="ts">
   export let value: string = "";
+  export let width: string = "100%";
+  export let height: string = "100%";
 </script>
 
-<input type="text" bind:value />
+<input type="text" bind:value style="width: {width}; height: {height};" />
 
 <style>
   input {
-    width: 100%;
-    height: 100%;
     font-size: 1.5em;
     border: none;
     outline: none;
