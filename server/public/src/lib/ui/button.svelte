@@ -28,13 +28,13 @@
 
     vertical-align: middle;
 
-    background-color: #79beeeff;
-    border-radius: 10px;
+    background-color: #3d5afe;
+    border-radius: 3px;
 
     cursor: pointer;
   }
 
   button:active {
-    background-color: #79beeeff;
+    background-color: #304ffe;
   }
 </style>
