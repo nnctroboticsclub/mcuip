@@ -1,5 +1,3 @@
-import type { WindowConfig } from "./window";
-
 const app_cache: { [key: string]: any } = {};
 
 export const app_import_map = {
@@ -11,19 +9,17 @@ export const app_import_map = {
   "mcuip-ctrl": () => import("$lib/apps/mcuip-controller.svelte"),
 } as { [key: string]: () => Promise<any> };
 
-export async function getAppComponent(window: WindowConfig) {
-  if (!window) return null;
-
-  if (app_cache[window.app_name]) {
-    return app_cache[window.app_name];
+export async function getAppComponent(app_name: string) {
+  if (app_cache[app_name]) {
+    return app_cache[app_name];
   }
 
-  if (!app_import_map[window.app_name]) {
-    throw new Error(`Unknown app: ${window.app_name}`);
+  if (!app_import_map[app_name]) {
+    throw new Error(`Unknown app: ${app_name}`);
   }
 
-  let module = await app_import_map[window.app_name]();
-  app_cache[window.app_name] = module.default;
+  let module = await app_import_map[app_name]();
+  app_cache[app_name] = module.default;
 
   return module.default;
 }

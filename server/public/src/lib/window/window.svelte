@@ -19,10 +19,10 @@
   window.status.set("Loaded");
 
   const container_style = derived(
-    [window.area, global_state.theme.window.background_color],
-    ([area, bk]) =>
+    [window.area, global_state.theme.window.background_color, window.z_index],
+    ([area, bk, z_index]) =>
       `${area.getStyle()} background-color: ${bk}; z-index: ${
-        window.z_index === Infinity ? 999 : window.z_index
+        z_index === Infinity ? 999 : z_index
       }`
   );
 

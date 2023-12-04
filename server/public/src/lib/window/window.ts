@@ -13,7 +13,7 @@ export class WindowConfig {
   private window_data_: DataStore;
   private status_: Writable<WindowStatus> = writable("Uninitialized");
   private tag_: string = "window";
-  private z_index_: number = 0;
+  private z_index_: Writable<number> = writable(0);
 
   constructor(area: Writable<Area>, app_name: string, window_data: DataStore) {
     this.area_ = new AreaStore(area);
@@ -46,12 +46,12 @@ export class WindowConfig {
     return this.tag_;
   }
 
-  get z_index(): number {
+  get z_index(): Writable<number> {
     return this.z_index_;
   }
 
   set z_index(z_index: number) {
-    this.z_index_ = z_index;
+    this.z_index_.set(z_index);
   }
 
   getDataStore<T>(key: string): Writable<T> {

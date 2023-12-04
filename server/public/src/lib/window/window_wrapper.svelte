@@ -10,7 +10,7 @@
 {#if !window.app_name}
   <p>App not found</p>
 {:else}
-  {#await getAppComponent(window)}
+  {#await getAppComponent(window.app_name)}
     <p>Loading app... ({window.app_name})</p>
   {:then app}
     <svelte:component this={app} />

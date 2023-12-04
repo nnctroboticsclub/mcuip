@@ -5,7 +5,7 @@ import { Area } from "$lib/ui/area";
 
 class WindowPositionCalculator {
   private i = 0;
-  constructor(private windows: Writable<WindowConfig[]>) { }
+  constructor(private windows: WindowConfig[]) { }
 
   GeneratePosition() {
     const x = 10 + 20 * this.i;
@@ -19,35 +19,33 @@ class WindowPositionCalculator {
 export class WindowManagerContext {
   private position_calculator: WindowPositionCalculator;
 
-  private windows_: Writable<WindowConfig[]> = writable([]);
+  private windows_: WindowConfig[] = [];
+  private windows_count_: Writable<number> = writable(0);
 
   constructor() {
     this.position_calculator = new WindowPositionCalculator(this.windows_);
   }
 
-  get windows(): Writable<WindowConfig[]> {
+  get windows(): WindowConfig[] {
     return this.windows_;
   }
 
   addWindow(window: WindowConfig) {
-    this.windows_.update(windows => {
-      windows.push(window);
-      return windows;
-    });
+    this.windows_.push(window);
+    this.windows_count_.update(x => x + 1);
   }
 
   removeWindow(tag: string) {
-    this.windows_.update(windows => {
-      return windows.filter(window => window.tag != tag);
-    });
+    this.windows_ = this.windows_.filter(x => x.tag != tag);
+    this.windows_count_.update(x => x - 1);
   }
+
 
   launch(app_name: string, window_data: DataStore = {}) {
     const { x, y } = this.position_calculator.GeneratePosition();
     const area = new Area(x, y, 400, 400);
     console.log("launching window");
     console.log(`  - app_name: ${app_name}`);
-    console.log(`  - window_data: ${window_data}`);
     console.log(`  - area: ${area}`);
     const window = new WindowConfig(
       writable(area),
