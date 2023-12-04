@@ -15,8 +15,9 @@
   <svelte:fragment slot="title">McuIp Controller</svelte:fragment>
   <svelte:fragment slot="app">
     <TabContainer names={["Connection", "Device status"]} tag="main-tab">
-      <TabContent name="Connection"></TabContent>
-      <TextInput bind:value={$data} />
+      <TabContent name="Connection">
+        <TextInput bind:value={$data} />
+      </TabContent>
       <TabContent name="Device status"></TabContent>
     </TabContainer>
   </svelte:fragment>
