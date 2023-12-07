@@ -5,11 +5,14 @@ import { GlobalState } from "./global_state";
 import { MonitorService } from "./monitor/service";
 
 export class McuIpRootHandler extends JSONRootRouterBase {
+  monitor: MonitorService;
+  flash: FlashService;
+
   constructor() {
     super("service");
 
-    new MonitorService(this, GlobalState.getInstance().monitor_manager);
-    new FlashService(this, GlobalState.getInstance().node_manager);
+    this.monitor = new MonitorService(this, GlobalState.getInstance().monitor_manager);
+    this.flash = new FlashService(this, GlobalState.getInstance().node_manager);
   }
 
   back_routing(data: JSONObject): null {

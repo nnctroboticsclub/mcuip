@@ -4,9 +4,9 @@ import { Flash } from "./device";
 import { NodeManager } from "./manager";
 
 export class FlashService extends McuIpService {
-  point_new: JSONEndpoint;
-  point_subscribe: JSONEndpoint;
-  point_flash: JSONEndpoint;
+  public point_new: JSONEndpoint;
+  public point_subscribe: JSONEndpoint;
+  public point_flash: JSONEndpoint;
 
   constructor(backref: JSONRouter, private node_manager: NodeManager) {
     super("flash", backref);

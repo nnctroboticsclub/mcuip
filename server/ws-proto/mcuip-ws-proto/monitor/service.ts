@@ -4,12 +4,12 @@ import { MonitorManager } from "./manager";
 
 export class MonitorService extends McuIpService {
   // incoming commands
-  point_new: JSONEndpoint;
-  point_tx: JSONEndpoint;
-  point_connect: JSONEndpoint;
+  public point_new: JSONEndpoint;
+  public point_tx: JSONEndpoint;
+  public point_connect: JSONEndpoint;
 
   // outgoing commands
-  point_rx: JSONEndpoint;
+  public point_rx: JSONEndpoint;
 
   constructor(backref: JSONRouter, private serial_manager: MonitorManager) {
     super("monitor", backref);
