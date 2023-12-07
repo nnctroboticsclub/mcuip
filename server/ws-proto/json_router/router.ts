@@ -21,8 +21,8 @@ export class JSONRouter implements JSONRouterBase {
     return router;
   }
 
-  endpoint(tag: string, callback: (data: { [key: string]: any }) => void): JSONEndpoint {
-    const endpoint = new JSONEndpoint(tag, callback, this);
+  endpoint<T>(tag: string, callback: (data: T) => void): JSONEndpoint<T> {
+    const endpoint = new JSONEndpoint<T>(tag, callback, this);
     this.add_route(endpoint);
     return endpoint;
   }
