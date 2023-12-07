@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test";
 import { MonitorService } from "./service";
-import { TestJSONRootRouter } from "../../json_router/test";
+import { TestJSONRootRouter } from "../../../../ws-proto/json_router/test";
 import { MonitorManager } from "./manager";
 import { GlobalState } from "../global_state";
 

@@ -1,7 +1,8 @@
 #!/bin/bash
 
-if [ ! -d node_modules ]; then
-  bun install
-fi
+set -ex
 
+cd $(dirname $0)
+
+bun install
 bun run src/index.ts

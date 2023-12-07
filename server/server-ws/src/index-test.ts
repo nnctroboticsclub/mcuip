@@ -1,4 +1,4 @@
-import { JSONRootRouterBase } from "./json_router";
+import { JSONRootRouterBase } from "../../ws-proto/json_router";
 
 const root = new JSONRootRouterBase("key1");
 const router_test1 = root.router("tag1", "key2");

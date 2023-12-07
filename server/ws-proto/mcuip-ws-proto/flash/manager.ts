@@ -3,8 +3,6 @@ import { Device } from "./device";
 export class NodeManager {
   private devices: { [key: string]: Device } = {}
 
-  constructor() { }
-
   private check_device_name(name: string) {
     if (this.devices[name]) {
       throw new Error(`Device ${name} already exists`);

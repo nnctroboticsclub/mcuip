@@ -36,20 +36,26 @@ services:
   pub-server:
     image: oven/bun:1.0.8
     init: true
-    command: bash -c "cd /app && ./entry.sh"
+    command: bash -c "cd /app/public && ./entry.sh"
     restart: always
     volumes:
-      - ./server/public:/app
+      - ./server/public/package.json:/app/package.json
+      - ./server/public:/app/public
+      - ./server/ws-proto:/app/ws-proto
+      - ./server/node_modules:/app/node_modules
     networks:
       - default
 
   server-ws:
     image: oven/bun:1.0.8
     init: true
-    command: bash -c "cd /app && ./entry.sh"
+    command: bash -c "cd /app/server-ws && ./entry.sh"
     restart: always
     volumes:
-      - ./server/server-ws:/app
+      - ./server/server-ws/package.json:/app/package.json
+      - ./server/server-ws:/app/server-ws
+      - ./server/ws-proto:/app/ws-proto
+      - ./server/node_modules:/app/node_modules
     networks:
       - default
 

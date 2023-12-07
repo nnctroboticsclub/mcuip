@@ -1,7 +1,8 @@
 #!/bin/bash
 
-if [ ! -d node_modules ]; then
-  bun install
-fi
+set -ex
 
+cd $(dirname $0)
+
+bun install
 bun --bun run dev -- --host 0.0.0.0

@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test";
 import { GlobalState } from "../global_state";
-import { TestJSONRootRouter } from "../../json_router/test";
 import { FlashService } from "./service";
+import { TestJSONRootRouter } from "../../json_router/test";
 
 function getRouter() {
   const router = new TestJSONRootRouter("service");

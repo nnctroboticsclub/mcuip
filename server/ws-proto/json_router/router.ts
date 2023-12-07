@@ -1,5 +1,6 @@
 import { JSONEndpoint } from "./endpoint";
 import { InternalError, KeyNotFoundError, KeyTypeError, RouteNotFoundError } from "./errors";
+import { JSONObject, JSONRouterBase } from "./types";
 
 export class JSONRouter implements JSONRouterBase {
   routes: JSONRouterBase[];

@@ -1,4 +1,5 @@
 import { JSONRouter } from "./router";
+import { JSONObject, JSONRouterBase } from "./types";
 
 export class JSONEndpoint implements JSONRouterBase {
   constructor(public tag: string, public callback: (data: { [key: string]: any }) => void, private backref: JSONRouter | undefined = undefined) { }

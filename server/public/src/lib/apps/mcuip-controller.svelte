@@ -21,6 +21,11 @@
     const client = new McuIpClient(server_url);
 
     shared_data.setData("syoch/mcuip/client", client);
+    console.log("Flash...");
+    new Promise((resolve) => setTimeout(resolve, 1000)).then(() => {
+      client.flashDo("TestDevice");
+    });
+    console.log("Flash - End...");
   }
 </script>
 

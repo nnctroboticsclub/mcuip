@@ -18,6 +18,7 @@ Bun.serve<Serve<WSData>>({
       if (typeof message !== "string") {
         return
       }
+      console.error(`Received message from ${ws.remoteAddress}: ${message}`);
       try {
         ws.data.router.route(JSON.parse(message));
       } catch (e) {
