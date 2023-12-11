@@ -15,7 +15,5 @@ export class McuIpRootHandler extends JSONRootRouterBase {
     this.flash = new FlashService(this, GlobalState.getInstance().node_manager);
   }
 
-  back_routing(data: JSONObject): null {
-    return null;
-  }
+  back_routing(data: JSONObject): undefined { }
 }

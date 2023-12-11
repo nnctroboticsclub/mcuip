@@ -2,8 +2,8 @@ import EventEmitter from "events";
 import StrictEventEmitter from "strict-event-emitter-types";
 
 export type Data = {
-  c: string,
-  d: { [key: string]: any }
+  c: string, // channel
+  d: { [key: string]: any } // data
 };
 
 interface Events {
