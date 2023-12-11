@@ -4,7 +4,7 @@ import { JSONObject } from "./types";
 
 export class JSONRootRouterBase extends JSONRouter<object> {
   constructor(key: string) {
-    super("root", key, undefined);
+    super("root", key);
   }
 
   back_routing(data: JSONObject): undefined {
