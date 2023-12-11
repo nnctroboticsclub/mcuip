@@ -2,32 +2,36 @@ import { JSONEndpoint } from "./endpoint";
 import { InternalError, KeyNotFoundError, KeyTypeError, RouteNotFoundError } from "./errors";
 import { JSONObject, JSONRouterBase } from "./types";
 
-export class JSONRouter implements JSONRouterBase {
-  routes: JSONRouterBase[];
+export class JSONRouter<T extends JSONObject> implements JSONRouterBase<T> {
+  routes: JSONRouterBase<object>[];
 
-  constructor(public tag: string, public key: string, private backref: JSONRouter | undefined = undefined) {
+  constructor(
+    public tag: string,
+    public key: string,
+    private backref: JSONRouter<any> | undefined = undefined
+  ) {
     this.routes = [];
 
     backref?.add_route(this);
   }
 
-  add_route(route: JSONRouterBase) {
+  add_route(route: JSONRouterBase<any>) {
     this.routes.push(route)
   }
 
-  router(tag: string, key: string): JSONRouter {
-    const router = new JSONRouter(tag, key, this);
+  router<U extends JSONObject>(tag: string, key: string): JSONRouter<U> {
+    const router = new JSONRouter<U>(tag, key, this);
     this.add_route(router);
     return router;
   }
 
-  endpoint<T>(tag: string, callback: (data: T) => void): JSONEndpoint<T> {
-    const endpoint = new JSONEndpoint<T>(tag, callback, this);
+  endpoint<U extends JSONObject>(tag: string, callback: (data: U) => void): JSONEndpoint<U> {
+    const endpoint = new JSONEndpoint<U>(tag, callback, this);
     this.add_route(endpoint);
     return endpoint;
   }
 
-  route(data: { [key: string]: any }): JSONRouterBase | undefined {
+  route(data: T): undefined {
     if (!data.hasOwnProperty(this.key)) {
       throw new KeyNotFoundError(this.key);
     }
@@ -46,7 +50,7 @@ export class JSONRouter implements JSONRouterBase {
     throw new RouteNotFoundError(`Route ${val} not found in ${this.tag}`);
   }
 
-  back_routing(data: JSONObject): null {
+  back_routing(data: JSONObject): undefined {
     if (!this.backref) {
       throw new Error('No backref');
     }
@@ -61,7 +65,5 @@ export class JSONRouter implements JSONRouterBase {
     data["$__tag"] = this.tag;
 
     this.backref.back_routing(data);
-
-    return null;
   }
 }

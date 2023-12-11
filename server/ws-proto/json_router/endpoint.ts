@@ -1,15 +1,18 @@
 import { JSONRouter } from "./router";
 import { JSONObject, JSONRouterBase } from "./types";
 
-export class JSONEndpoint<T> implements JSONRouterBase {
-  constructor(public tag: string, public callback: (data: T) => void, private backref: JSONRouter | undefined = undefined) { }
+export class JSONEndpoint<T extends JSONObject> implements JSONRouterBase<T> {
+  constructor(
+    public tag: string,
+    public callback: (data: T) => void,
+    private backref: JSONRouter<any> | undefined = undefined
+  ) { }
 
-  route(data: { [key: string]: any }): JSONRouterBase | undefined {
-    this.callback(data as T);
-    return undefined;
+  route(data: T): undefined {
+    this.callback(data);
   }
 
-  back_routing(data: object): null {
+  back_routing(data: object): undefined {
     if (!this.backref) {
       throw new Error('No backref');
     }
@@ -17,8 +20,6 @@ export class JSONEndpoint<T> implements JSONRouterBase {
     // @ts-ignore
     data["$__tag"] = this.tag;
     this.backref.back_routing(data);
-
-    return null;
   }
 
   send_data(data: T) {
