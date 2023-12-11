@@ -6,48 +6,29 @@ import { TestJSONRootRouter } from "../../json_router/test";
 function getRouter() {
   const router = new TestJSONRootRouter("service");
   const node_manager = GlobalState.getInstance().node_manager;
-  new FlashService(router, node_manager);
+  const flash_service = new FlashService(router, node_manager);
 
-  return router;
+  return { router, flash_service };
 }
 
 const device_name = "device1";
 
-const commands = {
-  "create": {
-    "service": "flash",
-    "command": "new",
-    "device_name": device_name
-  },
-  "subscribe": {
-    "service": "flash",
-    "command": "subscribe",
-    "device_name": device_name
-  },
-  "flash": {
-    "service": "flash",
-    "command": "flash",
-    "device_name": device_name,
-    "flash": {
-      "tag": "Flash",
-      "data_base64": "===="
-    }
-  },
-  "flash_res": {
-    "service": "flash",
-    "command": "flash",
-    "device_name": device_name,
-    "flash": {
-      "tag": "Flash",
-      "data_base64": "===="
-    }
-  }
-}
+const flash = {
+  "tag": "Flash",
+  "data_base64": "===="
+};
+
+const flash_res = {
+  "service": "flash",
+  "command": "flash",
+  "device_name": device_name,
+  "flash": flash
+};
 
 test("Node creation test", () => {
   GlobalState.getInstance().reset();
-  const router = getRouter();
-  router.route(commands.create);
+  const { flash_service } = getRouter();
+  flash_service.newDevice(device_name);
 
   const device = GlobalState.getInstance().node_manager.getDevice(device_name);
   expect(device).toBeDefined();
@@ -55,40 +36,40 @@ test("Node creation test", () => {
 
 test("Node flashing test", () => {
   GlobalState.getInstance().reset();
-  const router = getRouter();
-  router.route(commands.create);
-  router.route(commands.flash);
+  const { flash_service } = getRouter();
+  flash_service.newDevice(device_name);
+  flash_service.flash(flash, device_name);
 });
 
 test("Node subscription test (single router)", () => {
   GlobalState.getInstance().reset();
-  const router = getRouter();
-  router.route(commands.create);
-  router.route(commands.subscribe);
-  router.route(commands.flash);
+  const { router, flash_service } = getRouter();
+  flash_service.newDevice(device_name);
+  flash_service.subscribe(device_name);
+  flash_service.flash(flash, device_name);
 
-  expect(router.data).toEqual(commands.flash_res)
+  expect(router.data).toEqual(flash_res)
 });
 
 test("Node subscription test (different router)", () => {
   GlobalState.getInstance().reset();
-  const router1 = getRouter();
-  const router2 = getRouter();
-  router1.route(commands.create);
-  router2.route(commands.subscribe);
-  router1.route(commands.flash);
+  const { flash_service: flash1 } = getRouter();
+  const { flash_service: flash2, router: router2 } = getRouter();
+  flash1.newDevice(device_name);
+  flash2.subscribe(device_name);
+  flash1.flash(flash, device_name);
 
-  expect(router2.data).toEqual(commands.flash_res)
+  expect(router2.data).toEqual(flash_res)
 });
 
 test("Node subscription test (avoid excess message)", () => {
   GlobalState.getInstance().reset();
-  const router1 = getRouter();
-  const router2 = getRouter();
-  const router3 = getRouter();
-  router1.route(commands.create);
-  router2.route(commands.subscribe);
-  router1.route(commands.flash);
+  const { flash_service: flash1 } = getRouter();
+  const { flash_service: flash2 } = getRouter();
+  const { router: router3 } = getRouter();
+  flash1.newDevice(device_name);
+  flash2.subscribe(device_name);
+  flash1.flash(flash, device_name);
 
   expect(router3.data).toEqual({});
 });

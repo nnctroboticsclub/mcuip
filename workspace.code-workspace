@@ -10,7 +10,7 @@
 			"path": "server/public"
 		},
 		{
-			"path": "esp32/app-agent"
+			"path": "server/ws-proto"
 		}
 	],
 	"settings": {

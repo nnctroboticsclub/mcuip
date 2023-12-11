@@ -66,4 +66,21 @@ export class FlashService extends McuIpService<{
       device_name
     });
   }
+
+  public flash(flash: Flash, device_name: string) {
+    this.point_flash.route({
+      flash,
+      device_name
+    });
+  }
+
+  public subscribe(device_name: string) {
+    this.point_subscribe.route({
+      device_name
+    });
+  }
+
+  public getLocalDevice(device_name: string) {
+    return this.node_manager.getDevice(device_name);
+  }
 }
