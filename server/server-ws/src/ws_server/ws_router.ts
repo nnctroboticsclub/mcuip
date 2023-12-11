@@ -1,5 +1,5 @@
 import { ServerWebSocket } from "bun";
-import { McuIpRootHandler } from "../../../ws-proto/mcuip-ws-proto/handler";
+import { McuIpRootHandler } from "../../../ws-proto/mcuip";
 import { JSONObject } from "../../../ws-proto/json_router/types";
 
 export type WSData = {

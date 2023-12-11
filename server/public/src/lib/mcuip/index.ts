@@ -1,6 +1,7 @@
 import type { SharedDataInterface } from "$lib/shared_data/global";
 import { writable, type Writable } from "svelte/store";
 
+
 export class McuIpClient implements SharedDataInterface {
   sock: WebSocket;
   state: Writable<"Connecting" | "Connected" | "Error" | "Disconnected">
