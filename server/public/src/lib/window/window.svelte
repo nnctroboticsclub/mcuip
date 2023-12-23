@@ -4,7 +4,7 @@
   import DragTarget from "$lib/dragger/drag_target.svelte";
   import { Position } from "$lib/ui/position";
   import { global_state } from "../../global_state";
-  import { XmarkSolid } from "svelte-awesome-icons";
+  import Button from "$lib/ui/button.svelte";
 
   const hover_enabled = global_state.config.window.hover_enabled;
   const title_bar_centered = global_state.config.window.centered_title_bar;
@@ -32,15 +32,25 @@
   );
 
   let dragging: boolean = false;
+
+  // DOM
+
+  let container: HTMLDivElement | undefined = undefined;
+
+  // Events
+
+  $: if (container) {
+    container.onclick = () => {
+      window.z_index.set(Infinity);
+    };
+  }
 </script>
 
 <div
   class="container"
   class:dragging
   style={$container_style}
-  on:click={() => {
-    window.z_index.set(Infinity);
-  }}
+  bind:this={container}
   role="dialog"
 >
   <DragTarget
@@ -59,11 +69,13 @@
         {#if $title_bar_with_z_index}
           Z: {window.z_index}
         {/if}
-        <XmarkSolid
+        <Button
+          width="20px"
+          height="20px"
           on:click={() => {
             window.status.set("Closing");
-          }}
-        />
+          }}>X</Button
+        >
       </div>
     </div>
   </DragTarget>

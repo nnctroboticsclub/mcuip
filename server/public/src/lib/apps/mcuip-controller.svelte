@@ -7,7 +7,7 @@
   import Button from "$lib/ui/button.svelte";
   import { get } from "svelte/store";
   import { shared_data } from "$lib/shared_data/global";
-  import { McuIpClient } from "$lib/mcuip";
+  import { McuIpHandler } from "$lib/mcuip";
 
   const server = getWindow().getDataStore<string>("ip");
   if (!$server) {
@@ -18,12 +18,18 @@
     const server_url = get(server);
     console.log(`Connecting to ${server_url}`);
 
-    const client = new McuIpClient(server_url);
+    const client = new McuIpHandler(new WebSocket(server_url));
 
     shared_data.setData("syoch/mcuip/client", client);
     console.log("Flash...");
     new Promise((resolve) => setTimeout(resolve, 1000)).then(() => {
-      client.flashDo("TestDevice");
+      client.flash.flash(
+        {
+          tag: "test",
+          data_base64: "AQIDBA==",
+        },
+        "TestDevice"
+      );
     });
     console.log("Flash - End...");
   }

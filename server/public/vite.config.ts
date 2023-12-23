@@ -1,9 +1,11 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vitest/config';
 import Terminal from 'vite-plugin-terminal'
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 export default defineConfig({
 	plugins: [
+		nodePolyfills(),
 		sveltekit(),
 		Terminal({
 			console: "terminal",

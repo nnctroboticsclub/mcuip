@@ -1,14 +1,15 @@
 import type { SharedDataInterface } from "$lib/shared_data/global";
 import { writable, type Writable } from "svelte/store";
+import { McuIpRootHandler } from "../../../../ws-proto/mcuip";
+import { JSONRootRouterBase } from "../../../../ws-proto/json_router";
+import type { JSONObject } from "../../../../ws-proto/json_router/types";
 
+export class McuIpHandler extends McuIpRootHandler {
+  state: Writable<"Connecting" | "Connected" | "Error" | "Disconnected">;
 
-export class McuIpClient implements SharedDataInterface {
-  sock: WebSocket;
-  state: Writable<"Connecting" | "Connected" | "Error" | "Disconnected">
-  message_handlers: { tag: string, handler: (data: object) => boolean }[] = [];
+  constructor(private sock: WebSocket) {
+    super();
 
-  constructor(url: string) {
-    this.sock = new WebSocket(url);
     this.state = writable("Connecting");
 
     this.sock.onopen = () => {
@@ -25,51 +26,15 @@ export class McuIpClient implements SharedDataInterface {
     }
 
     this.sock.onmessage = (event) => {
-      const message = JSON.parse(event.data);
-
-      const handler_called = this.message_handlers
-        .map((handler) => handler.handler(message))
-        .filter((result) => result).length > 0;
-
-      if (!handler_called) {
-        console.log("Unhandled message", message);
-      }
+      this.route(JSON.parse(event.data));
     }
-  }
-
-  addMessageHandler(tag: string, handler: (data: object) => boolean) {
-    this.message_handlers.push({ tag, handler });
-  }
-
-  flashDo(device_name: string) {
-    this.sock.send(JSON.stringify({
-      "service": "flash",
-      "command": "flash",
-      "device_name": device_name,
-      "flash": {
-        "tag": "Flash",
-        "data_base64": "===="
-      }
-    }))
-  }
-
-  flashCreateDevice(device_name: string) {
-    this.sock.send(JSON.stringify({
-      "service": "flash",
-      "command": "new",
-      "device_name": device_name
-    }))
-  }
-
-  flashSubscribe(device_name: string) {
-    this.sock.send(JSON.stringify({
-      "service": "flash",
-      "command": "subscribe",
-      "device_name": device_name
-    }))
   }
 
   getDataState(): Writable<string> {
     return this.state;
+  }
+
+  back_routing(data: JSONObject): undefined {
+    this.sock.send(JSON.stringify(data));
   }
 }

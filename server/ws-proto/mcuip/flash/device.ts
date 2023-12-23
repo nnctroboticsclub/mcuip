@@ -1,6 +1,5 @@
 import { EventEmitter } from "stream";
-import { StrictEventEmitter } from "strict-event-emitter-types";
-
+import type { StrictEventEmitter } from "strict-event-emitter-types";
 
 export type Flash = {
   tag: string,
