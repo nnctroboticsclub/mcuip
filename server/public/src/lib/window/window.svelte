@@ -72,6 +72,8 @@
         <Button
           width="20px"
           height="20px"
+          color="#ccc8"
+          active_color="#ccc"
           on:click={() => {
             window.status.set("Closing");
           }}>X</Button

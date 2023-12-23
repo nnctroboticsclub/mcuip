@@ -5,12 +5,14 @@
 
   export let width: string = "100px";
   export let height: string = "1.5em";
+  export let color: string = "#3d5afe";
+  export let active_color: string = "#304ffe";
 
   export let tooltip: string = "";
 </script>
 
 <button
-  style="width: {width}; height: {height};"
+  style="width: {width}; height: {height}; --color: {color}; --active-color: {active_color};"
   title={tooltip}
   on:click={() => {
     dispatch("click");
@@ -28,13 +30,13 @@
 
     vertical-align: middle;
 
-    background-color: #3d5afe;
+    background-color: var(--color);
     border-radius: 3px;
 
     cursor: pointer;
   }
 
   button:active {
-    background-color: #304ffe;
+    background-color: var(--active-color);
   }
 </style>
