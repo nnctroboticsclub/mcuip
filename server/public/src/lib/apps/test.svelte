@@ -8,11 +8,22 @@
   import Button from "$lib/ui/button.svelte";
   import TabContent from "$lib/ui/tab/tab-content.svelte";
   import TabContainer from "$lib/ui/tab/tab-container.svelte";
+  import Joystick from "$lib/ui/joystick.svelte";
 
   const data = getWindow().getDataStore("time") as Writable<number>;
+  const joy_x = getWindow().getDataStore("joy_x") as Writable<number>;
+  const joy_y = getWindow().getDataStore("joy_y") as Writable<number>;
 
   if (!$data) {
     data.set(0);
+  }
+
+  if (!$joy_x) {
+    joy_x.set(0);
+  }
+
+  if (!$joy_y) {
+    joy_y.set(0);
   }
 
   onMount(() => {
@@ -57,6 +68,9 @@
       <TabContent name="UI Test">
         <Toggle bind:value /> <br />
         value: {value} <br />
+        <Joystick bind:x_val={$joy_x} bind:y_val={$joy_y} /> <br />
+        joystick x: {$joy_x} <br />
+        joystick y: {$joy_y} <br />
       </TabContent>
       <TabContent name="Window state">
         Time: {$data}<br />

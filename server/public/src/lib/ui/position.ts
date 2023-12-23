@@ -37,4 +37,17 @@ export class Position {
   components(): { x: number, y: number } {
     return { x: this.x_, y: this.y_ };
   }
+
+  normalize(): Position {
+    const magnitude = this.magnitude;
+    return new Position(this.x_ / magnitude, this.y_ / magnitude);
+  }
+
+  multiply(scalar: number): Position {
+    return new Position(this.x_ * scalar, this.y_ * scalar);
+  }
+
+  get magnitude(): number {
+    return Math.sqrt(this.x_ * this.x_ + this.y_ * this.y_);
+  }
 }
