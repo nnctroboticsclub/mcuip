@@ -11,8 +11,9 @@
   export let x_val: number = 0;
   export let y_val: number = 0;
 
+  export let tag: string = "j0";
+
   let area = new Area(0, 0, radius, radius);
-  $: area = new Area(0, 0, radius, radius);
 
   const pos_store = new DerivedWritable<number, Position>(
     writable(0),
@@ -40,13 +41,13 @@
 
 <DraggableArea top={0} left={0} height={radius} width={radius}>
   <div class="drag-area">
-    <DragTarget pos={pos_store} bind:dragging>
+    <DragTarget pos={pos_store} bind:dragging {tag}>
       <div
         style={"position: absolute; " +
           `top: ${radius / 2 + y_val}px; ` +
           `left: ${radius / 2 + x_val}px; ` +
-          "width: 30px; " +
-          "height: 30px; " +
+          "width: 50px; " +
+          "height: 50px; " +
           "border-radius: 100%; " +
           "transform: translate(-50%, -50%); " +
           "background-color: #88f;"}
