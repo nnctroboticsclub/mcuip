@@ -11,6 +11,7 @@
   export let y_val: number = 0;
 
   export let tag: string = "j0";
+  export let stick_name: string = "";
 
   const pos_store = new DerivedWritable<number, Position>(
     writable(0),
@@ -36,33 +37,36 @@
   }
 </script>
 
-<DraggableArea
-  top={0}
-  left={0}
-  height={radius}
-  width={radius}
-  tag={"ja-" + tag}
->
-  <div class="drag-area">
-    <DragTarget
-      pos={pos_store}
-      bind:dragging
-      tag={"jt-" + tag}
-      area_tag={"ja-" + tag}
-    >
-      <div
-        style={"position: absolute; " +
-          `top: ${radius / 2 + y_val}px; ` +
-          `left: ${radius / 2 + x_val}px; ` +
-          "width: 50px; " +
-          "height: 50px; " +
-          "border-radius: 100%; " +
-          "transform: translate(-50%, -50%); " +
-          "background-color: #88f;"}
-      ></div>
-    </DragTarget>
-  </div>
-</DraggableArea>
+<div class="container" style="height: {radius + 20}px; width: {radius}px">
+  <DraggableArea
+    top={0}
+    left={0}
+    height={radius}
+    width={radius}
+    tag={"ja-" + tag}
+  >
+    <div class="drag-area">
+      <DragTarget
+        pos={pos_store}
+        bind:dragging
+        tag={"jt-" + tag}
+        area_tag={"ja-" + tag}
+      >
+        <div
+          style={"position: absolute; " +
+            `top: ${radius / 2 + y_val}px; ` +
+            `left: ${radius / 2 + x_val}px; ` +
+            "width: 50px; " +
+            "height: 50px; " +
+            "border-radius: 100%; " +
+            "transform: translate(-50%, -50%); " +
+            "background-color: #88f;"}
+        ></div>
+      </DragTarget>
+    </div>
+  </DraggableArea>
+  <span class="title">{stick_name}</span>
+</div>
 
 <style>
   .drag-area {
@@ -73,5 +77,12 @@
     border-style: solid;
     border-width: 1px;
     border-radius: 100%;
+  }
+
+  .title {
+    display: block;
+    width: 100%;
+    height: 20px;
+    text-align: center;
   }
 </style>

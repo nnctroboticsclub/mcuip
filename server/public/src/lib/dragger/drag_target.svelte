@@ -60,15 +60,16 @@
 <svelte:window
   on:mousemove={(e) => whileCapture(e.clientX, e.pageY)}
   on:touchmove={(e) => {
-    const touch = [...e.touches].filter(
-      (x) => x.identifier === touch_identifier
-    );
-    if (touch.length === 0) endCapturing();
-    whileCapture(touch[0].clientX, touch[0].clientY);
+    let touch = [...e.touches].filter((x) => x.identifier === touch_identifier);
+
+    if (touch.length == 0) endCapturing();
+    else whileCapture(touch[0].clientX, touch[0].clientY);
   }}
   on:mouseup={endCapturing}
   on:touchend={(e) => {
-    if (e.targetTouches[0].identifier === touch_identifier) endCapturing();
+    const fire = ![...e.touches].some((x) => x.identifier === touch_identifier);
+
+    if (fire) endCapturing();
   }}
 />
 

@@ -9,11 +9,11 @@
   patch_console_log();
 
   const window_manager = WindowManagerContext.getContext();
-  window_manager.addWindow(new Area(120, 0, 400, 400), "2023-korobo-nc", {});
-  window_manager.addWindow(new Area(620, 0, 920, 300), "console_log", {});
+  // window_manager.addWindow(new Area(620, 0, 920, 300), "console_log", {});
   window_manager.addWindow(new Area(0, 0, 600, 110), "launcher", {});
   // window_manager.addWindow(new Area(130, 0, 600, 470), "mcuip-ctrl", {});
-  window_manager.addWindow(new Area(0, 620, 300, 600), "global_data_list", {});
+  // window_manager.addWindow(new Area(0, 620, 300, 600), "window_inspector", {});
+  window_manager.addWindow(new Area(0, 0, 1000, 330), "2023-korobo-nc", {});
 </script>
 
 <div class="container" bind:clientWidth={width} bind:clientHeight={height}>

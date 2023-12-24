@@ -22,8 +22,10 @@ services:
   server:
     image: nginx:latest
     ports:
-      - "8080:80"
-      - "8081:8080"
+      - target: 80
+        published: 8080
+        protocol: tcp
+        mode: host
     volumes:
       - ./server/nginx/default.conf:/etc/nginx/conf.d/default.conf
       - ./server/public/dist:/app/public
