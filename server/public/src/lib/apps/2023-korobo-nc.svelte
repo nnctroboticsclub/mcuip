@@ -44,28 +44,37 @@
         </div>
       </TabContent>
       <TabContent name="Control">
-        <div class="container">
-          <Joystick
-            radius={200}
-            bind:x_val={x0}
-            bind:y_val={y0}
-            tag="sm"
-            stick_name="Steering Move"
-          />
-          <Joystick
-            radius={200}
-            bind:x_val={x1}
-            bind:y_val={y1}
-            tag="sr"
-            stick_name="Steering Rotation"
-          />
-          <Joystick
-            radius={200}
-            bind:x_val={x2}
-            bind:y_val={y2}
-            tag="ru"
-            stick_name="Rotation Up"
-          />
+        <div class="row">
+          <div class="column">
+            <Joystick
+              radius={200}
+              bind:x_val={x0}
+              bind:y_val={y0}
+              tag="sm"
+              stick_name="Steering Move"
+            />
+            <span>(x, y) = ({x0?.toFixed(3)}, {y0?.toFixed(3)})</span>
+          </div>
+          <div class="column">
+            <Joystick
+              radius={200}
+              bind:x_val={x1}
+              bind:y_val={y1}
+              tag="sr"
+              stick_name="Steering Rotation"
+            />
+            <span>(x, y) = ({x1?.toFixed(3)}, {y1?.toFixed(3)})</span>
+          </div>
+          <div class="column">
+            <Joystick
+              radius={200}
+              bind:x_val={x2}
+              bind:y_val={y2}
+              tag="ru"
+              stick_name="Rotation Up"
+            />
+            <span>(x, y) = ({x2?.toFixed(3)}, {y2?.toFixed(3)})</span>
+          </div>
         </div>
       </TabContent>
     </TabContainer>
@@ -75,11 +84,19 @@
 <style>
   .container {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     width: 100%;
     height: 100%;
+  }
+
+  .row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
   }
 </style>

@@ -4,7 +4,7 @@ import type { Position } from "../ui/position";
 import { Area } from "../ui/area";
 
 export class DragTargetContext {
-  private pos: Writable<Position>;
+  private pos: Writable<Position>; // Target position
 
   constructor(pos: Writable<Position>) {
     this.pos = pos;

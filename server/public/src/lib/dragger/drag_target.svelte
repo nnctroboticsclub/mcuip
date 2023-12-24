@@ -19,12 +19,20 @@
   let element_width = -1;
   let element_height = -1;
 
-  let touch_identifier = 0;
+  export let touch_identifier = 0;
 
   let drag = {
     touch_base: new Position(0, 0),
     position_base: new Position(0, 0),
   };
+
+  export function setTouchIdentifier(id: number) {
+    touch_identifier = id;
+  }
+
+  export function setCtxPos(new_pos: Position) {
+    target_ctx.updatePos(new_pos);
+  }
 
   function whileCapture(x: number, y: number) {
     if (!dragging) return;
@@ -40,7 +48,7 @@
     target_ctx.updatePos(new_area?.getPosition() ?? new_pos);
   }
 
-  function startCapturing(x: number, y: number) {
+  export function startCapturing(x: number, y: number) {
     if (dragging) return;
     dragging = true;
 

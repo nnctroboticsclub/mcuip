@@ -35,6 +35,44 @@
       pos_store.set(new Position(0, 0));
     }
   }
+
+  // DOM
+  let container: HTMLDivElement | null = null;
+  let target: DragTarget | null = null;
+  $: (async () => {
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    if (!container) return;
+
+    const rect = container?.getBoundingClientRect();
+    if (!rect) {
+      console.error("No rect found");
+      return;
+    }
+
+    const offset = new Position(-radius / 2, -radius / 2);
+    const top = new Position(Math.floor(rect.left), Math.floor(rect.top));
+
+    container.addEventListener("touchstart", (e) => {
+      const touch = e.targetTouches[0];
+
+      const raw_point = new Position(
+        Math.floor(touch.clientX),
+        Math.floor(touch.clientY)
+      );
+
+      const point = raw_point.subtract(top).add(offset);
+
+      pos_store.set(point);
+      if (target) {
+        target.setTouchIdentifier(touch.identifier);
+        target.setCtxPos(point);
+
+        const { x, y } = raw_point.components();
+        target.startCapturing(x, y);
+      }
+    });
+  })();
 </script>
 
 <div class="container" style="height: {radius + 20}px; width: {radius}px">
@@ -45,12 +83,13 @@
     width={radius}
     tag={"ja-" + tag}
   >
-    <div class="drag-area">
+    <div class="drag-area" bind:this={container}>
       <DragTarget
         pos={pos_store}
         bind:dragging
         tag={"jt-" + tag}
         area_tag={"ja-" + tag}
+        bind:this={target}
       >
         <div
           style={"position: absolute; " +
