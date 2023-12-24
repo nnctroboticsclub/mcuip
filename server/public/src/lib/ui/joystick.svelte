@@ -4,7 +4,6 @@
   import { DerivedWritable } from "$lib/stores/derived_writable";
   import { writable } from "svelte/store";
   import { Position } from "./position";
-  import { Area } from "./area";
 
   export let radius: number = 100;
 
@@ -12,8 +11,6 @@
   export let y_val: number = 0;
 
   export let tag: string = "j0";
-
-  let area = new Area(0, 0, radius, radius);
 
   const pos_store = new DerivedWritable<number, Position>(
     writable(0),
@@ -39,9 +36,20 @@
   }
 </script>
 
-<DraggableArea top={0} left={0} height={radius} width={radius}>
+<DraggableArea
+  top={0}
+  left={0}
+  height={radius}
+  width={radius}
+  tag={"ja-" + tag}
+>
   <div class="drag-area">
-    <DragTarget pos={pos_store} bind:dragging {tag}>
+    <DragTarget
+      pos={pos_store}
+      bind:dragging
+      tag={"jt-" + tag}
+      area_tag={"ja-" + tag}
+    >
       <div
         style={"position: absolute; " +
           `top: ${radius / 2 + y_val}px; ` +

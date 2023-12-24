@@ -1,10 +1,6 @@
 <script lang="ts">
   import Window from "../window/window.svelte";
-  import { shared_data } from "$lib/shared_data/global";
-  import GlobalDataListPart from "./global_data_list_part.svelte";
   import Joystick from "$lib/ui/joystick.svelte";
-
-  const store = shared_data.dataListStore();
 
   let x0: number, y0: number;
   let x1: number, y1: number;
@@ -12,6 +8,9 @@
   let x3: number, y3: number;
   let x4: number, y4: number;
   let x5: number, y5: number;
+  let x6: number, y6: number;
+  let x7: number, y7: number;
+  let x8: number, y8: number;
 </script>
 
 <Window>
@@ -27,6 +26,9 @@
       <Joystick radius={100} bind:x_val={x3} bind:y_val={y3} tag="j3" />
       <Joystick radius={100} bind:x_val={x4} bind:y_val={y4} tag="j4" />
       <Joystick radius={100} bind:x_val={x5} bind:y_val={y5} tag="j5" />
+      <Joystick radius={100} bind:x_val={x6} bind:y_val={y6} tag="j6" />
+      <Joystick radius={100} bind:x_val={x7} bind:y_val={y7} tag="j7" />
+      <Joystick radius={100} bind:x_val={x8} bind:y_val={y8} tag="j8" />
     </div>
   </svelte:fragment>
 </Window>

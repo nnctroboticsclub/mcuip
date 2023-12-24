@@ -3,6 +3,7 @@
   import { DragTargetContext, DragContainerContext } from "./context";
   import { Position } from "../ui/position";
 
+  export let area_tag: string = "primary";
   export let tag: string = "target";
   export let pos: Writable<Position> = writable(new Position(0, 0));
   export let sticky: Position | null = null; // used for Knob
@@ -10,13 +11,15 @@
 
   const target_ctx = DragTargetContext.setContext(tag, pos);
 
-  const area_ctx = DragContainerContext.getContext();
+  const area_ctx = DragContainerContext.getContext(area_tag);
   const area_unavailable = area_ctx.getIsUnavailable();
 
   const style = sticky ? readable(sticky.getStyle()) : target_ctx.getStyle();
 
   let element_width = -1;
   let element_height = -1;
+
+  let touch_identifier = 0;
 
   let drag = {
     touch_base: new Position(0, 0),
@@ -56,7 +59,17 @@
 
 <svelte:window
   on:mousemove={(e) => whileCapture(e.clientX, e.pageY)}
-  on:touchmove={(e) => whileCapture(e.touches[0].clientX, e.touches[0].clientY)}
+  on:touchmove={(e) => {
+    const touch = [...e.touches].filter(
+      (x) => x.identifier === touch_identifier
+    );
+    if (touch.length === 0) endCapturing();
+    whileCapture(touch[0].clientX, touch[0].clientY);
+  }}
+  on:mouseup={endCapturing}
+  on:touchend={(e) => {
+    if (e.targetTouches[0].identifier === touch_identifier) endCapturing();
+  }}
 />
 
 {#if $area_unavailable}
@@ -69,11 +82,13 @@
     aria-controls="draggable"
     aria-valuenow={-1}
     tabindex={0}
-    on:touchstart={(e) =>
-      startCapturing(e.touches[0].clientX, e.touches[0].clientY)}
+    on:touchstart={(e) => {
+      const touch = e.targetTouches[0];
+      touch_identifier = touch.identifier;
+
+      startCapturing(touch.clientX, touch.clientY);
+    }}
     on:mousedown={(e) => startCapturing(e.clientX, e.clientY)}
-    on:mouseup={endCapturing}
-    on:touchend={endCapturing}
   >
     <slot />
   </div>

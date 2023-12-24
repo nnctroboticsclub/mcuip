@@ -70,17 +70,17 @@ export class DragContainerContext {
     return this.is_dragging;
   }
 
-  static initContext() {
+  static initContext(tag: string) {
     const ctx = new DragContainerContext(0, 0, 0, 0);
     ctx.is_unavailable.set(true);
-    setContext("dragContainer", ctx);
+    setContext("dragContainer-" + tag, ctx);
   }
 
-  static clearContext() {
-    DragContainerContext.getContext().is_unavailable.set(true);
+  static clearContext(tag: string) {
+    DragContainerContext.getContext(tag).is_unavailable.set(true);
   }
 
-  static getContext(): DragContainerContext {
-    return getContext<DragContainerContext>("dragContainer");
+  static getContext(tag: string): DragContainerContext {
+    return getContext<DragContainerContext>("dragContainer-" + tag);
   }
 }

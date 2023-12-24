@@ -8,16 +8,18 @@
   export let width: number;
   export let height: number;
 
-  DragContainerContext.initContext();
+  export let tag: string = "primary";
 
-  const ctx = DragContainerContext.getContext();
+  DragContainerContext.initContext(tag);
+
+  const ctx = DragContainerContext.getContext(tag);
   const is_dragging = ctx.getDragging();
 
   const debug_visual = global_state.config.debug.dragger.visual;
 
   $: {
     if (!top || !left || !width || !height) {
-      DragContainerContext.clearContext();
+      DragContainerContext.clearContext(tag);
     } else {
       ctx.setArea(new Area(top, left, width, height));
     }
