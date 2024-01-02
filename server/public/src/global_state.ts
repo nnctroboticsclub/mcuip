@@ -2,6 +2,7 @@ import { writable } from "svelte/store";
 
 export const global_state = {
   app_name: writable("McuIP Web Client"),
+  app_bar_show: writable(false),
   config: {
     debug: {
       dragger: {

@@ -5,10 +5,15 @@
   const background = global_state.theme.app.background_color;
   const title_bar_color = global_state.theme.app.appbar_color;
   const app_name = global_state.app_name;
+  const app_bar_show = global_state.app_bar_show;
 </script>
 
 <main style="background-color: {$background};">
-  <div style="background-color: {$title_bar_color};" class="app-bar">
+  <div
+    style="background-color: {$title_bar_color};"
+    class="app-bar"
+    class:app-bar-showed={$app_bar_show}
+  >
     {$app_name}
   </div>
   <div class="container"><slot /></div>
@@ -16,32 +21,26 @@
 
 <style>
   main {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
 
-    display: block;
-    height: 100%;
-    width: 100%;
+    display: flexbox;
+    height: 100vh;
+    width: 100vw;
   }
 
   div.container {
-    position: fixed;
-    top: 2em;
-    left: 0;
-    right: 0;
-    bottom: 0;
-
+    flex: 1 0 auto;
     margin: 10px;
   }
 
   div.app-bar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2em;
+    flex: 0 0 2em;
+    display: none;
+  }
 
+  div.app-bar-showed {
     display: inline-block;
   }
 </style>
