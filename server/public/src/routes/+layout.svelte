@@ -25,14 +25,13 @@
     top: 0;
     left: 0;
 
-    display: flexbox;
+    display: flex;
     height: 100vh;
     width: 100vw;
   }
 
   div.container {
     flex: 1 0 auto;
-    margin: 10px;
   }
 
   div.app-bar {
