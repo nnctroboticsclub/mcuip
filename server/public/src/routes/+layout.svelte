@@ -22,12 +22,12 @@
 <style>
   main {
     position: fixed;
-    top: 0;
-    left: 0;
+    right: env(safe-area-inset-right);
+    left: env(safe-area-inset-left);
+    top: env(safe-area-inset-top);
+    bottom: env(safe-area-inset-bottom);
 
     display: flex;
-    height: 100vh;
-    width: 100vw;
   }
 
   div.container {
