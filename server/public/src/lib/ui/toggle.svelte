@@ -1,8 +1,9 @@
 <script lang="ts">
   export let value: boolean;
+  export let style: string = "";
 </script>
 
-<button class:enabled={value} on:click={() => (value = !value)}>
+<button class:enabled={value} on:click={() => (value = !value)} {style}>
   <span class="square"></span>
 </button>
 
