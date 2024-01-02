@@ -80,6 +80,7 @@
   class="container"
   style="height: {radius + 20}px; width: {radius}px; {style};"
 >
+  <span class="title">{stick_name}</span>
   <DraggableArea
     top={0}
     left={0}
@@ -108,7 +109,6 @@
       </DragTarget>
     </div>
   </DraggableArea>
-  <span class="title">{stick_name}</span>
 </div>
 
 <style>
