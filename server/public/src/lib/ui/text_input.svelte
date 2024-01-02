@@ -2,9 +2,14 @@
   export let value: string = "";
   export let width: string = "100%";
   export let height: string = "100%";
+  export let line_height: string = "1em";
 </script>
 
-<input type="text" bind:value style="width: {width}; height: {height};" />
+<input
+  type="text"
+  bind:value
+  style="width: {width}; height: {height}; line-height: {line_height};"
+/>
 
 <style>
   input {
@@ -12,7 +17,6 @@
     outline: none;
     background-color: #333333;
     color: white;
-
     padding: 0.5em;
   }
 </style>

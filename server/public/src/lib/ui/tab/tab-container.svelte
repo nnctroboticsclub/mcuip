@@ -5,6 +5,7 @@
   export let tag: string;
   export let names: string[];
   export let height: string = "100%";
+  export let style: string = "100%";
 
   const ctx = TabContext.setContext(tag);
 
@@ -15,7 +16,7 @@
   if (!$tab_names) $tab_names = names;
 </script>
 
-<div class="container" style="height: {height};">
+<div class="container" style="height: {height}; {style};">
   <div class="tab-bar">
     {#each names as name}
       <TabName {name} />
