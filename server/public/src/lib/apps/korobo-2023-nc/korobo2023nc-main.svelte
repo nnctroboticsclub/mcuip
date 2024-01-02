@@ -105,44 +105,42 @@
   }, 1000 / 100);
 </script>
 
-<div class="app-container">
-  <TabContainer
-    style="flex-grow: 1;"
-    names={["Control", "Connection", "Control"]}
-    tag="2023-korobo-nc"
+<TabContainer
+  style="flex-grow: 1; display: flexbox;"
+  names={["Control", "Connection", "Control"]}
+  tag="2023-korobo-nc"
+>
+  <TabContent
+    name="Control"
+    style="position: relative; height: 100%; width: 100%; flex: 1 1 auto;"
   >
-    <TabContent name="Control">
-      <div class="row">
-        <Joystick
-          radius={200}
-          bind:x_val={x0}
-          bind:y_val={y0}
-          tag="sm"
-          stick_name="Steering Move"
-        />
-        <Joystick
-          radius={200}
-          bind:x_val={x1}
-          bind:y_val={y1}
-          tag="sr"
-          stick_name="Steering Rotation"
-        />
-        <Joystick
-          radius={200}
-          bind:x_val={x2}
-          bind:y_val={y2}
-          tag="ru"
-          stick_name="Rotation Up"
-        />
-      </div>
-    </TabContent>
-    <TabContent name="Connection">
-      <TextInput bind:value={$url_store} height="3em" line_height="1em" />
-    </TabContent>
-  </TabContainer>
-  <div
-    style="flex: 120px 0 0; height: 100%; display: flexbox; flex-direction: column;"
-  >
+    <Joystick
+      radius={200}
+      bind:x_val={x0}
+      bind:y_val={y0}
+      tag="sm"
+      stick_name="Steering Move"
+      style="position: absolute; bottom: 0; left: 0;"
+    />
+    <Joystick
+      radius={200}
+      bind:x_val={x1}
+      bind:y_val={y1}
+      tag="sr"
+      stick_name="Steering Rotation"
+      style="position: absolute; bottom: 0; right: 0;"
+    />
+    <Joystick
+      radius={200}
+      bind:x_val={x2}
+      bind:y_val={y2}
+      tag="ru"
+      stick_name="Rotation Up"
+      style="position: absolute; bottom: 0; left: 200px;"
+    />
+  </TabContent>
+  <TabContent name="Connection">
+    <TextInput bind:value={$url_store} height="3em" line_height="1em" />
     <span>
       {$sock_store ? "Connected" : "Not Connected"}
     </span>
@@ -153,21 +151,10 @@
         connect();
       }}>Connect</Button
     >
-  </div>
-</div>
+  </TabContent>
+</TabContainer>
 
 <style>
-  .app-container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-
-    height: 100%;
-    width: 100%;
-  }
-
   .row {
     display: flex;
     flex-direction: row;
