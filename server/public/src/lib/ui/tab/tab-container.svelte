@@ -44,5 +44,6 @@
 
   div.contents {
     padding: 7px;
+    flex: 1 1 auto;
   }
 </style>

@@ -2,6 +2,7 @@
   import { TabContext } from "./context";
 
   export let name: string;
+  export let style: string = "";
 
   const ctx = TabContext.getContext();
 
@@ -9,7 +10,7 @@
 </script>
 
 {#if active_tab_name}
-  <div class:active={$active_tab_name === name}>
+  <div class:active={$active_tab_name === name} {style}>
     <slot />
   </div>
 {:else}
