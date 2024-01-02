@@ -6,6 +6,7 @@
   import { Position } from "./position";
 
   export let radius: number = 100;
+  export let style: string = "";
 
   export let x_val: number = 0;
   export let y_val: number = 0;
@@ -75,7 +76,10 @@
   })();
 </script>
 
-<div class="container" style="height: {radius + 20}px; width: {radius}px">
+<div
+  class="container"
+  style="height: {radius + 20}px; width: {radius}px; {style};"
+>
   <DraggableArea
     top={0}
     left={0}
