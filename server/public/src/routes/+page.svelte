@@ -6,8 +6,10 @@
   import { WindowConfig, setWindow } from "$lib/window/window";
   import { writable } from "svelte/store";
   import Korobo2023ncMain from "$lib/apps/korobo-2023-nc/korobo2023nc-main.svelte";
+  import { global_state } from "../global_state";
 
   let width: number, height: number;
+  let window_bk_color = global_state.theme.window.background_color;
 
   patch_console_log();
 
@@ -30,7 +32,9 @@
 
 <div class="container" bind:clientWidth={width} bind:clientHeight={height}>
   <!-- <Windows {width} {height} /> -->
-  <Korobo2023ncMain></Korobo2023ncMain>
+  <div style="background-color: {$window_bk_color}; height: 100%; width: 100%">
+    <Korobo2023ncMain></Korobo2023ncMain>
+  </div>
 </div>
 
 <style>
