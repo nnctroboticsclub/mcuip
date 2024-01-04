@@ -6,6 +6,8 @@
   export let names: string[];
   export let height: string = "100%";
   export let style: string = "100%";
+  export let vertical: boolean = false;
+  export let tab_size: string | "auto" = "auto";
 
   const ctx = TabContext.setContext(tag);
 
@@ -16,10 +18,10 @@
   if (!$tab_names) $tab_names = names;
 </script>
 
-<div class="container" style="height: {height}; {style};">
+<div class="container" style="height: {height}; {style};" class:vertical>
   <div class="tab-bar">
     {#each names as name}
-      <TabName {name} />
+      <TabName {name} {tab_size} />
     {/each}
   </div>
   <div class="contents">
@@ -28,6 +30,16 @@
 </div>
 
 <style>
+  div.container {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #888;
+    border-radius: 5px;
+  }
+  div.container.vertical {
+    flex-direction: row;
+  }
+
   div.container > div.tab-bar {
     margin-top: 5px;
     display: flex;
@@ -35,11 +47,13 @@
     border-bottom: 1px solid #888;
     margin-bottom: 5px;
   }
-  div.container {
-    display: flex;
+
+  div.container.vertical > div.tab-bar {
     flex-direction: column;
-    border: 1px solid #888;
-    border-radius: 5px;
+    border-bottom: none;
+    border-right: 1px solid #888;
+    margin-right: 5px;
+    margin-bottom: 0px;
   }
 
   div.contents {
