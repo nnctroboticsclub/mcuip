@@ -3,6 +3,7 @@
 
   export let name: string;
   export let style: string = "";
+  export let whatever: boolean = false;
 
   const ctx = TabContext.getContext();
 
@@ -10,7 +11,7 @@
 </script>
 
 {#if active_tab_name}
-  <div class:active={$active_tab_name === name} {style}>
+  <div class:active={whatever || $active_tab_name === name} {style}>
     <slot />
   </div>
 {:else}

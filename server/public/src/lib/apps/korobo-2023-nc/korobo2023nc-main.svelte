@@ -203,6 +203,18 @@
         }}>Connect</Button
       >
     </TabContent>
+    <TabContent name="Calibration" style="height: 100%; width: 100%">
+      <TabContainer
+        tag="2023-korobo-nc-calib"
+        style="height: 100%; width: 100%"
+        names={["Steer Motor Kp", "Steer Motor Ki", "Steer Motor Kd"]}
+        vertical={true}
+        tab_size="1em"
+      >
+        <TabContent whatever={true} style="width: 100%; height: 100%" name=""
+        ></TabContent>
+      </TabContainer>
+    </TabContent>
   </TabContainer>
 </div>
 

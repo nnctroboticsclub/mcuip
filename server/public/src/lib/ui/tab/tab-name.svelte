@@ -2,6 +2,9 @@
   import { TabContext } from "./context";
 
   export let name: string;
+  export let tab_size: string | "auto" = "auto";
+
+  const flex = tab_size === "auto" ? "1 1 auto" : `0 0 ${tab_size}`;
 
   const ctx = TabContext.getContext()?.active_tab_name;
 </script>
@@ -10,6 +13,7 @@
   on:click={() => {
     ctx?.set(name);
   }}
+  style="flex: {flex};"
   class:active={$ctx === name}
 >
   {#if ctx}
@@ -23,7 +27,7 @@
   button {
     flex: 1;
     background-color: #eee;
-    padding: 10px;
+    padding: 10px 20px 10px 10px;
 
     text-align: center;
     clip-path: polygon(
