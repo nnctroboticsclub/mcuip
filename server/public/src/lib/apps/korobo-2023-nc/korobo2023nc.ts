@@ -4,7 +4,7 @@ import { get, writable, type Writable } from "svelte/store";
 type ControlValueType = "num" | "bool";
 
 type ControlSubType<T extends ControlValueType> = T extends "num"
-  ? ("value" | "joystick")
+  ? ("value" | "joystick" | "pid")
   : "button";
 type ControlValue<T extends ControlValueType> = T extends "num" ? number : boolean;
 
@@ -37,6 +37,18 @@ export class App {
       "sry": { prev: 0, curr: 0, range: [-100, 100] },
       "srm": { prev: 0, curr: 0, range: [0, 100] },
       "sra": { prev: 0, curr: 0, range: [0, 360] },
+      "sm0pp": { prev: 2.7, curr: 2.7, range: [0, 10] },
+      "sm0pi": { prev: 0, curr: 0, range: [0, 10] },
+      "sm0pd": { prev: 0.000015, curr: 0.000015, range: [0, 10] },
+      "sm1pp": { prev: 2.7, curr: 2.7, range: [0, 10] },
+      "sm1pi": { prev: 0, curr: 0, range: [0, 10] },
+      "sm1pd": { prev: 0.000015, curr: 0.000015, range: [0, 10] },
+      "sm2pp": { prev: 2.7, curr: 2.7, range: [0, 10] },
+      "sm2pi": { prev: 0, curr: 0, range: [0, 10] },
+      "sm2pd": { prev: 0.000015, curr: 0.000015, range: [0, 10] },
+      "sgpp": { prev: 2.7, curr: 2.7, range: [0, 10] },
+      "sgpi": { prev: 0, curr: 0, range: [0, 10] },
+      "sgpd": { prev: 0.000015, curr: 0.000015, range: [0, 10] },
     },
     bool: {
       "srp": { prev: true, curr: true }
@@ -47,6 +59,10 @@ export class App {
     { id: 0x00, subtype: "joystick", type: "num", target: ["smx", "smy"], counter: 0 },
     { id: 0x01, subtype: "joystick", type: "num", target: ["srm", "sra"], counter: 0 },
     { id: 0x01, subtype: "button", type: "bool", target: ["srp"], counter: 0 },
+    { id: 0x00, subtype: "pid", type: "num", target: ["sm0pp", "sm0pi", "sm0pd"], counter: 0 },
+    { id: 0x01, subtype: "pid", type: "num", target: ["sm1pp", "sm1pi", "sm1pd"], counter: 0 },
+    { id: 0x02, subtype: "pid", type: "num", target: ["sm2pp", "sm2pi", "sm2pd"], counter: 0 },
+    { id: 0x03, subtype: "pid", type: "num", target: ["sgpp", "sgpi", "sgpd"], counter: 0 },
   ];
 
   async connect() {
@@ -151,6 +167,29 @@ export class App {
       const buf = new ArrayBuffer(1);
       const view = new DataView(buf);
       view.setUint8(0, packet.id | (controls[0].curr ? 0x20 : 0x00));
+
+      this.send_ctrl_packet(buf);
+    } else if (packet.type === "num" && packet.subtype === "pid") {
+      const control_group = this.controls[packet.type];
+      const controls = packet.target.map(t => control_group[t]);
+
+      controls.forEach((c) => {
+        c.prev = c.curr;
+      });
+
+      const array = (controls as Control<"num">[]).
+        map(control => Math.round(
+          ((control.curr - control.range[0]) /
+            (control.range[1] - control.range[0])) *
+          255.0
+        ));
+
+      const buf = new ArrayBuffer(4);
+      const view = new DataView(buf);
+      view.setUint8(0, 0xA0 | packet.id);
+      view.setUint8(1, array[0]);
+      view.setUint8(2, array[1]);
+      view.setUint8(3, array[2]);
 
       this.send_ctrl_packet(buf);
     }

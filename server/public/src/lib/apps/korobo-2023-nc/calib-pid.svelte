@@ -9,9 +9,9 @@
   let i_gain_text = i_gain.toString();
   let d_gain_text = d_gain.toString();
 
-  $: p_gain = parseFloat(p_gain_text);
-  $: i_gain = parseFloat(i_gain_text);
-  $: d_gain = parseFloat(d_gain_text);
+  $: p_gain = isNaN(parseFloat(p_gain_text)) ? 0 : parseFloat(p_gain_text);
+  $: i_gain = isNaN(parseFloat(i_gain_text)) ? 0 : parseFloat(i_gain_text);
+  $: d_gain = isNaN(parseFloat(d_gain_text)) ? 0 : parseFloat(d_gain_text);
 
   let p_percent = 33;
   let i_percent = 33;

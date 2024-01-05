@@ -100,16 +100,32 @@
         tab_size="1em"
       >
         <TabContent style="width: 100%; height: 100%" name="Steer Motor 0"
-          ><CalibPid></CalibPid></TabContent
+          ><CalibPid
+            bind:p_gain={app.controls.num["sm0pp"].curr}
+            bind:i_gain={app.controls.num["sm0pi"].curr}
+            bind:d_gain={app.controls.num["sm0pd"].curr}
+          ></CalibPid></TabContent
         >
         <TabContent style="width: 100%; height: 100%" name="Steer Motor 1"
-          ><CalibPid></CalibPid></TabContent
+          ><CalibPid
+            bind:p_gain={app.controls.num["sm1pp"].curr}
+            bind:i_gain={app.controls.num["sm1pi"].curr}
+            bind:d_gain={app.controls.num["sm1pd"].curr}
+          ></CalibPid></TabContent
         >
         <TabContent style="width: 100%; height: 100%" name="Steer Motor 2"
-          ><CalibPid></CalibPid></TabContent
+          ><CalibPid
+            bind:p_gain={app.controls.num["sm2pp"].curr}
+            bind:i_gain={app.controls.num["sm2pi"].curr}
+            bind:d_gain={app.controls.num["sm2pd"].curr}
+          ></CalibPid></TabContent
         >
         <TabContent style="width: 100%; height: 100%" name="Steer Gyro"
-          ><CalibPid></CalibPid></TabContent
+          ><CalibPid
+            bind:p_gain={app.controls.num["sgpp"].curr}
+            bind:i_gain={app.controls.num["sgpi"].curr}
+            bind:d_gain={app.controls.num["sgpd"].curr}
+          ></CalibPid></TabContent
         >
       </TabContainer>
     </TabContent>
