@@ -47,23 +47,23 @@
       </div>
       <Joystick
         radius={200}
-        bind:x_val={app.controls.num[0].curr}
-        bind:y_val={app.controls.num[1].curr}
+        bind:x_val={app.controls.num["smx"].curr}
+        bind:y_val={app.controls.num["smy"].curr}
         tag="sm"
         stick_name="Move"
         style="position: absolute; bottom: 0; left: 0;"
       />
       <Joystick
         radius={200}
-        bind:x_val={app.controls.num[2].curr}
-        bind:y_val={app.controls.num[3].curr}
+        bind:x_val={app.controls.num["srx"].curr}
+        bind:y_val={app.controls.num["sry"].curr}
         tag="sr"
         stick_name="Rotation"
         style="position: absolute; bottom: 0; right: 0;"
       />
       <div style="position: absolute; bottom: 220px; right: 0;">
         PID Enabled
-        <Toggle bind:value={app.controls.bool[0].curr}></Toggle>
+        <Toggle bind:value={app.controls.bool["srp"].curr}></Toggle>
       </div>
       <div
         style="position: absolute; height: 5rem; bottom: 0; right: 300px; left: 300px; background-color: #eee8; overflow: hidden; line-height: 1em;"
@@ -94,15 +94,23 @@
           "Steer Motor 0",
           "Steer Motor 1",
           "Steer Motor 2",
-          "Steer Motor Gyro",
+          "Steer Gyro",
         ]}
         vertical={true}
         tab_size="1em"
       >
-        <TabContent whatever={true} style="width: 100%; height: 100%" name=""
+        <TabContent style="width: 100%; height: 100%" name="Steer Motor 0"
+          ><CalibPid></CalibPid></TabContent
         >
-        <CalibPid></CalibPid>
-      </TabContent>
+        <TabContent style="width: 100%; height: 100%" name="Steer Motor 1"
+          ><CalibPid></CalibPid></TabContent
+        >
+        <TabContent style="width: 100%; height: 100%" name="Steer Motor 2"
+          ><CalibPid></CalibPid></TabContent
+        >
+        <TabContent style="width: 100%; height: 100%" name="Steer Gyro"
+          ><CalibPid></CalibPid></TabContent
+        >
       </TabContainer>
     </TabContent>
   </TabContainer>

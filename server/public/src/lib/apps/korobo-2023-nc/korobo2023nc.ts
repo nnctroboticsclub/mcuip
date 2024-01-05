@@ -9,44 +9,44 @@ type ControlSubType<T extends ControlValueType> = T extends "num"
 type ControlValue<T extends ControlValueType> = T extends "num" ? number : boolean;
 
 type Control<T extends ControlValueType> = {
-  id: number;
-  tag: string;
   prev: ControlValue<T>;
   curr: ControlValue<T>;
 } & (T extends "bool" ? {} : { range: [number, number] })
 
 type Controls = {
-  [T in ControlValueType]: Control<T>[];
+  [T in ControlValueType]: { [key: string]: Control<T> };
 };
 
 type PacketType = {
   id: number;
   subtype: ControlSubType<ControlValueType>;
   type: ControlValueType;
-  target: number[];
+  target: string[];
   counter: number;
 };
 
 export class App {
-  public url: string = "ws://192.168.137.21/robo-ctrl";
+  public url: string = "ws://192.168.137.247/robo-ctrl";
   public sock: Writable<WebSocket | undefined> = writable();
 
   public controls: Controls = {
-    num: [
-      { id: 0, tag: "smx", prev: 0, curr: 0, range: [-100, 100] },
-      { id: 1, tag: "smy", prev: 0, curr: 0, range: [-100, 100] },
-      { id: 2, tag: "srx", prev: 0, curr: 0, range: [-100, 100] },
-      { id: 3, tag: "sry", prev: 0, curr: 0, range: [-100, 100] },
-      { id: -1, tag: "srm", prev: 0, curr: 0, range: [0, 100] },
-      { id: -1, tag: "sra", prev: 0, curr: 0, range: [0, 360] },
-    ],
-    bool: [{ id: 0, tag: "srp", prev: true, curr: true }]
+    num: {
+      "smx": { prev: 0, curr: 0, range: [-100, 100] },
+      "smy": { prev: 0, curr: 0, range: [-100, 100] },
+      "srx": { prev: 0, curr: 0, range: [-100, 100] },
+      "sry": { prev: 0, curr: 0, range: [-100, 100] },
+      "srm": { prev: 0, curr: 0, range: [0, 100] },
+      "sra": { prev: 0, curr: 0, range: [0, 360] },
+    },
+    bool: {
+      "srp": { prev: true, curr: true }
+    }
   };
 
   private packet_types: PacketType[] = [
-    { id: 0x00, subtype: "joystick", type: "num", target: [0, 1], counter: 0 },
-    { id: 0x01, subtype: "joystick", type: "num", target: [4, 5], counter: 0 },
-    { id: 0x01, subtype: "button", type: "bool", target: [0], counter: 0 },
+    { id: 0x00, subtype: "joystick", type: "num", target: ["smx", "smy"], counter: 0 },
+    { id: 0x01, subtype: "joystick", type: "num", target: ["srm", "sra"], counter: 0 },
+    { id: 0x01, subtype: "button", type: "bool", target: ["srp"], counter: 0 },
   ];
 
   async connect() {
@@ -85,12 +85,12 @@ export class App {
 
 
   update_sub_controls() {
-    const x = this.controls.num[2].curr;
-    const y = this.controls.num[3].curr;
+    const x = this.controls.num["srx"].curr;
+    const y = this.controls.num["sry"].curr;
 
-    this.controls.num[4].curr = Math.sqrt(x * x + y * y);
-    this.controls.num[5].curr = (Math.atan2(y, x) * 180.0) / Math.PI + 90.0;
-    if (this.controls.num[5].curr < 0) this.controls.num[5].curr += 360.0;
+    this.controls.num["srm"].curr = Math.sqrt(x * x + y * y);
+    this.controls.num["sra"].curr = (Math.atan2(y, x) * 180.0) / Math.PI + 90.0;
+    if (this.controls.num["sra"].curr < 0) this.controls.num["sra"].curr += 360.0;
   }
 
   detect_changed_packet() {
