@@ -12,31 +12,42 @@
   $: p_gain = parseFloat(p_gain_text);
   $: i_gain = parseFloat(i_gain_text);
   $: d_gain = parseFloat(d_gain_text);
+
+  let p_percent = 33;
+  let i_percent = 33;
+  let d_percent = 33;
+
+  $: p_percent = (p_gain / (p_gain + i_gain + d_gain)) * 100.0;
+  $: i_percent = (i_gain / (p_gain + i_gain + d_gain)) * 100.0;
+  $: d_percent = (d_gain / (p_gain + i_gain + d_gain)) * 100.0;
 </script>
 
 <div class="container">
   <div class="meter">
-    <div class="area">P Gain</div>
-    <div class="area">I Gain</div>
-    <div class="area">D Gain</div>
+    <div class="area" style="width: {p_percent}%;">P</div>
+    <div class="area" style="width: {i_percent}%;">I</div>
+    <div class="area" style="width: {d_percent}%;">D</div>
   </div>
   <div class="gain">
     <div class="label">
-      <span>P Gain</span>
+      <span>P Gain:</span>
     </div>
     <TextInput bind:value={p_gain_text}></TextInput>
+    <div class="label"><span>{Math.round(p_percent)}%</span></div>
   </div>
   <div class="gain">
     <div class="label">
       <span>I Gain:</span>
     </div>
-    <TextInput bind:value={p_gain_text}></TextInput>
+    <TextInput bind:value={i_gain_text}></TextInput>
+    <div class="label"><span>{Math.round(i_percent)}%</span></div>
   </div>
   <div class="gain">
     <div class="label">
       <span>D Gain:</span>
     </div>
-    <TextInput bind:value={p_gain_text}></TextInput>
+    <TextInput bind:value={d_gain_text}></TextInput>
+    <div class="label"><span>{Math.round(d_percent)}%</span></div>
   </div>
 </div>
 
@@ -60,7 +71,6 @@
       width: 100%;
       div.area {
         height: 100%;
-        width: 33%;
 
         text-align: center;
         line-height: 50px;
