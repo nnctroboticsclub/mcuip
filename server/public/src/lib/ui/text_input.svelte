@@ -13,6 +13,7 @@
 
 <style>
   input {
+    display: inline-block;
     border: none;
     outline: none;
     background-color: #333333;
