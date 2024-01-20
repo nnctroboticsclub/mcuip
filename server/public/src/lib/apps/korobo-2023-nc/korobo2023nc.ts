@@ -26,8 +26,12 @@ type PacketType = {
 };
 
 export class App {
-  public url: string = "ws://192.168.137.247/robo-ctrl";
+  public url: string = "ws://192.168.137.145/robo-ctrl";
   public sock: Writable<WebSocket | undefined> = writable();
+
+  private data_handler: {
+    [opcode: number]: ((data: DataView) => void)[];
+  } = {};
 
   public controls: Controls = {
     num: {
@@ -37,23 +41,27 @@ export class App {
       "sry": { prev: 0, curr: 0, range: [-100, 100] },
       "srm": { prev: 0, curr: 0, range: [0, 100] },
       "sra": { prev: 0, curr: 0, range: [0, 360] },
-      "sm0pp": { prev: 2.7, curr: 2.7, range: [0, 10] },
+      "sm0pp": { prev: 0, curr: 2.7, range: [0, 10] },
       "sm0pi": { prev: 0, curr: 0, range: [0, 10] },
-      "sm0pd": { prev: 0.000015, curr: 0.000015, range: [0, 10] },
-      "sm1pp": { prev: 2.7, curr: 2.7, range: [0, 10] },
+      "sm0pd": { prev: 0, curr: 0.000015, range: [0, 10] },
+      "sm1pp": { prev: 0, curr: 2.7, range: [0, 10] },
       "sm1pi": { prev: 0, curr: 0, range: [0, 10] },
-      "sm1pd": { prev: 0.000015, curr: 0.000015, range: [0, 10] },
-      "sm2pp": { prev: 2.7, curr: 2.7, range: [0, 10] },
+      "sm1pd": { prev: 0, curr: 0.000015, range: [0, 10] },
+      "sm2pp": { prev: 0, curr: 2.7, range: [0, 10] },
       "sm2pi": { prev: 0, curr: 0, range: [0, 10] },
-      "sm2pd": { prev: 0.000015, curr: 0.000015, range: [0, 10] },
-      "sgpp": { prev: 2.7, curr: 2.7, range: [0, 10] },
+      "sm2pd": { prev: 0, curr: 0.000015, range: [0, 10] },
+      "sgpp": { prev: 0, curr: 2.7, range: [0, 10] },
       "sgpi": { prev: 0, curr: 0, range: [0, 10] },
-      "sgpd": { prev: 0.000015, curr: 0.000015, range: [0, 10] },
+      "sgpd": { prev: 0, curr: 0.000015, range: [0, 10] },
     },
     bool: {
       "srp": { prev: true, curr: true }
     }
   };
+
+  public last_ping: Writable<number>[] = [
+    writable(0), writable(0)
+  ];
 
   private packet_types: PacketType[] = [
     { id: 0x00, subtype: "joystick", type: "num", target: ["smx", "smy"], counter: 0 },
@@ -68,8 +76,39 @@ export class App {
   async connect() {
     const sock = new WebSocket(this.url);
 
-    sock.onmessage = (e) => {
-      console.log(e.data);
+    sock.onmessage = async (e) => {
+      if (!(e.data instanceof Blob)) {
+        console.log("Received non-blob data");
+        return;
+      }
+
+      const data = await e.data.arrayBuffer();
+      const view = new DataView(data);
+
+      const opcode = view.getUint8(0);
+
+      if (opcode == 0xff) // pong notify
+      {
+        const now = Date.now() / 1000;
+        const id = view.getUint8(1);
+        this.last_ping[id].set(now);
+        return;
+      }
+
+      if (!(opcode in this.data_handler)) {
+        console.log("?<==" + [...new Uint8Array(data)].map(x => x.toString(16)).join(" "));
+        return;
+      }
+
+      const handlers = this.data_handler[opcode];
+
+      const data_ = new DataView(data, 1);
+
+      handlers.forEach((handler) => {
+        handler(data_)
+      });
+
+
     };
 
     sock.onerror = (e) => {
@@ -91,12 +130,16 @@ export class App {
     this.sock.set(sock);
   }
 
+  on_data(opcode: number, handler: (data: DataView) => void) {
+    if (!(opcode in this.data_handler)) this.data_handler[opcode] = [];
+    this.data_handler[opcode].push(handler);
+  }
+
   send_ctrl_packet(data: ArrayBuffer) {
     const sock = get(this.sock);
     if (!sock) return;
 
     sock.send(data);
-    console.log([...new Uint8Array(data)].map(x => x.toString(16)).join(" "));
   }
 
 

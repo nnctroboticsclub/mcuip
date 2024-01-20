@@ -10,8 +10,26 @@
   import { onMount } from "svelte";
   import { App } from "./korobo2023nc";
   import CalibPid from "./calib-pid.svelte";
+  import Vector from "./vector.svelte";
+  import LastPing from "./last_ping.svelte";
+  import { writable, type Writable } from "svelte/store";
 
   let ready = false;
+
+  let swerve: {
+    motors: {
+      rot: Writable<number>;
+      drive: Writable<number>;
+    }[];
+    gyro: number;
+  } = {
+    motors: [
+      { rot: writable(0), drive: writable(0) },
+      { rot: writable(0), drive: writable(0) },
+      { rot: writable(0), drive: writable(0) },
+    ],
+    gyro: 0,
+  };
 
   const app = App.new_instance();
   const sock = app.sock;
@@ -25,6 +43,18 @@
     return () => {
       clearInterval(interval);
     };
+  });
+
+  app.on_data(0x00, (v) => {
+    console.log(
+      "A0 " + [...new Uint8Array(v.buffer)].map((x) => x.toString(16)).join(" ")
+    );
+    swerve.motors[0].drive.set((v.getUint8(0) / 255) * 100);
+    swerve.motors[0].rot.set((v.getUint8(1) / 256) * 360);
+    swerve.motors[1].drive.set((v.getUint8(2) / 255) * 100);
+    swerve.motors[1].rot.set((v.getUint8(3) / 256) * 360);
+    swerve.motors[2].drive.set((v.getUint8(4) / 255) * 100);
+    swerve.motors[2].rot.set((v.getUint8(5) / 256) * 360);
   });
 </script>
 
@@ -71,6 +101,45 @@
         {#each $console_texts.slice(-5) as line}
           {line.time.toTimeString().slice(0, 8)}: {line.text}<br />
         {/each}
+      </div>
+      <div
+        style="position: absolute; top: 1rem; left: 200px; font-size: 0.7em; line-height: 1em;"
+      >
+        &gt;LOCAL <br />
+        Is connected to esp32?:
+        <span style="background-color: #{$sock ? '00ff' : 'ff00'}0044;"
+          >&nbsp;&nbsp;</span
+        >&nbsp;{$sock ? "Yes" : "No"} <br />
+        &gt;PHYSICAL <br />
+        &gt;&gt;SWERVE <br />
+        Robot Angle Errors: +80% <br />
+        Angle Errors: [+80%, +80%, +80%] <br />
+        &gt;NETWORK <br />
+        &gt;Ping <br />
+        {#each app.last_ping as last_ping, i}
+          {i}: <LastPing {last_ping}></LastPing> <br />
+        {/each}
+      </div>
+
+      <div
+        style="position: absolute; top: 100px; left: 300px; font-size: 0.7em; line-height: 1em;"
+      >
+        <Vector radius={swerve.motors[0].drive} theta={swerve.motors[0].rot}
+        ></Vector>
+      </div>
+
+      <div
+        style="position: absolute; top: 200px; left: 200px; font-size: 0.7em; line-height: 1em;"
+      >
+        <Vector radius={swerve.motors[1].drive} theta={swerve.motors[1].rot}
+        ></Vector>
+      </div>
+
+      <div
+        style="position: absolute; top: 200px; left: 400px; font-size: 0.7em; line-height: 1em;"
+      >
+        <Vector radius={swerve.motors[2].drive} theta={swerve.motors[2].rot}
+        ></Vector>
       </div>
     </TabContent>
     <TabContent name="Connection">
