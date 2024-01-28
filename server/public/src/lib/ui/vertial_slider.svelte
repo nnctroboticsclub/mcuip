@@ -8,22 +8,27 @@
   export let width: number = 100;
   export let style: string = "";
 
-  export let val: number = 0; // -1 to 1
+  export let value: number = 0; // -1 to 1
 
   export let tag: string = "j0";
   export let slider_name: string = "";
 
+  let inner_width: number = 0;
+  let value_raw: number = 0;
+
+  $: value = value_raw / inner_width;
+
   const pos_store = new DerivedWritable<number, Position>(
     writable(0),
-    (b) => new Position(val, 0),
+    (b) => new Position(value_raw, 0),
     (b, pos: Position) => {
       const { x, y: _ } = pos.components();
-      val = x;
+      value_raw = x;
 
-      if (val < -width / 2) {
-        val = -width / 2;
-      } else if (val > width / 2) {
-        val = width / 2;
+      if (value_raw < -inner_width / 2) {
+        value_raw = -inner_width / 2;
+      } else if (value_raw > inner_width / 2) {
+        value_raw = inner_width / 2;
       }
 
       return 0;
@@ -46,7 +51,7 @@
       return;
     }
 
-    const offset = new Position(-width / 2, 0);
+    const offset = new Position(-inner_width / 2, 0);
     const top = new Position(Math.floor(rect.left), Math.floor(rect.top));
 
     container.addEventListener("touchstart", (e) => {
@@ -71,9 +76,19 @@
   })();
 </script>
 
-<div class="container" style="height: {20 + 20}px; width: {width}px; {style};">
-  <span class="title">{slider_name}</span>
-  <DraggableArea top={0} left={0} height={20} {width} tag={"ja-" + tag}>
+<div
+  class="container"
+  style="height: {20 + 20}px; {style};"
+  bind:clientWidth={inner_width}
+>
+  <span class="title">{slider_name} {value}</span>
+  <DraggableArea
+    top={0}
+    left={0}
+    height={20}
+    width={inner_width}
+    tag={"ja-" + tag}
+  >
     <div class="drag-area" bind:this={container}>
       <DragTarget
         pos={pos_store}
@@ -85,8 +100,8 @@
         <div
           style={"position: absolute; " +
             `top: 0px; ` +
-            `left: ${width / 2 + val}px; ` +
-            "width: 10px; " +
+            `left: ${inner_width / 2 + value_raw}px; ` +
+            `width: 10px; ` +
             "height: 20px; " +
             "background-color: #88f;"}
         ></div>
