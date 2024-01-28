@@ -7,12 +7,13 @@
   export let height: string = "1.5em";
   export let color: string = "#3d5afe";
   export let active_color: string = "#304ffe";
+  export let style: string = "";
 
   export let tooltip: string = "";
 </script>
 
 <button
-  style="width: {width}; height: {height}; --color: {color}; --active-color: {active_color};"
+  style="width: {width}; height: {height}; --color: {color}; --active-color: {active_color}; {style}"
   title={tooltip}
   on:click={() => {
     dispatch("click");
