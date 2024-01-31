@@ -13,22 +13,35 @@
   import Vector from "./vector.svelte";
   import LastPing from "./last_ping.svelte";
   import { writable, type Writable } from "svelte/store";
+  import NwLoad from "./nw_load.svelte";
+  import SwerveMotor from "./swerve_motor.svelte";
+  import PidError from "./PIDError.svelte";
+  import RawValue from "./raw_value.svelte";
 
   let ready = false;
+  let right_joystick_for_shot = false;
+
+  let rotation_mode;
 
   let swerve: {
     motors: {
       rot: Writable<number>;
       drive: Writable<number>;
+      error: Writable<number>;
     }[];
-    gyro: number;
+    gyro: Writable<number>;
+    angle_error: Writable<number>;
   } = {
     motors: [
-      { rot: writable(0), drive: writable(0) },
-      { rot: writable(0), drive: writable(0) },
-      { rot: writable(0), drive: writable(0) },
+      { rot: writable(0), drive: writable(0), error: writable(0) },
+      { rot: writable(0), drive: writable(0), error: writable(0) },
+      { rot: writable(0), drive: writable(0), error: writable(0) },
     ],
-    gyro: 0,
+    gyro: writable(0),
+    angle_error: writable(0),
+  };
+  let network = {
+    load: writable(0),
   };
 
   const app = App.new_instance();
@@ -46,22 +59,42 @@
   });
 
   app.on_data(0x00, (v) => {
-    console.log(
-      "A0 " + [...new Uint8Array(v.buffer)].map((x) => x.toString(16)).join(" ")
-    );
-    swerve.motors[0].drive.set((v.getUint8(0) / 255) * 100);
-    swerve.motors[0].rot.set((v.getUint8(1) / 256) * 360);
-    swerve.motors[1].drive.set((v.getUint8(2) / 255) * 100);
-    swerve.motors[1].rot.set((v.getUint8(3) / 256) * 360);
-    swerve.motors[2].drive.set((v.getUint8(4) / 255) * 100);
-    swerve.motors[2].rot.set((v.getUint8(5) / 256) * 360);
+    function decode_angle(byte: number) {
+      return (byte / 255) * 360;
+    }
+
+    function decode_magnitude(byte: number) {
+      return (byte / 255) * 100;
+    }
+
+    swerve.motors[0].drive.set(decode_magnitude(v.getUint8(0)));
+    swerve.motors[0].rot.set(decode_angle(v.getUint8(1)));
+    swerve.motors[1].drive.set(decode_magnitude(v.getUint8(2)));
+    swerve.motors[1].rot.set(decode_angle(v.getUint8(3)));
+    swerve.motors[2].drive.set(decode_magnitude(v.getUint8(4)));
+    swerve.motors[2].rot.set(decode_angle(v.getUint8(5)));
+    swerve.gyro.set(decode_angle(v.getUint8(6)));
+  });
+  app.on_data(0x01, (v) => {
+    function decode_error(byte: number) {
+      return (byte - 128) / 127;
+    }
+    swerve.motors[0].error.set(decode_error(v.getUint8(0)));
+    swerve.motors[1].error.set(decode_error(v.getUint8(1)));
+    swerve.motors[2].error.set(decode_error(v.getUint8(2)));
+
+    swerve.angle_error.set(decode_error(v.getUint8(3)));
+  });
+  app.on_data(0xfe, (v) => {
+    const load = (v.getUint32(0, false) / 0x100000000) * 10000;
+    network.load.set(load);
   });
 </script>
 
 <div class="container">
   <TabContainer
     style="flex-grow: 1; display: flexbox;"
-    names={["Control", "Connection", "Calibration"]}
+    names={["Control", "Connection", "Calibration", "Vector", "Debugging"]}
     tag="2023-korobo-nc"
   >
     <TabContent
@@ -83,14 +116,29 @@
         stick_name="Move"
         style="position: absolute; bottom: 0; left: 0;"
       />
-      <Joystick
-        radius={200}
-        bind:x_val={app.controls.num["srx"].curr}
-        bind:y_val={app.controls.num["sry"].curr}
-        tag="sr"
-        stick_name="Rotation"
-        style="position: absolute; bottom: 0; right: 0;"
-      />
+      {#if right_joystick_for_shot}
+        <Joystick
+          radius={200}
+          bind:x_val={app.controls.num["lha"].curr}
+          bind:y_val={app.controls.num["lva"].curr}
+          tag="la"
+          stick_name="Launch"
+          style="position: absolute; bottom: 0; right: 0;"
+        />
+      {:else}
+        <Joystick
+          radius={200}
+          bind:x_val={app.controls.num["srx"].curr}
+          bind:y_val={app.controls.num["sry"].curr}
+          tag="sr"
+          stick_name="Rotation"
+          style="position: absolute; bottom: 0; right: 0;"
+        />
+      {/if}
+      <div style="position: absolute; bottom: 250px; right: 0;">
+        Shot Mode
+        <Toggle bind:value={right_joystick_for_shot}></Toggle>
+      </div>
       <div style="position: absolute; bottom: 220px; right: 0;">
         PID Enabled
         <Toggle bind:value={app.controls.bool["srp"].curr}></Toggle>
@@ -102,45 +150,57 @@
           {line.time.toTimeString().slice(0, 8)}: {line.text}<br />
         {/each}
       </div>
-      <div
-        style="position: absolute; top: 1rem; left: 200px; font-size: 0.7em; line-height: 1em;"
-      >
-        &gt;LOCAL <br />
-        Is connected to esp32?:
-        <span style="background-color: #{$sock ? '00ff' : 'ff00'}0044;"
-          >&nbsp;&nbsp;</span
-        >&nbsp;{$sock ? "Yes" : "No"} <br />
-        &gt;PHYSICAL <br />
-        &gt;&gt;SWERVE <br />
-        Robot Angle Errors: +80% <br />
-        Angle Errors: [+80%, +80%, +80%] <br />
-        &gt;NETWORK <br />
-        &gt;Ping <br />
-        {#each app.last_ping as last_ping, i}
-          {i}: <LastPing {last_ping}></LastPing> <br />
-        {/each}
+      <div style="position: absolute; top: 0px; left: 0px;">
+        <RawValue val={swerve.gyro}></RawValue> °
       </div>
+    </TabContent>
+    <TabContent name="Vector">
+      <div style="position: relative; margin: 0 auto; width: 200px; top: 70px;">
+        <div style="position: absolute; top: 0px; left: 100px;">
+          <Vector radius={swerve.motors[0].drive} theta={swerve.motors[0].rot}
+          ></Vector>
+        </div>
 
-      <div
-        style="position: absolute; top: 100px; left: 300px; font-size: 0.7em; line-height: 1em;"
-      >
-        <Vector radius={swerve.motors[0].drive} theta={swerve.motors[0].rot}
-        ></Vector>
-      </div>
+        <div
+          style="position: absolute; top: calc(200px * 0.8660254); left: 200px;"
+        >
+          <Vector radius={swerve.motors[1].drive} theta={swerve.motors[1].rot}
+          ></Vector>
+        </div>
 
-      <div
-        style="position: absolute; top: 200px; left: 200px; font-size: 0.7em; line-height: 1em;"
-      >
-        <Vector radius={swerve.motors[1].drive} theta={swerve.motors[1].rot}
-        ></Vector>
+        <div
+          style="position: absolute; top: calc(200px * 0.8660254); left: 0px;"
+        >
+          <Vector radius={swerve.motors[2].drive} theta={swerve.motors[2].rot}
+          ></Vector>
+        </div>
       </div>
-
-      <div
-        style="position: absolute; top: 200px; left: 400px; font-size: 0.7em; line-height: 1em;"
-      >
-        <Vector radius={swerve.motors[2].drive} theta={swerve.motors[2].rot}
-        ></Vector>
-      </div>
+    </TabContent>
+    <TabContent name="Debugging" style="font-size: smaller;">
+      &gt;LOCAL <br />
+      &nbsp;Is connected to esp32?:
+      <span style="background-color: #{$sock ? '00ff' : 'ff00'}0044;"
+        >&nbsp;&nbsp;</span
+      >&nbsp;{$sock ? "Yes" : "No"} <br />
+      &gt;PHYSICAL <br />
+      &nbsp;&gt;SWERVE <br />
+      &nbsp;&nbsp;Robot Angle Errors: <PidError val={swerve.angle_error} /><br
+      />
+      &nbsp;&nbsp;Angle Errors: [<PidError val={swerve.motors[0].error} />, <PidError
+        val={swerve.motors[1].error}
+      />, <PidError val={swerve.motors[2].error} />] <br />
+      &nbsp;&nbsp;Motor0: <SwerveMotor motor={swerve.motors[0]}></SwerveMotor>
+      <br />
+      &nbsp;&nbsp;Motor1: <SwerveMotor motor={swerve.motors[1]}></SwerveMotor>
+      <br />
+      &nbsp;&nbsp;Motor2: <SwerveMotor motor={swerve.motors[2]}></SwerveMotor>
+      <br />
+      &gt;NETWORK <br />
+      &nbsp;Load: <NwLoad value={network.load}></NwLoad><br />
+      &nbsp;&gt;Ping <br />
+      {#each app.last_ping as last_ping, i}
+        &nbsp;&nbsp;{i}: <LastPing {last_ping}></LastPing> <br />
+      {/each}
     </TabContent>
     <TabContent name="Connection">
       <TextInput bind:value={app.url} height="3em" line_height="1em" />

@@ -26,7 +26,7 @@ type PacketType = {
 };
 
 export class App {
-  public url: string = "ws://192.168.137.145/robo-ctrl";
+  public url: string = "ws://192.168.137.199/robo-ctrl";
   public sock: Writable<WebSocket | undefined> = writable();
 
   private data_handler: {
@@ -41,6 +41,8 @@ export class App {
       "sry": { prev: 0, curr: 0, range: [-100, 100] },
       "srm": { prev: 0, curr: 0, range: [0, 100] },
       "sra": { prev: 0, curr: 0, range: [0, 360] },
+      "lha": { prev: 0, curr: 0, range: [-100, 100] },
+      "lva": { prev: 0, curr: 0, range: [-100, 100] },
       "sm0pp": { prev: 0, curr: 2.7, range: [0, 10] },
       "sm0pi": { prev: 0, curr: 0, range: [0, 10] },
       "sm0pd": { prev: 0, curr: 0.000015, range: [0, 10] },
@@ -66,6 +68,7 @@ export class App {
   private packet_types: PacketType[] = [
     { id: 0x00, subtype: "joystick", type: "num", target: ["smx", "smy"], counter: 0 },
     { id: 0x01, subtype: "joystick", type: "num", target: ["srm", "sra"], counter: 0 },
+    { id: 0x02, subtype: "joystick", type: "num", target: ["lha", "lva"], counter: 0 },
     { id: 0x01, subtype: "button", type: "bool", target: ["srp"], counter: 0 },
     { id: 0x00, subtype: "pid", type: "num", target: ["sm0pp", "sm0pi", "sm0pd"], counter: 0 },
     { id: 0x01, subtype: "pid", type: "num", target: ["sm1pp", "sm1pi", "sm1pd"], counter: 0 },
@@ -117,12 +120,13 @@ export class App {
     };
 
     sock.onclose = (e) => {
-      console.log(e);
+      console.log("Disconnected");
       this.sock.set(undefined);
     };
 
     await new Promise((resolve) => {
       sock.onopen = () => {
+        console.log("Connected");
         resolve(null);
       };
     });
@@ -149,6 +153,8 @@ export class App {
 
     this.controls.num["srm"].curr = Math.sqrt(x * x + y * y);
     this.controls.num["sra"].curr = (Math.atan2(y, x) * 180.0) / Math.PI + 90.0;
+    if (x == 0 && y == 0) this.controls.num["sra"].curr = 0.0;
+
     if (this.controls.num["sra"].curr < 0) this.controls.num["sra"].curr += 360.0;
   }
 
