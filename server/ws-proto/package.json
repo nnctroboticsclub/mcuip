@@ -1,5 +1,5 @@
 {
-  "name": "server-ws",
+  "name": "ws-proto",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
