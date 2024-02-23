@@ -5,8 +5,8 @@
 
   export let width: string = "100px";
   export let height: string = "1.5em";
-  export let color: string = "#3d5afe";
-  export let active_color: string = "#304ffe";
+  export let color: string = "#8888ff";
+  export let active_color: string = "#5555ff";
   export let style: string = "";
 
   export let tooltip: string = "";
