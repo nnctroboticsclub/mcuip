@@ -26,7 +26,7 @@ type PacketType = {
 };
 
 export class App {
-  public url: string = "ws://192.168.137.199/robo-ctrl";
+  public url: string = "ws://localhost:8000/client";
   public sock: Writable<WebSocket | undefined> = writable();
 
   private data_handler: {
