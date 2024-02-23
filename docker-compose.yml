@@ -36,7 +36,7 @@ services:
       - server-ws
 
   pub-server:
-    image: oven/bun:1.0.8
+    image: oven/bun:1.0.29
     init: true
     command: bash -c "cd /app/public && ./entry.sh"
     restart: always
@@ -49,7 +49,7 @@ services:
       - default
 
   server-ws:
-    image: oven/bun:1.0.8
+    image: oven/bun:1.0.29
     init: true
     command: bash -c "cd /app/server-ws && ./entry.sh"
     restart: always
