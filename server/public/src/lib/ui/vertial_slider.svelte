@@ -5,7 +5,6 @@
   import { writable } from "svelte/store";
   import { Position } from "./position";
 
-  export let width: number = 100;
   export let style: string = "";
 
   export let value: number = 0; // -1 to 1
