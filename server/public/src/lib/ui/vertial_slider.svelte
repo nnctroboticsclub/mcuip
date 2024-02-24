@@ -6,6 +6,9 @@
   import { Position } from "./position";
 
   export let style: string = "";
+  export let show_value: boolean = false;
+  export let width: number = 20;
+  export let height: number = 20;
 
   export let value: number = 0; // -1 to 1
 
@@ -15,7 +18,7 @@
   let inner_width: number = 0;
   let value_raw: number = 0;
 
-  $: value = value_raw / inner_width;
+  $: value = (value_raw / inner_width) * 2;
 
   const pos_store = new DerivedWritable<number, Position>(
     writable(0),
@@ -77,14 +80,21 @@
 
 <div
   class="container"
-  style="height: {20 + 20}px; {style};"
+  style="height: {height + (slider_name || show_value ? 20 : 0)}px; {style};"
   bind:clientWidth={inner_width}
 >
-  <span class="title">{slider_name} {value}</span>
+  {#if slider_name || show_value}
+    <span class="title"
+      >{slider_name}
+      {#if show_value}
+        &nbsp;{value}
+      {/if}
+    </span>
+  {/if}
   <DraggableArea
     top={0}
     left={0}
-    height={20}
+    {height}
     width={inner_width}
     tag={"ja-" + tag}
   >
@@ -100,8 +110,8 @@
           style={"position: absolute; " +
             `top: 0px; ` +
             `left: ${inner_width / 2 + value_raw}px; ` +
-            `width: 10px; ` +
-            "height: 20px; " +
+            `width: ${width}px; ` +
+            `height: ${height}px; ` +
             "background-color: #88f;"}
         ></div>
       </DragTarget>
@@ -121,7 +131,7 @@
     .drag-area {
       position: relative;
       width: 100%;
-      height: 20px;
+      height: 100%;
 
       background-color: #eee8;
     }
