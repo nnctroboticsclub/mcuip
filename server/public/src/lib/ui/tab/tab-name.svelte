@@ -27,14 +27,14 @@
   button {
     flex: 1;
     background-color: #eee;
-    padding: 10px 20px 10px 10px;
+    padding: 10px;
 
     text-align: center;
     clip-path: polygon(
       5% 5%,
       95% 5%,
-      95% calc(95% - 20px),
-      calc(95% - 20px) 95%,
+      95% calc(95% - 15px),
+      calc(95% - 15px) 95%,
       5% 95%
     );
   }

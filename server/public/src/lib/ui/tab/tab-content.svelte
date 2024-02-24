@@ -20,10 +20,25 @@
 
 <style>
   div {
-    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    display: block;
+
+    transition: all 0.1s;
+    opacity: 0;
+
+    z-index: 0;
   }
 
   div.active {
     display: block;
+
+    opacity: 1;
+
+    z-index: 1;
   }
 </style>

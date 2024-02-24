@@ -18,6 +18,10 @@ export class TabContext {
     return getWindow().getDataStore(`tab-${this.tag}-names`);
   }
 
+  get tab_bar_collapsed(): Writable<boolean> {
+    return getWindow().getDataStore(`tab-${this.tag}-collapsed`);
+  }
+
   static getContext(): TabContext | null {
     const ctx = getContext<TabContext>("tab_context");
     if (!ctx) {
