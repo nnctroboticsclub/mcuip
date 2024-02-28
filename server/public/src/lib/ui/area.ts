@@ -64,6 +64,10 @@ export class Area {
   }
 
   toString(): string {
-    return `{(${this.top_}, ${this.left_}) + (${this.width_}, ${this.height_})}`;
+    return `{` +
+      `(${this.top_.toFixed(0)}, ${this.left_.toFixed(0)})` +
+      ` + ` +
+      `(${this.width_.toFixed(0)}, ${this.height_.toFixed(0)})` +
+      `}`;
   }
 }

@@ -31,7 +31,7 @@ export class Position {
   }
 
   toString(): string {
-    return `(${this.x_}, ${this.y_})`;
+    return `(${this.x_.toFixed(0)}, ${this.y_.toFixed(0)})`;
   }
 
   components(): { x: number, y: number } {
