@@ -45,16 +45,16 @@
 
     if (!container) return;
 
-    const rect = container?.getBoundingClientRect();
-    if (!rect) {
-      console.error("No rect found");
-      return;
-    }
-
     const offset = new Position(-radius / 2, -radius / 2);
-    const top = new Position(Math.floor(rect.left), Math.floor(rect.top));
 
     container.addEventListener("touchstart", (e) => {
+      const rect = container?.getBoundingClientRect();
+      if (!rect) {
+        console.error("No rect found");
+        return;
+      }
+      const top = new Position(Math.floor(rect.left), Math.floor(rect.top));
+
       const touch = e.targetTouches[0];
 
       const raw_point = new Position(
