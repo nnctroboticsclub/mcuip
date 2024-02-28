@@ -15,6 +15,7 @@
   const area_unavailable = area_ctx.getIsUnavailable();
 
   const style = sticky ? readable(sticky.getStyle()) : target_ctx.getStyle();
+  const debug_store = area_ctx.getDebug();
 
   let element_width = -1;
   let element_height = -1;
@@ -38,13 +39,21 @@
     if (!dragging) return;
     const dragger_area = get(area_ctx.getArea());
 
-    const new_pos = new Position(x, y)
-      .subtract(drag.touch_base)
-      .add(drag.position_base);
+    const delta = new Position(x, y).subtract(drag.touch_base);
+
+    const new_pos = drag.position_base.add(delta);
 
     const area = new_pos.toArea(element_width, element_height);
     const new_area = dragger_area.smaller(10, 10).fitInArea(area);
 
+    debug_store.set(
+      `w\n` +
+        `t ${drag.touch_base}\n` +
+        `p ${drag.position_base}\n` +
+        `d ${delta}\n` +
+        `i ${new Position(x, y)}\n` +
+        `n ${new_pos}`
+    );
     target_ctx.updatePos(new_area?.getPosition() ?? new_pos);
   }
 
@@ -55,7 +64,10 @@
     drag.touch_base = new Position(x, y);
     drag.position_base = get(target_ctx.getPos());
 
+    debug_store.set(`s\nt ${drag.touch_base}\np ${drag.position_base}`);
+
     area_ctx.setDragging(true);
+    whileCapture(x, y);
   }
 
   function endCapturing() {
