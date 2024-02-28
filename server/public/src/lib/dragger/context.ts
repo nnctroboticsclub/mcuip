@@ -11,7 +11,6 @@ export class DragTargetContext {
   }
 
   updatePos(pos: Position) {
-
     const { x: x1, y: y1 } = get(this.pos).components();
     const { x: x2, y: y2 } = pos.components();
     if (x1 == x2 && y1 == y2) {
@@ -45,6 +44,7 @@ export class DragContainerContext {
   private is_unavailable: Writable<boolean> = writable(false);
   private is_dragging: Writable<boolean> = writable(false);
   private area: Writable<Area>
+  private debug: Writable<string> = writable("");
 
   constructor(top: number, left: number, width: number, height: number) {
     this.area = writable(new Area(top, left, width, height));
@@ -52,6 +52,10 @@ export class DragContainerContext {
 
   getArea(): Readable<Area> {
     return this.area;
+  }
+
+  getDebug(): Writable<string> {
+    return this.debug;
   }
 
   setArea(area: Area) {

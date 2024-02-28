@@ -16,6 +16,7 @@
   const is_dragging = ctx.getDragging();
 
   const debug_visual = global_state.config.debug.dragger.visual;
+  const debug_store = ctx.getDebug();
 
   $: {
     if (!top || !left || !width || !height) {
@@ -32,12 +33,21 @@
   class:dragging={$is_dragging}
   style="top: {top}px; left: {left}px; width: {width}px; height: {height}px;"
 >
+  <div class="debug" style="font-size: 14px;">
+    {@html $debug_store.replaceAll("\n", "<br>")}
+  </div>
   <slot />
 </div>
 
-<style>
+<style lang="scss">
   .drag-container {
     position: relative;
+
+    .debug {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
   }
 
   .drag-container.debug {
@@ -47,5 +57,7 @@
 
   .drag-container.dragging {
     user-select: none;
+
+    background-color: rgba(0, 0, 0, 0.1);
   }
 </style>
