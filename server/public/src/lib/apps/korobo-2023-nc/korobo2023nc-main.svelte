@@ -17,6 +17,7 @@
   import SwerveMotor from "./swerve_motor.svelte";
   import PidError from "./PIDError.svelte";
   import RawValue from "./raw_value.svelte";
+  import CalibNum from "./calib-num.svelte";
 
   let ready = false;
   let right_joystick_for_shot = false;
@@ -49,7 +50,7 @@
   onMount(() => {
     const interval = setInterval(() => {
       app.tick();
-    }, 100);
+    }, 50);
 
     ready = true;
 
@@ -135,6 +136,49 @@
           style="position: absolute; bottom: 0; right: 0;"
         />
       {/if}
+      <Button
+        style="position: absolute; top: 0; right: 4.5cm; border: 1px solid {app
+          .controls.bool['sht'].curr
+          ? 'red'
+          : 'blue'};"
+        color="transparent"
+        active_color="#00f1"
+        width="70px"
+        height="70px"
+        on:click={() => {
+          app.controls.bool["sht"].curr = !app.controls.bool["sht"].curr;
+        }}
+      >
+        Shot
+      </Button>
+      <Button
+        style="position: absolute; top: 0; left: 4.5cm; border: 1px solid blue;"
+        color="transparent"
+        active_color="#00f1"
+        width="70px"
+        height="70px"
+      >
+        aaa
+      </Button>
+
+      <Button
+        style="position: absolute; top: 0; right: 2.5cm; border: 1px solid blue;"
+        color="transparent"
+        active_color="#00f1"
+        width="70px"
+        height="70px"
+      >
+        手前 R
+      </Button>
+      <Button
+        style="position: absolute; top: 0; left: 2.5cm; border: 1px solid blue;"
+        color="transparent"
+        active_color="#00f1"
+        width="70px"
+        height="70px"
+      >
+        手前 L
+      </Button>
       <div style="position: absolute; bottom: 250px; right: 0;">
         Shot Mode
         <Toggle bind:value={right_joystick_for_shot}></Toggle>
@@ -177,30 +221,84 @@
       </div>
     </TabContent>
     <TabContent name="Debugging" style="font-size: smaller;">
-      &gt;LOCAL <br />
-      &nbsp;Is connected to esp32?:
-      <span style="background-color: #{$sock ? '00ff' : 'ff00'}0044;"
-        >&nbsp;&nbsp;</span
-      >&nbsp;{$sock ? "Yes" : "No"} <br />
-      &gt;PHYSICAL <br />
-      &nbsp;&gt;SWERVE <br />
-      &nbsp;&nbsp;Robot Angle Errors: <PidError val={swerve.angle_error} /><br
-      />
-      &nbsp;&nbsp;Angle Errors: [<PidError val={swerve.motors[0].error} />, <PidError
-        val={swerve.motors[1].error}
-      />, <PidError val={swerve.motors[2].error} />] <br />
-      &nbsp;&nbsp;Motor0: <SwerveMotor motor={swerve.motors[0]}></SwerveMotor>
-      <br />
-      &nbsp;&nbsp;Motor1: <SwerveMotor motor={swerve.motors[1]}></SwerveMotor>
-      <br />
-      &nbsp;&nbsp;Motor2: <SwerveMotor motor={swerve.motors[2]}></SwerveMotor>
-      <br />
-      &gt;NETWORK <br />
-      &nbsp;Load: <NwLoad value={network.load}></NwLoad><br />
-      &nbsp;&gt;Ping <br />
-      {#each app.last_ping as last_ping, i}
-        &nbsp;&nbsp;{i}: <LastPing {last_ping}></LastPing> <br />
-      {/each}
+      <TabContainer
+        tag="2023-korobo-nc-debug"
+        style="height: 100%; width: 100%"
+        names={["Actions", "Analysis", "Packet status"]}
+        vertical={true}
+        tab_size="1em"
+      >
+        <TabContent style="width: 100%; height: 100%" name="Actions">
+          <Button
+            style="border: 1px solid blue;"
+            color="transparent"
+            active_color="#00f1"
+            width="200px"
+            height="50px"
+            on:click={() => {
+              document.documentElement.requestFullscreen();
+            }}
+          >
+            Request fullscreen
+          </Button>
+        </TabContent>
+        <TabContent style="width: 100%; height: 100%" name="Analysis">
+          &gt;LOCAL <br />
+          &nbsp;Is connected to esp32?:
+          <span style="background-color: #{$sock ? '00ff' : 'ff00'}0044;"
+            >&nbsp;&nbsp;</span
+          >&nbsp;{$sock ? "Yes" : "No"} <br />
+          &gt;PHYSICAL <br />
+          &nbsp;&gt;SWERVE <br />
+          &nbsp;&nbsp;Robot Angle Errors: <PidError
+            val={swerve.angle_error}
+          /><br />
+          &nbsp;&nbsp;Angle Errors: [<PidError val={swerve.motors[0].error} />, <PidError
+            val={swerve.motors[1].error}
+          />, <PidError val={swerve.motors[2].error} />] <br />
+          &nbsp;&nbsp;Motor0: <SwerveMotor motor={swerve.motors[0]}
+          ></SwerveMotor>
+          <br />
+          &nbsp;&nbsp;Motor1: <SwerveMotor motor={swerve.motors[1]}
+          ></SwerveMotor>
+          <br />
+          &nbsp;&nbsp;Motor2: <SwerveMotor motor={swerve.motors[2]}
+          ></SwerveMotor>
+          <br />
+          &gt;NETWORK <br />
+          &nbsp;Load: <NwLoad value={network.load}></NwLoad><br />
+          &nbsp;&gt;Ping <br />
+          {#each app.last_ping as last_ping, i}
+            &nbsp;&nbsp;{i}: <LastPing {last_ping}></LastPing> <br />
+          {/each}
+        </TabContent>
+        <TabContent
+          style="width: 100%; height: 100%; display: flex; flex-direction: row;"
+          name="Packet status"
+        >
+          <div style="flex: 1 1 auto; overflow-y: scroll; height: 100%;">
+            {#each Object.keys(app.controls.num) as key}
+              {key}: {app.controls.num[key].prev} =&gt; {app.controls.num[key]
+                .curr} (in {app.controls.num[key].range})<br />
+            {/each}
+            {#each Object.keys(app.controls.bool) as key}
+              {key}: {app.controls.bool[key].prev} =&gt; {app.controls.bool[key]
+                .curr}<br />
+            {/each}
+
+            &lt;&lt;== End of controller status ==&gt;&gt;
+          </div>
+          <div style="flex: 1 1 auto; overflow-y: scroll; height: 100%;">
+            {#each app.packet_types as pkt}
+              {pkt.id}:{pkt.type}/{pkt.subtype} &lt;-- {pkt.target}
+              (counter: {pkt.counter})
+              <br />
+            {/each}
+
+            &lt;&lt;== End of Packet status ==&gt;&gt;
+          </div>
+        </TabContent>
+      </TabContainer>
     </TabContent>
     <TabContent name="Connection">
       <TextInput bind:value={app.url} height="3em" line_height="1em" />
@@ -224,6 +322,8 @@
           "Steer Motor 1",
           "Steer Motor 2",
           "Steer Gyro",
+          "Shot speed",
+          "Max Elevation",
         ]}
         vertical={true}
         tab_size="1em"
@@ -256,6 +356,12 @@
             bind:d_gain={app.controls.num["sgpd"].curr}
           ></CalibPid></TabContent
         >
+        <TabContent style="width: 100%; height: 100%" name="Shot speed">
+          <CalibNum bind:value={app.controls.num["msp"].curr}></CalibNum>
+        </TabContent>
+        <TabContent style="width: 100%; height: 100%" name="Max Elevation">
+          <CalibNum bind:value={app.controls.num["mea"].curr}></CalibNum>
+        </TabContent>
       </TabContainer>
     </TabContent>
   </TabContainer>

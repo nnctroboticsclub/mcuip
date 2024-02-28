@@ -26,7 +26,7 @@ type PacketType = {
 };
 
 export class App {
-  public url: string = "ws://localhost:8000/client";
+  public url: string = `ws://${globalThis?.location?.hostname ?? "localhost"}:8000/client`;
   public sock: Writable<WebSocket | undefined> = writable();
 
   private data_handler: {
@@ -43,6 +43,8 @@ export class App {
       "sra": { prev: 0, curr: 0, range: [0, 360] },
       "lha": { prev: 0, curr: 0, range: [-100, 100] },
       "lva": { prev: 0, curr: 0, range: [-100, 100] },
+      "msp": { prev: 0, curr: 0, range: [0, 1] },
+      "mea": { prev: 0, curr: 0, range: [0, 1] },
       "sm0pp": { prev: 0, curr: 2.7, range: [0, 10] },
       "sm0pi": { prev: 0, curr: 0, range: [0, 10] },
       "sm0pd": { prev: 0, curr: 0.000015, range: [0, 10] },
@@ -57,7 +59,8 @@ export class App {
       "sgpd": { prev: 0, curr: 0.000015, range: [0, 10] },
     },
     bool: {
-      "srp": { prev: true, curr: true }
+      "srp": { prev: true, curr: true },
+      "sht": { prev: false, curr: false }
     }
   };
 
@@ -65,7 +68,7 @@ export class App {
     writable(0), writable(0)
   ];
 
-  private packet_types: PacketType[] = [
+  public packet_types: PacketType[] = [
     { id: 0x00, subtype: "joystick", type: "num", target: ["smx", "smy"], counter: 0 },
     { id: 0x01, subtype: "joystick", type: "num", target: ["srm", "sra"], counter: 0 },
     { id: 0x02, subtype: "joystick", type: "num", target: ["lha", "lva"], counter: 0 },
@@ -74,6 +77,9 @@ export class App {
     { id: 0x01, subtype: "pid", type: "num", target: ["sm1pp", "sm1pi", "sm1pd"], counter: 0 },
     { id: 0x02, subtype: "pid", type: "num", target: ["sm2pp", "sm2pi", "sm2pd"], counter: 0 },
     { id: 0x03, subtype: "pid", type: "num", target: ["sgpp", "sgpi", "sgpd"], counter: 0 },
+    { id: 0x00, subtype: "value", type: "num", target: ["msp"], counter: 0 },
+    { id: 0x01, subtype: "value", type: "num", target: ["mea"], counter: 0 },
+    { id: 0x02, subtype: "button", type: "bool", target: ["sht"], counter: 0 },
   ];
 
   async connect() {
@@ -239,6 +245,28 @@ export class App {
       view.setUint8(1, array[0]);
       view.setUint8(2, array[1]);
       view.setUint8(3, array[2]);
+
+      this.send_ctrl_packet(buf);
+    } else if (packet.type === "num" && packet.subtype === "value") {
+      const control_group = this.controls[packet.type];
+      const controls = packet.target.map(t => control_group[t]);
+
+      controls.forEach((c) => {
+        c.prev = c.curr;
+      });
+
+      const array = (controls as Control<"num">[]).
+        map(control => Math.round(
+          ((control.curr - control.range[0]) /
+            (control.range[1] - control.range[0])) *
+          65536.0
+        ));
+
+      const buf = new ArrayBuffer(3);
+      const view = new DataView(buf);
+      view.setUint8(0, 0x00 | packet.id);
+      view.setUint8(1, array[0] >> 0x08);
+      view.setUint8(2, array[0] & 0xff);
 
       this.send_ctrl_packet(buf);
     }
