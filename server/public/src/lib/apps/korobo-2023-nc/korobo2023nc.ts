@@ -5,7 +5,7 @@ type ControlValueType = "num" | "bool";
 
 type ControlSubType<T extends ControlValueType> = T extends "num"
   ? ("value" | "joystick" | "pid")
-  : "button";
+  : ("button" | "action");
 type ControlValue<T extends ControlValueType> = T extends "num" ? number : boolean;
 
 type Control<T extends ControlValueType> = {
@@ -35,33 +35,31 @@ export class App {
 
   public controls: Controls = {
     num: {
-      "smx": { prev: 0, curr: 0, range: [-100, 100] },
-      "smy": { prev: 0, curr: 0, range: [-100, 100] },
-      "srx": { prev: 0, curr: 0, range: [-100, 100] },
-      "sry": { prev: 0, curr: 0, range: [-100, 100] },
-      "srm": { prev: 0, curr: 0, range: [0, 100] },
-      "sra": { prev: 0, curr: 0, range: [0, 360] },
-      "lha": { prev: 0, curr: 0, range: [-100, 100] },
-      "lva": { prev: 0, curr: 0, range: [-100, 100] },
-      "msp": { prev: 0, curr: 0, range: [0, 1] },
-      "mea": { prev: 0, curr: 0, range: [0, 1] },
-      "sm0pp": { prev: 0, curr: 2.7, range: [0, 10] },
-      "sm0pi": { prev: 0, curr: 0, range: [0, 10] },
-      "sm0pd": { prev: 0, curr: 0.000015, range: [0, 10] },
-      "sm1pp": { prev: 0, curr: 2.7, range: [0, 10] },
-      "sm1pi": { prev: 0, curr: 0, range: [0, 10] },
-      "sm1pd": { prev: 0, curr: 0.000015, range: [0, 10] },
-      "sm2pp": { prev: 0, curr: 2.7, range: [0, 10] },
-      "sm2pi": { prev: 0, curr: 0, range: [0, 10] },
-      "sm2pd": { prev: 0, curr: 0.000015, range: [0, 10] },
-      "sgpp": { prev: 0, curr: 2.7, range: [0, 10] },
-      "sgpi": { prev: 0, curr: 0, range: [0, 10] },
-      "sgpd": { prev: 0, curr: 0.000015, range: [0, 10] },
+      "smx": { prev: NaN, curr: 0, range: [-100, 100] },
+      "smy": { prev: NaN, curr: 0, range: [-100, 100] },
+      "lha": { prev: NaN, curr: 0, range: [-100, 100] },
+      "lva": { prev: NaN, curr: 0, range: [-100, 100] },
+      "msp": { prev: NaN, curr: 0, range: [0, 1] },
+      "mea": { prev: NaN, curr: 0, range: [0, 1] },
+      "sm0pp": { prev: NaN, curr: 2.7, range: [0, 10] },
+      "sm0pi": { prev: NaN, curr: 0, range: [0, 10] },
+      "sm0pd": { prev: NaN, curr: 0.000015, range: [0, 10] },
+      "sm1pp": { prev: NaN, curr: 2.7, range: [0, 10] },
+      "sm1pi": { prev: NaN, curr: 0, range: [0, 10] },
+      "sm1pd": { prev: NaN, curr: 0.000015, range: [0, 10] },
+      "sm2pp": { prev: NaN, curr: 2.7, range: [0, 10] },
+      "sm2pi": { prev: NaN, curr: 0, range: [0, 10] },
+      "sm2pd": { prev: NaN, curr: 0.000015, range: [0, 10] },
+      "sgpp": { prev: NaN, curr: 2.7, range: [0, 10] },
+      "sgpi": { prev: NaN, curr: 0, range: [0, 10] },
+      "sgpd": { prev: NaN, curr: 0.000015, range: [0, 10] },
     },
     bool: {
       "srp": { prev: true, curr: true },
-      "sht": { prev: false, curr: false }
-    }
+      "sht": { prev: false, curr: false },
+      "srr": { prev: false, curr: false },
+      "srl": { prev: false, curr: false }
+    },
   };
 
   public last_ping: Writable<number>[] = [
@@ -70,7 +68,6 @@ export class App {
 
   public packet_types: PacketType[] = [
     { id: 0x00, subtype: "joystick", type: "num", target: ["smx", "smy"], counter: 0 },
-    { id: 0x01, subtype: "joystick", type: "num", target: ["srm", "sra"], counter: 0 },
     { id: 0x02, subtype: "joystick", type: "num", target: ["lha", "lva"], counter: 0 },
     { id: 0x01, subtype: "button", type: "bool", target: ["srp"], counter: 0 },
     { id: 0x00, subtype: "pid", type: "num", target: ["sm0pp", "sm0pi", "sm0pd"], counter: 0 },
@@ -80,6 +77,8 @@ export class App {
     { id: 0x00, subtype: "value", type: "num", target: ["msp"], counter: 0 },
     { id: 0x01, subtype: "value", type: "num", target: ["mea"], counter: 0 },
     { id: 0x02, subtype: "button", type: "bool", target: ["sht"], counter: 0 },
+    { id: 0x00, subtype: "action", type: "bool", target: ["srr"], counter: 0 },
+    { id: 0x01, subtype: "action", type: "bool", target: ["srl"], counter: 0 },
   ];
 
   async connect() {
@@ -146,22 +145,24 @@ export class App {
   }
 
   send_ctrl_packet(data: ArrayBuffer) {
+    console.log(
+      [...new Uint8Array(data)].map(x => x.toString(16)).join(" ")
+    )
     const sock = get(this.sock);
     if (!sock) return;
-
     sock.send(data);
   }
 
 
   update_sub_controls() {
-    const x = this.controls.num["srx"].curr;
+    /* const x = this.controls.num["srx"].curr;
     const y = this.controls.num["sry"].curr;
 
     this.controls.num["srm"].curr = Math.sqrt(x * x + y * y);
     this.controls.num["sra"].curr = (Math.atan2(y, x) * 180.0) / Math.PI + 90.0;
     if (x == 0 && y == 0) this.controls.num["sra"].curr = 0.0;
 
-    if (this.controls.num["sra"].curr < 0) this.controls.num["sra"].curr += 360.0;
+    if (this.controls.num["sra"].curr < 0) this.controls.num["sra"].curr += 360.0; */
   }
 
   detect_changed_packet() {
@@ -222,6 +223,19 @@ export class App {
       const buf = new ArrayBuffer(1);
       const view = new DataView(buf);
       view.setUint8(0, packet.id | (controls[0].curr ? 0x20 : 0x00));
+
+      this.send_ctrl_packet(buf);
+    } else if (packet.type === "bool" && packet.subtype === "action") {
+      const control_group = this.controls[packet.type];
+      const controls = packet.target.map(t => control_group[t]);
+
+      controls.forEach((c) => {
+        c.prev = c.curr;
+      });
+
+      const buf = new ArrayBuffer(1);
+      const view = new DataView(buf);
+      view.setUint8(0, packet.id | 0x80);
 
       this.send_ctrl_packet(buf);
     } else if (packet.type === "num" && packet.subtype === "pid") {

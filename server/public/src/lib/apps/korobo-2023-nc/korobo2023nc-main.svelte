@@ -116,16 +116,16 @@
         tag="sm"
         stick_name="Move"
         style="position: absolute; bottom: 0; left: 0;"
-      />
-      {#if right_joystick_for_shot}
-        <Joystick
-          radius={200}
-          bind:x_val={app.controls.num["lha"].curr}
-          bind:y_val={app.controls.num["lva"].curr}
-          tag="la"
-          stick_name="Launch"
-          style="position: absolute; bottom: 0; right: 0;"
-        />
+      /><!--
+      {#if right_joystick_for_shot} -->
+      <Joystick
+        radius={200}
+        bind:x_val={app.controls.num["lha"].curr}
+        bind:y_val={app.controls.num["lva"].curr}
+        tag="la"
+        stick_name="Launch"
+        style="position: absolute; bottom: 0; right: 0;"
+      /><!--
       {:else}
         <Joystick
           radius={200}
@@ -135,7 +135,7 @@
           stick_name="Rotation"
           style="position: absolute; bottom: 0; right: 0;"
         />
-      {/if}
+      {/if} -->
       <Button
         style="position: absolute; top: 0; right: 4.5cm; border: 1px solid {app
           .controls.bool['sht'].curr
@@ -167,8 +167,11 @@
         active_color="#00f1"
         width="70px"
         height="70px"
+        on:click={() => {
+          app.controls.bool["srr"].curr = !app.controls.bool["srr"].curr;
+        }}
       >
-        手前 R
+        --&gt;
       </Button>
       <Button
         style="position: absolute; top: 0; left: 2.5cm; border: 1px solid blue;"
@@ -176,13 +179,16 @@
         active_color="#00f1"
         width="70px"
         height="70px"
+        on:click={() => {
+          app.controls.bool["srl"].curr = !app.controls.bool["srl"].curr;
+        }}
       >
-        手前 L
-      </Button>
+        &lt;--
+      </Button><!--
       <div style="position: absolute; bottom: 250px; right: 0;">
         Shot Mode
         <Toggle bind:value={right_joystick_for_shot}></Toggle>
-      </div>
+      </div> -->
       <div style="position: absolute; bottom: 220px; right: 0;">
         PID Enabled
         <Toggle bind:value={app.controls.bool["srp"].curr}></Toggle>
