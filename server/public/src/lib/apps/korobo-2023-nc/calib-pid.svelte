@@ -1,19 +1,13 @@
 <script>
+  import { DerivedWritable } from "$lib/stores/derived_writable";
   import TextInput from "$lib/ui/text_input.svelte";
   import VertialSlider from "$lib/ui/vertial_slider.svelte";
+  import { writable } from "svelte/store";
 
   export let gain = 0;
   export let p_gain = 2.7;
   export let i_gain = 0.0;
   export let d_gain = 0.000015;
-
-  // let p_gain_text = p_gain.toString();
-  // let i_gain_text = i_gain.toString();
-  // let d_gain_text = d_gain.toString();
-
-  // $: p_gain = isNaN(parseFloat(p_gain_text)) ? 0 : parseFloat(p_gain_text);
-  // $: i_gain = isNaN(parseFloat(i_gain_text)) ? 0 : parseFloat(i_gain_text);
-  // $: d_gain = isNaN(parseFloat(d_gain_text)) ? 0 : parseFloat(d_gain_text);
 
   let p_percent = 33;
   let i_percent = 33;
@@ -23,13 +17,33 @@
   $: i_percent = (i_gain / (p_gain + i_gain + d_gain)) * 100.0;
   $: d_percent = (d_gain / (p_gain + i_gain + d_gain)) * 100.0;
 
-  let p_slider = 0.1; // -1 ~ 1
-  let i_slider = 0.1; // -1 ~ 1
-  let d_slider = 0.1; // -1 ~ 1
+  // -1 ~ 1
+  let p_slider = new DerivedWritable(
+    writable(0),
+    (_) => (p_gain / 10) * 2 - 1,
+    (_, v) => {
+      p_gain = ((v + 1) / 2) * 10;
+      return 0;
+    }
+  );
 
-  $: p_gain = ((p_slider + 1) / 2) * 10;
-  $: i_gain = ((i_slider + 1) / 2) * 10;
-  $: d_gain = ((d_slider + 1) / 2) * 10;
+  let i_slider = new DerivedWritable(
+    writable(0),
+    (_) => (i_gain / 10) * 2 - 1,
+    (_, v) => {
+      i_gain = ((v + 1) / 2) * 10;
+      return 0;
+    }
+  );
+
+  let d_slider = new DerivedWritable(
+    writable(0),
+    (_) => (d_gain / 10) * 2 - 1,
+    (_, v) => {
+      d_gain = ((v + 1) / 2) * 10;
+      return 0;
+    }
+  );
 
   let gain_formula = "1";
   let gain_formula_error = false;
@@ -71,7 +85,7 @@
     <div class="label">
       <span>P:</span>
     </div>
-    <VertialSlider style="width: 100%;" height={40} bind:value={p_slider}
+    <VertialSlider style="width: 100%;" height={40} bind:value={$p_slider}
     ></VertialSlider>
     <div class="label"><span>{p_gain.toFixed(5)}</span></div>
   </div>
@@ -79,7 +93,7 @@
     <div class="label">
       <span>I:</span>
     </div>
-    <VertialSlider style="width: 100%;" height={40} bind:value={i_slider}
+    <VertialSlider style="width: 100%;" height={40} bind:value={$i_slider}
     ></VertialSlider>
     <div class="label"><span>{i_gain.toFixed(5)}</span></div>
   </div>
@@ -87,7 +101,7 @@
     <div class="label">
       <span>D:</span>
     </div>
-    <VertialSlider style="width: 100%;" height={40} bind:value={d_slider}
+    <VertialSlider style="width: 100%;" height={40} bind:value={$d_slider}
     ></VertialSlider>
     <div class="label"><span>{d_gain.toFixed(5)}</span></div>
   </div>
