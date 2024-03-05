@@ -76,6 +76,11 @@
       }
     });
   })();
+
+  ((value) =>
+    setTimeout(() => {
+      value_raw = (value / 2) * inner_width;
+    }, 50))(value);
 </script>
 
 <div
