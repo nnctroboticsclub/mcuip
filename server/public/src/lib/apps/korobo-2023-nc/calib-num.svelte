@@ -13,12 +13,6 @@
   {value.toFixed(5)}
   <VertialSlider height={40} width={10} bind:value={slider} style="width: 80%;"
   ></VertialSlider>
-  <div class="presets">
-    <Button height="50px" width="50px">A</Button>
-    <Button height="50px" width="50px">B</Button>
-    <Button height="50px" width="50px">C</Button>
-    <Button height="50px" width="50px">D</Button>
-  </div>
 </div>
 
 <style lang="scss">

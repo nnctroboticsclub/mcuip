@@ -53,32 +53,60 @@ export class App {
       "sgpp": { prev: NaN, curr: 1, range: [0, 10] },
       "sgpi": { prev: NaN, curr: 0, range: [0, 10] },
       "sgpd": { prev: NaN, curr: 0, range: [0, 10] },
+      "sm0d": { prev: NaN, curr: 0.25, range: [0, 1] },
+      "sm1d": { prev: NaN, curr: 0.25, range: [0, 1] },
+      "sm2d": { prev: NaN, curr: 0.25, range: [0, 1] },
+      "uepp": { prev: NaN, curr: 1, range: [0, 1] },
+      "uepi": { prev: NaN, curr: 0, range: [0, 1] },
+      "uepd": { prev: NaN, curr: 0, range: [0, 1] },
+      "urpp": { prev: NaN, curr: 1, range: [0, 1] },
+      "urpi": { prev: NaN, curr: 0, range: [0, 1] },
+      "urpd": { prev: NaN, curr: 0, range: [0, 1] },
     },
     bool: {
       "srp": { prev: true, curr: true },
       "sht": { prev: false, curr: false },
       "srr": { prev: false, curr: false },
-      "srl": { prev: false, curr: false }
+      "srl": { prev: false, curr: false },
+      "urc": { prev: false, curr: false },
+      "s0i": { prev: false, curr: false },
+      "s1i": { prev: false, curr: false },
+      "s2i": { prev: false, curr: false },
+      "emc": { prev: false, curr: false },
     },
   };
 
-  public last_ping: Writable<number>[] = [
-    writable(0), writable(0)
-  ];
+  public devices: {
+    last_ping: Writable<number>;
+    status: Writable<number>;
+  }[] = [
+      { last_ping: writable(0), status: writable(-1) },
+      { last_ping: writable(0), status: writable(-1) },
+    ];
 
   public packet_types: PacketType[] = [
-    { id: 0x00, subtype: "joystick", type: "num", target: ["smx", "smy"], counter: 0 },
-    { id: 0x02, subtype: "joystick", type: "num", target: ["lha", "lva"], counter: 0 },
-    { id: 0x01, subtype: "button", type: "bool", target: ["srp"], counter: 0 },
-    { id: 0x00, subtype: "pid", type: "num", target: ["sm0pp", "sm0pi", "sm0pd"], counter: 0 },
-    { id: 0x01, subtype: "pid", type: "num", target: ["sm1pp", "sm1pi", "sm1pd"], counter: 0 },
-    { id: 0x02, subtype: "pid", type: "num", target: ["sm2pp", "sm2pi", "sm2pd"], counter: 0 },
-    { id: 0x03, subtype: "pid", type: "num", target: ["sgpp", "sgpi", "sgpd"], counter: 0 },
-    { id: 0x00, subtype: "value", type: "num", target: ["msp"], counter: 0 },
-    { id: 0x01, subtype: "value", type: "num", target: ["mea"], counter: 0 },
-    { id: 0x02, subtype: "button", type: "bool", target: ["sht"], counter: 0 },
-    { id: 0x00, subtype: "action", type: "bool", target: ["srr"], counter: 0 },
-    { id: 0x01, subtype: "action", type: "bool", target: ["srl"], counter: 0 },
+    { id: 0x01, type: "bool", subtype: "button", target: ["srp"], counter: 0 },
+    { id: 0x02, type: "bool", subtype: "button", target: ["sht"], counter: 0 },
+    { id: 0x03, type: "bool", subtype: "button", target: ["emc"], counter: 0 },
+    { id: 0x00, type: "bool", subtype: "action", target: ["srr"], counter: 0 },
+    { id: 0x01, type: "bool", subtype: "action", target: ["srl"], counter: 0 },
+    { id: 0x02, type: "bool", subtype: "action", target: ["urc"], counter: 0 },
+    { id: 0x03, type: "bool", subtype: "action", target: ["s0i"], counter: 0 },
+    { id: 0x04, type: "bool", subtype: "action", target: ["s1i"], counter: 0 },
+    { id: 0x05, type: "bool", subtype: "action", target: ["s2i"], counter: 0 },
+    { id: 0x00, type: "num", subtype: "joystick", target: ["smx", "smy"], counter: 0 },
+    { id: 0x02, type: "num", subtype: "joystick", target: ["lha", "lva"], counter: 0 },
+    { id: 0x00, type: "num", subtype: "pid", target: ["sm0pp", "sm0pi", "sm0pd"], counter: 0 },
+    { id: 0x01, type: "num", subtype: "pid", target: ["sm1pp", "sm1pi", "sm1pd"], counter: 0 },
+    { id: 0x02, type: "num", subtype: "pid", target: ["sm2pp", "sm2pi", "sm2pd"], counter: 0 },
+    { id: 0x03, type: "num", subtype: "pid", target: ["sgpp", "sgpi", "sgpd"], counter: 0 },
+    { id: 0x04, type: "num", subtype: "pid", target: ["uepp", "uepi", "uepd"], counter: 0 },
+    { id: 0x05, type: "num", subtype: "pid", target: ["urpp", "urpi", "urpd"], counter: 0 },
+    { id: 0x00, type: "num", subtype: "value", target: ["msp"], counter: 0 },
+    { id: 0x01, type: "num", subtype: "value", target: ["mea"], counter: 0 },
+    { id: 0x02, type: "num", subtype: "value", target: ["sm0d"], counter: 0 },
+    { id: 0x03, type: "num", subtype: "value", target: ["sm1d"], counter: 0 },
+    { id: 0x04, type: "num", subtype: "value", target: ["sm2d"], counter: 0 },
   ];
 
   async connect() {
@@ -99,8 +127,12 @@ export class App {
       {
         const now = Date.now() / 1000;
         const id = view.getUint8(1);
-        this.last_ping[id].set(now);
+        this.devices[id].last_ping.set(now);
         return;
+      } else if (opcode == 0xf0) {
+        const id = view.getUint16(1);
+        const status = view.getUint8(3);
+        this.devices[id].status.set(status);
       }
 
       if (!(opcode in this.data_handler)) {
@@ -278,7 +310,7 @@ export class App {
 
       const buf = new ArrayBuffer(3);
       const view = new DataView(buf);
-      view.setUint8(0, 0x00 | packet.id);
+      view.setUint8(0, 0x60 | packet.id);
       view.setUint8(1, array[0] >> 0x08);
       view.setUint8(2, array[0] & 0xff);
 
@@ -298,6 +330,6 @@ export class App {
   }
 
   public static get_instance() {
-    return getContext("2023korobonc");
+    return getContext<App>("2023korobonc");
   }
 }

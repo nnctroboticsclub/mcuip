@@ -20,7 +20,7 @@
   import CalibNum from "./calib-num.svelte";
 
   let ready = false;
-  let right_joystick_for_shot = false;
+  let vector_configure_mode = false;
 
   let rotation_mode;
 
@@ -29,18 +29,109 @@
       rot: Writable<number>;
       drive: Writable<number>;
       error: Writable<number>;
+      p_gain: Writable<number>;
+      i_gain: Writable<number>;
+      d_gain: Writable<number>;
+      rot_fb: Writable<number>;
+      rot_out: Writable<number>;
     }[];
     gyro: Writable<number>;
     angle_error: Writable<number>;
   } = {
     motors: [
-      { rot: writable(0), drive: writable(0), error: writable(0) },
-      { rot: writable(0), drive: writable(0), error: writable(0) },
-      { rot: writable(0), drive: writable(0), error: writable(0) },
+      {
+        rot: writable(0),
+        drive: writable(0),
+        error: writable(0),
+        p_gain: writable(0),
+        i_gain: writable(0),
+        d_gain: writable(0),
+        rot_fb: writable(0),
+        rot_out: writable(0),
+      },
+      {
+        rot: writable(0),
+        drive: writable(0),
+        error: writable(0),
+        p_gain: writable(0),
+        i_gain: writable(0),
+        d_gain: writable(0),
+        rot_fb: writable(0),
+        rot_out: writable(0),
+      },
+      {
+        rot: writable(0),
+        drive: writable(0),
+        error: writable(0),
+        p_gain: writable(0),
+        i_gain: writable(0),
+        d_gain: writable(0),
+        rot_fb: writable(0),
+        rot_out: writable(0),
+      },
     ],
     gyro: writable(0),
     angle_error: writable(0),
   };
+
+  let mdc_status = [
+    [
+      {
+        speed: writable(0),
+        encoder: writable(0),
+      },
+      {
+        speed: writable(0),
+        encoder: writable(0),
+      },
+      {
+        speed: writable(0),
+        encoder: writable(0),
+      },
+      {
+        speed: writable(0),
+        encoder: writable(0),
+      },
+    ],
+    [
+      {
+        speed: writable(0),
+        encoder: writable(0),
+      },
+      {
+        speed: writable(0),
+        encoder: writable(0),
+      },
+      {
+        speed: writable(0),
+        encoder: writable(0),
+      },
+      {
+        speed: writable(0),
+        encoder: writable(0),
+      },
+    ],
+    [
+      {
+        speed: writable(0),
+        encoder: writable(0),
+      },
+      {
+        speed: writable(0),
+        encoder: writable(0),
+      },
+      {
+        speed: writable(0),
+        encoder: writable(0),
+      },
+      {
+        speed: writable(0),
+        encoder: writable(0),
+      },
+    ],
+  ];
+  let esc_status = [writable(0), writable(0), writable(0)];
+
   let network = {
     load: writable(0),
   };
@@ -59,15 +150,27 @@
     };
   });
 
+  function decode_gain(byte: number) {
+    return (byte / 255) * 10;
+  }
+
+  function decode_angle(byte: number) {
+    return (byte / 255) * 360;
+  }
+
+  function decode_power(byte: number) {
+    return (byte - 128) / 127;
+  }
+
+  function decode_magnitude(byte: number) {
+    return (byte / 255) * 100;
+  }
+
+  function decode_error(byte: number) {
+    return (byte - 128) / 127;
+  }
+
   app.on_data(0x00, (v) => {
-    function decode_angle(byte: number) {
-      return (byte / 255) * 360;
-    }
-
-    function decode_magnitude(byte: number) {
-      return (byte / 255) * 100;
-    }
-
     swerve.motors[0].drive.set(decode_magnitude(v.getUint8(0)));
     swerve.motors[0].rot.set(decode_angle(v.getUint8(1)));
     swerve.motors[1].drive.set(decode_magnitude(v.getUint8(2)));
@@ -77,14 +180,74 @@
     swerve.gyro.set(decode_angle(v.getUint8(6)));
   });
   app.on_data(0x01, (v) => {
-    function decode_error(byte: number) {
-      return (byte - 128) / 127;
-    }
     swerve.motors[0].error.set(decode_error(v.getUint8(0)));
     swerve.motors[1].error.set(decode_error(v.getUint8(1)));
     swerve.motors[2].error.set(decode_error(v.getUint8(2)));
 
     swerve.angle_error.set(decode_error(v.getUint8(3)));
+  });
+
+  app.on_data(0x20, (v) => {
+    swerve.motors[0].p_gain.set(decode_gain(v.getUint8(0)));
+    swerve.motors[0].i_gain.set(decode_gain(v.getUint8(1)));
+    swerve.motors[0].d_gain.set(decode_gain(v.getUint8(2)));
+    swerve.motors[0].rot_fb.set(decode_angle(v.getUint8(3)));
+    swerve.motors[0].rot_out.set(decode_power(v.getUint8(4)));
+  });
+  app.on_data(0x21, (v) => {
+    swerve.motors[1].p_gain.set(decode_gain(v.getUint8(0)));
+    swerve.motors[1].i_gain.set(decode_gain(v.getUint8(1)));
+    swerve.motors[1].d_gain.set(decode_gain(v.getUint8(2)));
+    swerve.motors[1].rot_fb.set(decode_angle(v.getUint8(3)));
+    swerve.motors[1].rot_out.set(decode_power(v.getUint8(4)));
+  });
+  app.on_data(0x22, (v) => {
+    swerve.motors[2].p_gain.set(decode_gain(v.getUint8(0)));
+    swerve.motors[2].i_gain.set(decode_gain(v.getUint8(1)));
+    swerve.motors[2].d_gain.set(decode_gain(v.getUint8(2)));
+    swerve.motors[2].rot_fb.set(decode_angle(v.getUint8(3)));
+    swerve.motors[2].rot_out.set(decode_power(v.getUint8(4)));
+  });
+  app.on_data(0x30, (v) => {
+    mdc_status[0][0].speed.set(decode_power(v.getUint8(0)));
+    mdc_status[0][1].speed.set(decode_power(v.getUint8(1)));
+    mdc_status[0][2].speed.set(decode_power(v.getUint8(2)));
+    mdc_status[0][3].speed.set(decode_power(v.getUint8(3)));
+  });
+  app.on_data(0x31, (v) => {
+    mdc_status[1][0].speed.set(decode_power(v.getUint8(0)));
+    mdc_status[1][1].speed.set(decode_power(v.getUint8(1)));
+    mdc_status[1][2].speed.set(decode_power(v.getUint8(2)));
+    mdc_status[1][3].speed.set(decode_power(v.getUint8(3)));
+  });
+  app.on_data(0x32, (v) => {
+    mdc_status[2][0].speed.set(decode_power(v.getUint8(0)));
+    mdc_status[2][1].speed.set(decode_power(v.getUint8(1)));
+    mdc_status[2][2].speed.set(decode_power(v.getUint8(2)));
+    mdc_status[2][3].speed.set(decode_power(v.getUint8(3)));
+  });
+  app.on_data(0x40, (v) => {
+    mdc_status[0][0].encoder.set(decode_power(v.getUint8(0)));
+    mdc_status[0][1].encoder.set(decode_power(v.getUint8(1)));
+    mdc_status[0][2].encoder.set(decode_power(v.getUint8(2)));
+    mdc_status[0][3].encoder.set(decode_power(v.getUint8(3)));
+  });
+  app.on_data(0x41, (v) => {
+    mdc_status[1][0].encoder.set(decode_power(v.getUint8(0)));
+    mdc_status[1][1].encoder.set(decode_power(v.getUint8(1)));
+    mdc_status[1][2].encoder.set(decode_power(v.getUint8(2)));
+    mdc_status[1][3].encoder.set(decode_power(v.getUint8(3)));
+  });
+  app.on_data(0x42, (v) => {
+    mdc_status[2][0].encoder.set(decode_power(v.getUint8(0)));
+    mdc_status[2][1].encoder.set(decode_power(v.getUint8(1)));
+    mdc_status[2][2].encoder.set(decode_power(v.getUint8(2)));
+    mdc_status[2][3].encoder.set(decode_power(v.getUint8(3)));
+  });
+  app.on_data(0x38, (v) => {
+    esc_status[0].set(decode_power(v.getUint8(0)));
+    esc_status[1].set(decode_power(v.getUint8(1)));
+    esc_status[2].set(decode_power(v.getUint8(2)));
   });
   app.on_data(0xfe, (v) => {
     const load = (v.getUint32(0, false) / 0x100000000) * 10000;
@@ -93,8 +256,22 @@
 </script>
 
 <div class="container">
+  <div class="status-wrapper">
+    <div class="status">
+      Status <br />
+      <span style="background-color: #{$sock ? '00ff' : 'ff00'}0044;"
+        >&nbsp;&nbsp;</span
+      >&nbsp;ESP32 Relay<br />
+      &gt;NETWORK <br />
+      &nbsp;Load: <NwLoad value={network.load}></NwLoad><br />
+      &nbsp;&gt;Ping <br />
+      {#each app.devices as device, i}
+        &nbsp;&nbsp;{i}: <LastPing {device}></LastPing> <br />
+      {/each}
+    </div>
+  </div>
   <TabContainer
-    style="flex-grow: 1; display: flexbox;"
+    style="flex-grow: 1; display: flexbox; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;"
     names={["Control", "Connection", "Calibration", "Vector", "Debugging"]}
     tag="2023-korobo-nc"
   >
@@ -157,8 +334,11 @@
         active_color="#00f1"
         width="70px"
         height="70px"
+        on:click={() => {
+          app.controls.bool["urc"].curr = !app.controls.bool["urc"].curr;
+        }}
       >
-        aaa
+        Revol
       </Button>
 
       <Button
@@ -184,11 +364,23 @@
         }}
       >
         &lt;--
-      </Button><!--
-      <div style="position: absolute; bottom: 250px; right: 0;">
-        Shot Mode
-        <Toggle bind:value={right_joystick_for_shot}></Toggle>
-      </div> -->
+      </Button>
+
+      <Button
+        style="position: absolute; top: 70px; right: 6.5cm; border: 1px solid {app
+          .controls.bool['emc'].curr
+          ? 'red'
+          : 'blue'};"
+        color="transparent"
+        active_color="#00f1"
+        width="70px"
+        height="70px"
+        on:click={() => {
+          app.controls.bool["emc"].curr = !app.controls.bool["emc"].curr;
+        }}
+      >
+        Soft EMC
+      </Button>
       <div style="position: absolute; bottom: 220px; right: 0;">
         PID Enabled
         <Toggle bind:value={app.controls.bool["srp"].curr}></Toggle>
@@ -205,24 +397,54 @@
       </div>
     </TabContent>
     <TabContent name="Vector">
-      <div style="position: relative; margin: 0 auto; width: 200px; top: 70px;">
-        <div style="position: absolute; top: 0px; left: 100px;">
-          <Vector radius={swerve.motors[0].drive} theta={swerve.motors[0].rot}
-          ></Vector>
-        </div>
+      <div
+        style="position: relative; height: 100%; width: 100%; flex 1 1 auto;"
+      >
+        <Button
+          style="position: absolute; top: 0px; left: 0px; border: 1px solid {vector_configure_mode
+            ? 'red'
+            : 'blue'};"
+          color="transparent"
+          active_color="#00f1"
+          width="70px"
+          height="70px"
+          on:click={() => {
+            vector_configure_mode = !vector_configure_mode;
+          }}
+        >
+          Config
+        </Button>
 
         <div
-          style="position: absolute; top: calc(200px * 0.8660254); left: 200px;"
+          style="position: relative; margin: 0 auto; width: 200px; top: 80px;"
         >
-          <Vector radius={swerve.motors[1].drive} theta={swerve.motors[1].rot}
-          ></Vector>
-        </div>
+          <div style="position: absolute; top: 0px; left: 100px;">
+            <Vector
+              motor_inverse_key="s0i"
+              configure_mode={vector_configure_mode}
+              motor={swerve.motors[0]}
+            ></Vector>
+          </div>
 
-        <div
-          style="position: absolute; top: calc(200px * 0.8660254); left: 0px;"
-        >
-          <Vector radius={swerve.motors[2].drive} theta={swerve.motors[2].rot}
-          ></Vector>
+          <div
+            style="position: absolute; top: calc(200px * 0.8660254); left: 200px;"
+          >
+            <Vector
+              motor_inverse_key="s1i"
+              configure_mode={vector_configure_mode}
+              motor={swerve.motors[1]}
+            ></Vector>
+          </div>
+
+          <div
+            style="position: absolute; top: calc(200px * 0.8660254); left: 0px;"
+          >
+            <Vector
+              motor_inverse_key="s2i"
+              configure_mode={vector_configure_mode}
+              motor={swerve.motors[2]}
+            ></Vector>
+          </div>
         </div>
       </div>
     </TabContent>
@@ -230,8 +452,9 @@
       <TabContainer
         tag="2023-korobo-nc-debug"
         style="height: 100%; width: 100%"
-        names={["Actions", "Analysis", "Packet status"]}
+        names={["Actions", "Analysis", "Packet status", "MDC"]}
         vertical={true}
+        deactivate_node={true}
         tab_size="1em"
       >
         <TabContent style="width: 100%; height: 100%" name="Actions">
@@ -249,11 +472,6 @@
           </Button>
         </TabContent>
         <TabContent style="width: 100%; height: 100%" name="Analysis">
-          &gt;LOCAL <br />
-          &nbsp;Is connected to esp32?:
-          <span style="background-color: #{$sock ? '00ff' : 'ff00'}0044;"
-            >&nbsp;&nbsp;</span
-          >&nbsp;{$sock ? "Yes" : "No"} <br />
           &gt;PHYSICAL <br />
           &nbsp;&gt;SWERVE <br />
           &nbsp;&nbsp;Robot Angle Errors: <PidError
@@ -270,13 +488,6 @@
           <br />
           &nbsp;&nbsp;Motor2: <SwerveMotor motor={swerve.motors[2]}
           ></SwerveMotor>
-          <br />
-          &gt;NETWORK <br />
-          &nbsp;Load: <NwLoad value={network.load}></NwLoad><br />
-          &nbsp;&gt;Ping <br />
-          {#each app.last_ping as last_ping, i}
-            &nbsp;&nbsp;{i}: <LastPing {last_ping}></LastPing> <br />
-          {/each}
         </TabContent>
         <TabContent
           style="width: 100%; height: 100%; display: flex; flex-direction: row;"
@@ -284,8 +495,9 @@
         >
           <div style="flex: 1 1 auto; overflow-y: scroll; height: 100%;">
             {#each Object.keys(app.controls.num) as key}
-              {key}: {app.controls.num[key].prev} =&gt; {app.controls.num[key]
-                .curr} (in {app.controls.num[key].range})<br />
+              {key}: {app.controls.num[key].prev.toFixed(5)} =&gt; {app.controls.num[
+                key
+              ].curr.toFixed(5)} (in {app.controls.num[key].range})<br />
             {/each}
             {#each Object.keys(app.controls.bool) as key}
               {key}: {app.controls.bool[key].prev} =&gt; {app.controls.bool[key]
@@ -303,6 +515,23 @@
 
             &lt;&lt;== End of Packet status ==&gt;&gt;
           </div>
+        </TabContent>
+        <TabContent
+          style="width: 100%; height: 100%; display: flex; flex-direction: row; font-size: 1.25em;"
+          name="MDC"
+        >
+          {#each mdc_status as mdc, i}
+            {#each mdc as m, j}
+              MDC{i} --&gt; {j}: <RawValue val={m.speed}></RawValue>, enc=<RawValue
+                val={m.encoder}
+              ></RawValue>
+              <br />
+            {/each}
+          {/each}
+          {#each esc_status as m, j}
+            ESC &nbsp;--&gt; {j}: <RawValue val={m}></RawValue>
+            <br />
+          {/each}
         </TabContent>
       </TabContainer>
     </TabContent>
@@ -323,62 +552,148 @@
       <TabContainer
         tag="2023-korobo-nc-calib"
         style="height: 100%; width: 100%"
-        names={[
-          "Steer Motor 0",
-          "Steer Motor 1",
-          "Steer Motor 2",
-          "Steer Gyro",
-          "Shot speed",
-          "Max Elevation",
-        ]}
-        vertical={true}
-        tab_size="1em"
+        names={["Swerve", "- Steer Motor", "- Drive Motor", "Upper"]}
       >
-        <TabContent style="width: 100%; height: 100%" name="Steer Motor 0"
-          ><CalibPid
-            bind:p_gain={app.controls.num["sm0pp"].curr}
-            bind:i_gain={app.controls.num["sm0pi"].curr}
-            bind:d_gain={app.controls.num["sm0pd"].curr}
-          ></CalibPid></TabContent
-        >
-        <TabContent style="width: 100%; height: 100%" name="Steer Motor 1"
-          ><CalibPid
-            bind:p_gain={app.controls.num["sm1pp"].curr}
-            bind:i_gain={app.controls.num["sm1pi"].curr}
-            bind:d_gain={app.controls.num["sm1pd"].curr}
-          ></CalibPid></TabContent
-        >
-        <TabContent style="width: 100%; height: 100%" name="Steer Motor 2"
-          ><CalibPid
-            bind:p_gain={app.controls.num["sm2pp"].curr}
-            bind:i_gain={app.controls.num["sm2pi"].curr}
-            bind:d_gain={app.controls.num["sm2pd"].curr}
-          ></CalibPid></TabContent
-        >
-        <TabContent style="width: 100%; height: 100%" name="Steer Gyro"
-          ><CalibPid
-            bind:p_gain={app.controls.num["sgpp"].curr}
-            bind:i_gain={app.controls.num["sgpi"].curr}
-            bind:d_gain={app.controls.num["sgpd"].curr}
-          ></CalibPid></TabContent
-        >
-        <TabContent style="width: 100%; height: 100%" name="Shot speed">
-          <CalibNum bind:value={app.controls.num["msp"].curr}></CalibNum>
+        <TabContent style="width: 100%; height: 100%" name="Swerve">
+          <TabContainer
+            tag="2023-korobo-nc-calib-page1"
+            style="height: 100%; width: 100%"
+            names={["Steer Gyro"]}
+            vertical={true}
+            tab_size="1em"
+          >
+            <TabContent style="width: 100%; height: 100%" name="Steer Gyro"
+              ><CalibPid
+                bind:p_gain={app.controls.num["sgpp"].curr}
+                bind:i_gain={app.controls.num["sgpi"].curr}
+                bind:d_gain={app.controls.num["sgpd"].curr}
+              ></CalibPid></TabContent
+            >
+          </TabContainer>
         </TabContent>
-        <TabContent style="width: 100%; height: 100%" name="Max Elevation">
-          <CalibNum bind:value={app.controls.num["mea"].curr}></CalibNum>
+        <TabContent style="width: 100%; height: 100%" name="- Steer Motor">
+          <TabContainer
+            tag="2023-korobo-nc-calib-page2"
+            style="height: 100%; width: 100%"
+            names={["Steer Motor 0", "Steer Motor 1", "Steer Motor 2"]}
+            vertical={true}
+            tab_size="1em"
+          >
+            <TabContent style="width: 100%; height: 100%" name="Steer Motor 0"
+              ><CalibPid
+                bind:p_gain={app.controls.num["sm0pp"].curr}
+                bind:i_gain={app.controls.num["sm0pi"].curr}
+                bind:d_gain={app.controls.num["sm0pd"].curr}
+              ></CalibPid></TabContent
+            >
+            <TabContent style="width: 100%; height: 100%" name="Steer Motor 1"
+              ><CalibPid
+                bind:p_gain={app.controls.num["sm1pp"].curr}
+                bind:i_gain={app.controls.num["sm1pi"].curr}
+                bind:d_gain={app.controls.num["sm1pd"].curr}
+              ></CalibPid></TabContent
+            >
+            <TabContent style="width: 100%; height: 100%" name="Steer Motor 2"
+              ><CalibPid
+                bind:p_gain={app.controls.num["sm2pp"].curr}
+                bind:i_gain={app.controls.num["sm2pi"].curr}
+                bind:d_gain={app.controls.num["sm2pd"].curr}
+              ></CalibPid></TabContent
+            >
+            <TabContent style="width: 100%; height: 100%" name="Steer Motor 2"
+              ><CalibPid
+                bind:p_gain={app.controls.num["sm2pp"].curr}
+                bind:i_gain={app.controls.num["sm2pi"].curr}
+                bind:d_gain={app.controls.num["sm2pd"].curr}
+              ></CalibPid></TabContent
+            >
+          </TabContainer>
+        </TabContent>
+        <TabContent style="width: 100%; height: 100%" name="- Drive Motor">
+          <TabContainer
+            tag="2023-korobo-nc-calib-page3"
+            style="height: 100%; width: 100%"
+            names={["Steer Drive 0", "Steer Drive 1", "Steer Drive 2"]}
+            vertical={true}
+            tab_size="1em"
+          >
+            <TabContent style="width: 100%; height: 100%" name="Steer Drive 0">
+              <CalibNum bind:value={app.controls.num["sm0d"].curr} />
+            </TabContent>
+            <TabContent style="width: 100%; height: 100%" name="Steer Drive 1">
+              <CalibNum bind:value={app.controls.num["sm1d"].curr} />
+            </TabContent>
+            <TabContent style="width: 100%; height: 100%" name="Steer Drive 2">
+              <CalibNum bind:value={app.controls.num["sm2d"].curr} />
+            </TabContent>
+          </TabContainer>
+        </TabContent>
+        <TabContent style="width: 100%; height: 100%" name="Upper">
+          <TabContainer
+            tag="2023-korobo-nc-calib-page4"
+            style="height: 100%; width: 100%"
+            names={[
+              "Shot speed",
+              "Max Elevation",
+              "Elevation PID",
+              "Rotation PID",
+            ]}
+            vertical={true}
+            tab_size="1em"
+          >
+            <TabContent style="width: 100%; height: 100%" name="Shot speed">
+              <CalibNum bind:value={app.controls.num["msp"].curr}></CalibNum>
+            </TabContent>
+            <TabContent style="width: 100%; height: 100%" name="Max Elevation">
+              <CalibNum bind:value={app.controls.num["mea"].curr}></CalibNum>
+            </TabContent>
+            <TabContent style="width: 100%; height: 100%" name="Elevation PID">
+              <CalibPid
+                bind:p_gain={app.controls.num["uepp"].curr}
+                bind:i_gain={app.controls.num["uepi"].curr}
+                bind:d_gain={app.controls.num["uepd"].curr}
+              ></CalibPid>
+            </TabContent>
+            <TabContent style="width: 100%; height: 100%" name="Rotation PID">
+              <CalibPid
+                bind:p_gain={app.controls.num["urpp"].curr}
+                bind:i_gain={app.controls.num["urpi"].curr}
+                bind:d_gain={app.controls.num["urpd"].curr}
+              ></CalibPid>
+            </TabContent>
+          </TabContainer>
         </TabContent>
       </TabContainer>
     </TabContent>
   </TabContainer>
 </div>
 
-<style>
+<style lang="scss">
   div.container {
     height: 100%;
     width: 100%;
 
     text-shadow: 0px 0px 3px #ccc;
+
+    div.status-wrapper {
+      display: flex;
+      flex-direction: column;
+
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      width: fit-content;
+
+      position: relative;
+      left: 10px;
+
+      div.status {
+        background-color: #4442;
+        border-radius: 10px;
+
+        font-size: 0.8em;
+      }
+    }
   }
   div.ctrl-logo {
     transform: translate(50%, -50%);

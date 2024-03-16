@@ -4,4 +4,4 @@
   export let value: Writable<number> = writable(0);
 </script>
 
-{$value.toFixed(10)} %%
+{$value.toFixed(5)} %%
