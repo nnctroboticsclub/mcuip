@@ -495,13 +495,16 @@
         >
           <div style="flex: 1 1 auto; overflow-y: scroll; height: 100%;">
             {#each Object.keys(app.controls.num) as key}
-              {key}: {app.controls.num[key].prev.toFixed(5)} =&gt; {app.controls.num[
+              {@html key.padStart(5, "@").replaceAll("@", "&nbsp;")}: {app.controls.num[
                 key
-              ].curr.toFixed(5)} (in {app.controls.num[key].range})<br />
+              ].prev.toFixed(5)} =&gt;
+              {app.controls.num[key].curr.toFixed(5)} (in
+              {app.controls.num[key].range})<br />
             {/each}
             {#each Object.keys(app.controls.bool) as key}
-              {key}: {app.controls.bool[key].prev} =&gt; {app.controls.bool[key]
-                .curr}<br />
+              {@html key.padStart(5, "@").replaceAll("@", "&nbsp;")}: {app
+                .controls.bool[key].prev} =&gt;
+              {app.controls.bool[key].curr}<br />
             {/each}
 
             &lt;&lt;== End of controller status ==&gt;&gt;
