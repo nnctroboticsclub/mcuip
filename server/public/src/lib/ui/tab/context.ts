@@ -22,6 +22,10 @@ export class TabContext {
     return getWindow().getDataStore(`tab-${this.tag}-collapsed`);
   }
 
+  get tab_bar_mode_deactivate_node(): Writable<boolean> {
+    return getWindow().getDataStore(`tab-${this.tag}-mode-deactivate-node`);
+  }
+
   static getContext(): TabContext | null {
     const ctx = getContext<TabContext>("tab_context");
     if (!ctx) {

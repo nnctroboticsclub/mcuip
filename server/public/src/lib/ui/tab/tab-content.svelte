@@ -8,14 +8,22 @@
   const ctx = TabContext.getContext();
 
   const active_tab_name = ctx?.active_tab_name;
+  const tab_bar_mode_deactivate_node = ctx?.tab_bar_mode_deactivate_node;
 </script>
 
-{#if active_tab_name}
+{#if !active_tab_name}
+  [WARN]: TabContext is not found or active_tab_name is undefined<br />
+{:else if !tab_bar_mode_deactivate_node}
+  [WARN]: TabContext is not found or tab_bar_mode_deactivate_node is undefined<br
+  />
+{:else if !$tab_bar_mode_deactivate_node}
   <div class:active={whatever || $active_tab_name === name} {style}>
     <slot />
   </div>
-{:else}
-  [WARN]: TabContext is not found<br />
+{:else if $tab_bar_mode_deactivate_node && (whatever || $active_tab_name === name)}
+  <div class:active={true} {style}>
+    <slot />
+  </div>
 {/if}
 
 <style>

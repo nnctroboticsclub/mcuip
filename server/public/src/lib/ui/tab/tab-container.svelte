@@ -10,15 +10,20 @@
   export let vertical: boolean = false;
   export let tab_size: string | "auto" = "auto";
 
+  export let deactivate_node = false;
+
   const ctx = TabContext.setContext(tag);
 
   const active_tab_name = ctx.active_tab_name;
   const tab_names = ctx.tab_names;
   const tab_bar_collapsed = ctx.tab_bar_collapsed;
+  const tab_bar_mode_deactivate_node = ctx.tab_bar_mode_deactivate_node;
 
   if (!$active_tab_name) $active_tab_name = names[0];
   if (!$tab_names) $tab_names = names;
   if (!$tab_bar_collapsed) $tab_bar_collapsed = false;
+  if (!$tab_bar_mode_deactivate_node)
+    $tab_bar_mode_deactivate_node = deactivate_node;
 </script>
 
 <div class="container" style="height: {height}; {style};" class:vertical>
