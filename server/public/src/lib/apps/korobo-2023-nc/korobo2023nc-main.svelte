@@ -294,8 +294,7 @@
         tag="sm"
         stick_name="Move"
         style="position: absolute; bottom: 0; left: 0;"
-      /><!--
-      {#if right_joystick_for_shot} -->
+      />
       <Joystick
         radius={200}
         bind:x_val={app.controls.num["lha"].curr}
@@ -303,19 +302,9 @@
         tag="la"
         stick_name="Launch"
         style="position: absolute; bottom: 0; right: 0;"
-      /><!--
-      {:else}
-        <Joystick
-          radius={200}
-          bind:x_val={app.controls.num["srx"].curr}
-          bind:y_val={app.controls.num["sry"].curr}
-          tag="sr"
-          stick_name="Rotation"
-          style="position: absolute; bottom: 0; right: 0;"
-        />
-      {/if} -->
+      />
       <Button
-        style="position: absolute; top: 0; right: 4.5cm; border: 1px solid {app
+        style="position: absolute; top: 70px; left: 6.5cm; border: 1px solid {app
           .controls.bool['sht'].curr
           ? 'red'
           : 'blue'};"
@@ -367,6 +356,21 @@
         &lt;--
       </Button>
 
+      <Button
+        style="position: absolute; top: 0px; right: 4.5cm; border: 1px solid {app
+          .controls.bool['lod'].curr
+          ? 'red'
+          : 'blue'};"
+        color="transparent"
+        active_color="#00f1"
+        width="70px"
+        height="70px"
+        on:click={() => {
+          app.controls.bool["lod"].curr = !app.controls.bool["lod"].curr;
+        }}
+      >
+        Load
+      </Button>
       <Button
         style="position: absolute; top: 70px; right: 6.5cm; border: 1px solid {app
           .controls.bool['emc'].curr
@@ -639,6 +643,7 @@
             names={[
               "Shot speed",
               "Max Elevation",
+              "Load Speed",
               "Elevation PID",
               "Rotation PID",
             ]}
@@ -650,6 +655,9 @@
             </TabContent>
             <TabContent style="width: 100%; height: 100%" name="Max Elevation">
               <CalibNum bind:value={app.controls.num["mea"].curr}></CalibNum>
+            </TabContent>
+            <TabContent style="width: 100%; height: 100%" name="Load Speed">
+              <CalibNum bind:value={app.controls.num["uls"].curr}></CalibNum>
             </TabContent>
             <TabContent style="width: 100%; height: 100%" name="Elevation PID">
               <CalibPid

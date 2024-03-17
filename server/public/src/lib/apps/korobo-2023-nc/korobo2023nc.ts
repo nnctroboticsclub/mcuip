@@ -62,6 +62,7 @@ export class App {
       "urpp": { prev: NaN, curr: 1, range: [0, 1] },
       "urpi": { prev: NaN, curr: 0, range: [0, 1] },
       "urpd": { prev: NaN, curr: 0, range: [0, 1] },
+      "uls": { prev: NaN, curr: 0, range: [0, 1] },
     },
     bool: {
       "srp": { prev: true, curr: true },
@@ -73,6 +74,7 @@ export class App {
       "s1i": { prev: false, curr: false },
       "s2i": { prev: false, curr: false },
       "emc": { prev: false, curr: false },
+      "lod": { prev: false, curr: false },
     },
   };
 
@@ -88,6 +90,7 @@ export class App {
     { id: 0x01, type: "bool", subtype: "button", target: ["srp"], counter: 0 },
     { id: 0x02, type: "bool", subtype: "button", target: ["sht"], counter: 0 },
     { id: 0x03, type: "bool", subtype: "button", target: ["emc"], counter: 0 },
+    { id: 0x04, type: "bool", subtype: "button", target: ["lod"], counter: 0 },
     { id: 0x00, type: "bool", subtype: "action", target: ["srr"], counter: 0 },
     { id: 0x01, type: "bool", subtype: "action", target: ["srl"], counter: 0 },
     { id: 0x02, type: "bool", subtype: "action", target: ["urc"], counter: 0 },
@@ -107,6 +110,7 @@ export class App {
     { id: 0x02, type: "num", subtype: "value", target: ["sm0d"], counter: 0 },
     { id: 0x03, type: "num", subtype: "value", target: ["sm1d"], counter: 0 },
     { id: 0x04, type: "num", subtype: "value", target: ["sm2d"], counter: 0 },
+    { id: 0x05, type: "num", subtype: "value", target: ["uls"], counter: 0 },
   ];
 
   async connect() {
