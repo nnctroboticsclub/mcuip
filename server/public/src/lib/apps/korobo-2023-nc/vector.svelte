@@ -33,7 +33,7 @@
 <div class="container">
   <div
     class="arrow"
-    style="transform: rotate({$theta + 90}deg); height: {$radius}px;"
+    style="transform: rotate({-$theta}deg); height: {$radius}px;"
   >
     {#if !configure_mode}
       <div
@@ -42,7 +42,7 @@
           "top: 0;" +
           "left: 0;" +
           "font-size: 14px;" +
-          `transform: translateY(${$radius / 2 - 10}px) translateX(-50%) rotate(${-$theta - 90}deg);`}
+          `transform: translateY(${$radius / 2 - 10}px) translateX(-50%) rotate(${$theta}deg);`}
       >
         {#if $error > 0}
           <nobr style="color: red;">ERR: {$error.toFixed(2)}</nobr>
