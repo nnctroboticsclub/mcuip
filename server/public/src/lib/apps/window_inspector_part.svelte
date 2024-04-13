@@ -15,9 +15,7 @@
 {#if !window}
   ==== window not found ====
 {:else}
-  Name: {window.app_name} <br />
-  Area: {$area.toString()} <br />
-  Z-Index: {$z_index} <br />
+  {@html window.app_name.padStart(20, " ").replaceAll(" ", "&nbsp;")}@{@html $area.toString().padStart(18).replaceAll(" ", "&nbsp;")} z={$z_index} <br />
   WindowData: <br />
   {JSON.stringify($data_store, null, 2)}
 {/if}
