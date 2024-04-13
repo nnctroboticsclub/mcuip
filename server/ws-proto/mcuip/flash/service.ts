@@ -1,7 +1,6 @@
 import { JSONEndpoint, JSONRouter } from "../../json_router";
-import { JSONObject } from "../../json_router/types";
 import { McuIpService } from "../service_base";
-import { Flash } from "./device";
+import { type Flash } from "./device";
 import { NodeManager } from "./manager";
 
 export class FlashService extends McuIpService<{

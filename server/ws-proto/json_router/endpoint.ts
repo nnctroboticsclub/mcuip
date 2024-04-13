@@ -1,5 +1,5 @@
 import { JSONRouter } from "./router";
-import { JSONObject, JSONRouterBase } from "./types";
+import { type JSONObject, type JSONRouterBase } from "./types";
 
 export class JSONEndpoint<T extends JSONObject> implements JSONRouterBase<T> {
   constructor(

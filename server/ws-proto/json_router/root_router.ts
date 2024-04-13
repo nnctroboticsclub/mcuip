@@ -1,6 +1,6 @@
 import { InternalError } from "./errors";
 import { JSONRouter } from "./router";
-import { JSONObject } from "./types";
+import { type JSONObject } from "./types";
 
 export class JSONRootRouterBase extends JSONRouter<object> {
   constructor(key: string) {

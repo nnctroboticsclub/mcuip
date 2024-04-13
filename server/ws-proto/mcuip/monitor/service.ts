@@ -1,7 +1,7 @@
 import { JSONEndpoint, JSONRouter } from "../../json_router";
 import { McuIpService } from "../service_base";
 import { MonitorManager } from "./manager";
-import { Data } from "./node";
+import { type Data } from "./node";
 
 export class MonitorService extends McuIpService<{
   command: string

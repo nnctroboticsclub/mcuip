@@ -1,19 +1,16 @@
-import EventEmitter from "events";
-import StrictEventEmitter from "strict-event-emitter-types";
+import { Emitter } from "strict-event-emitter";
 
 export type Data = {
   c: string, // channel
   d: { [key: string]: any } // data
 };
 
-interface Events {
-  rx: Data,
-  tx: Data
+type Events = {
+  "rx": [Data],
+  "tx": [Data],
 };
 
-type Emitter = StrictEventEmitter<EventEmitter, Events>;
-
-export class SerialPort extends (EventEmitter as { new(): Emitter }) {
+export class SerialPort extends Emitter<Events> {
   constructor(private port_name: string) {
     super()
   }

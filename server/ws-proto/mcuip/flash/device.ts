@@ -1,20 +1,15 @@
-import { EventEmitter } from "stream";
-import type { StrictEventEmitter } from "strict-event-emitter-types";
+import { Emitter } from "strict-event-emitter";
 
 export type Flash = {
   tag: string,
   data_base64: string
 };
 
-type FlashCallback = (flash: Flash) => Promise<void>;
-
-interface Events {
-  flash: Flash
+type Events = {
+  flash: [Flash]
 };
 
-type DeviceEvents = StrictEventEmitter<EventEmitter, Events>;
-
-export class Device extends (EventEmitter as { new(): DeviceEvents }) {
+export class Device extends Emitter<Events> {
   private in_flashing: boolean = false;
 
   constructor(public name: string) {

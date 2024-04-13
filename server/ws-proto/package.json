@@ -12,6 +12,6 @@
     "bun-types": "^0.4.0"
   },
   "dependencies": {
-    "strict-event-emitter-types": "^2.0.0"
+    "strict-event-emitter": "^0.5.1"
   }
 }

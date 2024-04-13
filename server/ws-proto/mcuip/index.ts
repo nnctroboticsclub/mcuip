@@ -1,5 +1,5 @@
 import { JSONRootRouterBase } from "../json_router";
-import { JSONObject } from "../json_router/types";
+import { type JSONObject } from "../json_router/types";
 import { FlashService } from "./flash/service";
 import { GlobalState } from "./global_state";
 import { MonitorService } from "./monitor/service";
