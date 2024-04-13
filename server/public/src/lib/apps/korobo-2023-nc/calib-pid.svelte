@@ -13,9 +13,9 @@
   let i_percent = 33;
   let d_percent = 33;
 
-  $: p_percent = (p_gain / (p_gain + i_gain + d_gain)) * 100.0;
-  $: i_percent = (i_gain / (p_gain + i_gain + d_gain)) * 100.0;
-  $: d_percent = (d_gain / (p_gain + i_gain + d_gain)) * 100.0;
+  $: p_percent = (p_gain + i_gain + d_gain) == 0 ? 33 : (p_gain / (p_gain + i_gain + d_gain)) * 100.0;
+  $: i_percent = (p_gain + i_gain + d_gain) == 0 ? 33 : (i_gain / (p_gain + i_gain + d_gain)) * 100.0;
+  $: d_percent = (p_gain + i_gain + d_gain) == 0 ? 33 : (d_gain / (p_gain + i_gain + d_gain)) * 100.0;
 
   // -1 ~ 1
   let p_slider = new DerivedWritable(
@@ -72,38 +72,40 @@
   </div>
   <div class="gain">
     <div
-      class="label"
-      style="border-right: 10px solid {gain_formula_error
+      class="label type"
+      style="border-right: 1px solid {gain_formula_error
         ? '#cc8888'
         : '#88cc88'}"
     >
-      <span>Gain:</span>
+      <span style="border-bottom: 5px solid {gain_formula_error
+        ? '#cc8888'
+        : '#88cc88'}">Gain:</span>
     </div>
-    <TextInput bind:value={gain_formula}></TextInput>
+    <TextInput width="" style="flex: 1 1 auto;" bind:value={gain_formula}></TextInput>
   </div>
   <div class="gain">
-    <div class="label">
+    <div class="label type">
       <span>P:</span>
     </div>
-    <VertialSlider style="width: 100%;" height={40} bind:value={$p_slider}
+    <VertialSlider style="flex: 1 1 auto;" height={40} bind:value={$p_slider}
     ></VertialSlider>
-    <div class="label"><span>{p_gain.toFixed(5)}</span></div>
+    <div class="label val"><span>{p_gain.toFixed(5)}</span></div>
   </div>
   <div class="gain">
-    <div class="label">
+    <div class="label type">
       <span>I:</span>
     </div>
-    <VertialSlider style="width: 100%;" height={40} bind:value={$i_slider}
+    <VertialSlider style="flex: 1 1 auto;" height={40} bind:value={$i_slider}
     ></VertialSlider>
-    <div class="label"><span>{i_gain.toFixed(5)}</span></div>
+    <div class="label val"><span>{i_gain.toFixed(5)}</span></div>
   </div>
   <div class="gain">
-    <div class="label">
+    <div class="label type">
       <span>D:</span>
     </div>
-    <VertialSlider style="width: 100%;" height={40} bind:value={$d_slider}
+    <VertialSlider style="flex: 1 1 auto;" height={40} bind:value={$d_slider}
     ></VertialSlider>
-    <div class="label"><span>{d_gain.toFixed(5)}</span></div>
+    <div class="label val"><span>{d_gain.toFixed(5)}</span></div>
   </div>
 </div>
 
@@ -151,10 +153,19 @@
       background-color: #eee;
       div.label {
         position: relative;
-        width: 100px;
+
+        &.type {
+          width: 80px;
+          border-right: 1px solid #ccc;
+        }
+        &.val {
+          width: 70px;
+        }
+
         span {
-          width: 100px;
           position: absolute;
+          width: 100%;
+          overflow-x: hidden;
           top: 50%;
           transform: translateY(-50%);
         }
