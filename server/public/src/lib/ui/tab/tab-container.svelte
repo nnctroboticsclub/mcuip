@@ -69,7 +69,7 @@
     display: flex;
 
     div.tab-bar {
-      border: 0px solid #000;
+      border: 0px solid #aaa;
 
       display: flex;
 
@@ -107,7 +107,6 @@
         height: 100%;
         &.show {
           margin: 0px 5px;
-          padding-right: 5px;
           border-width: 0px 1px 0px 0px;
           width: 200px;
         }
