@@ -256,6 +256,13 @@
 </script>
 
 <div class="container">
+  <div
+        style="position: absolute; top: 50%; right: 50%;"
+        class="ctrl-logo"
+        class:ready
+      >
+        <img src={SrAbe2} width="230px" alt="logo" />
+      </div>
   <div class="status-wrapper">
     <div class="status">
       Status <br />
@@ -279,13 +286,7 @@
       name="Control"
       style="position: relative; height: 100%; width: 100%; flex: 1 1 auto;"
     >
-      <div
-        style="position: fixed; top: 50%; right: 50%;"
-        class="ctrl-logo"
-        class:ready
-      >
-        <img src={SrAbe2} width="230px" alt="logo" />
-      </div>
+
       <Joystick
         radius={200}
         bind:x_val={app.controls.num["smx"].curr}
