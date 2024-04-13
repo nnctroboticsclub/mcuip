@@ -130,6 +130,8 @@
 
       margin-bottom: 0px 5px 5px 5px;
       border-bottom: 1px solid black;
+
+      overflow: hidden;
       div.area {
         height: 100%;
 
