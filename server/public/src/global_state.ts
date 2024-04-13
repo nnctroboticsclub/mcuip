@@ -19,7 +19,7 @@ export const global_state = {
     window: {
       background_color: writable('#ccc')
     },
-    app: {
+    framework: {
       background_color: writable('#eee'),
       appbar_color: writable('#fcc'),
     }

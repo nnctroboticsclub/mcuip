@@ -2,8 +2,8 @@
   import { global_state } from "../global_state";
   import "ress/ress.css";
 
-  const background = global_state.theme.app.background_color;
-  const title_bar_color = global_state.theme.app.appbar_color;
+  const background = global_state.theme.framework.background_color;
+  const title_bar_color = global_state.theme.framework.appbar_color;
   const app_name = global_state.app_name;
   const app_bar_show = global_state.app_bar_show;
 </script>

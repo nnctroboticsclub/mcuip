@@ -15,7 +15,8 @@
   {:then app}
     <svelte:component this={app} />
   {:catch error}
-    <p>An error has occurred when loading component</p>
+    <p>An error has occurred when loading component ({window.app_name})</p>
     <p>error: {error.message}</p>
+    {console.error(error), error.stack}
   {/await}
 {/if}

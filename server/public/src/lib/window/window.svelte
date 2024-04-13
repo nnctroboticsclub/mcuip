@@ -107,15 +107,16 @@
     box-sizing: border-box;
 
     padding: 5px;
+    margin: 1px;
     overflow: hidden;
 
-    transition: box-shadow 0.2s;
+    transition: box-shadow 0.1s;
     box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
   }
 
   div.container.dragging {
     cursor: grabbing;
-    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
   }
 
   div.title-bar {
@@ -158,7 +159,9 @@
     display: block;
     width: calc(100% - 20px);
     height: calc(100% - 21px);
-    padding: 10px;
+    padding: 20px 10px;
+
+    overflow-y: auto;
   }
 
   div.hover {

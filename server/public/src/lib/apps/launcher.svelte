@@ -21,7 +21,7 @@
           on:click={() => {
             windows.launch(app_name, {});
           }}
-          tooltip={app_name}>Launch</Button
+          tooltip={app_name}>{app_name}</Button
         >
       </div>
     {/each}
@@ -31,7 +31,8 @@
 <style>
   div.button-container {
     height: 70px;
-    width: 70px;
+    width: 140px;
+    margin: 5px;
 
     display: inline-block;
   }
