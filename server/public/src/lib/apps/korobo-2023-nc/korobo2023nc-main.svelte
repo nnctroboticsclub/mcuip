@@ -18,6 +18,7 @@
   import PidError from "./PIDError.svelte";
   import RawValue from "./raw_value.svelte";
   import CalibNum from "./calib-num.svelte";
+  import CalibLr from "./calib-LR.svelte";
 
   let ready = false;
   let vector_configure_mode = false;
@@ -226,23 +227,23 @@
     mdc_status[2][2].speed.set(decode_power(v.getUint8(2)));
     mdc_status[2][3].speed.set(decode_power(v.getUint8(3)));
   });
-  app.on_data(0x40, (v) => {
-    mdc_status[0][0].encoder.set(decode_power(v.getUint8(0)));
-    mdc_status[0][1].encoder.set(decode_power(v.getUint8(1)));
-    mdc_status[0][2].encoder.set(decode_power(v.getUint8(2)));
-    mdc_status[0][3].encoder.set(decode_power(v.getUint8(3)));
+  app.on_data(0x50, (v) => {
+    mdc_status[0][0].encoder.set(decode_angle(v.getUint8(0)));
+    mdc_status[0][1].encoder.set(decode_angle(v.getUint8(1)));
+    mdc_status[0][2].encoder.set(decode_angle(v.getUint8(2)));
+    mdc_status[0][3].encoder.set(decode_angle(v.getUint8(3)));
   });
-  app.on_data(0x41, (v) => {
-    mdc_status[1][0].encoder.set(decode_power(v.getUint8(0)));
-    mdc_status[1][1].encoder.set(decode_power(v.getUint8(1)));
-    mdc_status[1][2].encoder.set(decode_power(v.getUint8(2)));
-    mdc_status[1][3].encoder.set(decode_power(v.getUint8(3)));
+  app.on_data(0x51, (v) => {
+    mdc_status[1][0].encoder.set(decode_angle(v.getUint8(0)));
+    mdc_status[1][1].encoder.set(decode_angle(v.getUint8(1)));
+    mdc_status[1][2].encoder.set(decode_angle(v.getUint8(2)));
+    mdc_status[1][3].encoder.set(decode_angle(v.getUint8(3)));
   });
-  app.on_data(0x42, (v) => {
-    mdc_status[2][0].encoder.set(decode_power(v.getUint8(0)));
-    mdc_status[2][1].encoder.set(decode_power(v.getUint8(1)));
-    mdc_status[2][2].encoder.set(decode_power(v.getUint8(2)));
-    mdc_status[2][3].encoder.set(decode_power(v.getUint8(3)));
+  app.on_data(0x52, (v) => {
+    mdc_status[2][0].encoder.set(decode_angle(v.getUint8(0)));
+    mdc_status[2][1].encoder.set(decode_angle(v.getUint8(1)));
+    mdc_status[2][2].encoder.set(decode_angle(v.getUint8(2)));
+    mdc_status[2][3].encoder.set(decode_angle(v.getUint8(3)));
   });
   app.on_data(0x38, (v) => {
     esc_status[0].set(decode_power(v.getUint8(0)));
@@ -319,7 +320,10 @@
         Shot
       </Button>
       <Button
-        style="position: absolute; top: 0; left: 4.5cm; border: 1px solid blue;"
+        style="position: absolute; top: 0; left: 4.5cm; border: 1px solid {app
+          .controls.bool['urc'].curr
+          ? 'red'
+          : 'blue'};"
         color="transparent"
         active_color="#00f1"
         width="70px"
@@ -643,34 +647,36 @@
             names={[
               "Shot speed",
               "Max Elevation",
-              "Load Speed",
-              "Elevation PID",
-              "Rotation PID",
+              "Rotation Power",
+              "Elevation Power",
             ]}
             vertical={true}
             tab_size="1em"
           >
             <TabContent style="width: 100%; height: 100%" name="Shot speed">
-              <CalibNum bind:value={app.controls.num["msp"].curr}></CalibNum>
+              <CalibLr
+                bind:global_factor={app.controls.num["msp"].curr}
+                bind:l_factor={app.controls.num["msl"].curr}
+                bind:r_factor={app.controls.num["msr"].curr}
+              ></CalibLr>
             </TabContent>
             <TabContent style="width: 100%; height: 100%" name="Max Elevation">
               <CalibNum bind:value={app.controls.num["mea"].curr}></CalibNum>
             </TabContent>
-            <TabContent style="width: 100%; height: 100%" name="Load Speed">
-              <CalibNum bind:value={app.controls.num["uls"].curr}></CalibNum>
+            <TabContent style="width: 100%; height: 100%" name="Rotation Power">
+              <CalibNum bind:value={app.controls.num["urf"].curr}></CalibNum>
             </TabContent>
-            <TabContent style="width: 100%; height: 100%" name="Elevation PID">
-              <CalibPid
-                bind:p_gain={app.controls.num["uepp"].curr}
-                bind:i_gain={app.controls.num["uepi"].curr}
-                bind:d_gain={app.controls.num["uepd"].curr}
-              ></CalibPid>
+            <TabContent
+              style="width: 100%; height: 100%"
+              name="Elevation Power"
+            >
+              <CalibNum bind:value={app.controls.num["uef"].curr}></CalibNum>
             </TabContent>
-            <TabContent style="width: 100%; height: 100%" name="Rotation PID">
+            <TabContent style="width: 100%; height: 100%" name="Revolver PID">
               <CalibPid
-                bind:p_gain={app.controls.num["urpp"].curr}
-                bind:i_gain={app.controls.num["urpi"].curr}
-                bind:d_gain={app.controls.num["urpd"].curr}
+                bind:p_gain={app.controls.num["urep"].curr}
+                bind:i_gain={app.controls.num["urei"].curr}
+                bind:d_gain={app.controls.num["ured"].curr}
               ></CalibPid>
             </TabContent>
           </TabContainer>
