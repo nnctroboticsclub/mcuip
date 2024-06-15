@@ -1,6 +1,6 @@
 <script lang="ts">
   import { type Writable, writable } from "svelte/store";
-  import { Statuses } from "./data/status_bytes";
+  import { Statuses } from "../data/status_bytes";
 
   export let device: {
     last_ping: Writable<number>;

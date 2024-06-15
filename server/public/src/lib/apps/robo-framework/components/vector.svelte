@@ -1,7 +1,7 @@
 <script lang="ts">
   import Button from "$lib/ui/button.svelte";
   import { type Writable } from "svelte/store";
-  import { App } from "./korobo2023nc";
+  import { App } from "../korobo2023nc";
 
   export let configure_mode: boolean;
   export let motor: {

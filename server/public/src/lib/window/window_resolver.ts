@@ -9,6 +9,7 @@ export const app_import_map = {
   global_data_list: () => import("$lib/apps/global_data_list.svelte"),
   "mcuip-ctrl": () => import("$lib/apps/mcuip-controller.svelte"),
   "2023-korobo-nc": () => import("$lib/apps/2023-korobo-nc.svelte"),
+  "robo-framework": () => import("$lib/apps/robo-framework.svelte"),
 } as { [key: string]: () => Promise<any> };
 
 export async function getAppComponent(app_name: string) {
