@@ -12,7 +12,7 @@ export type Topo = {
   data: TopologyNode,
   pos: Writable<Position>,
   debug: Writable<string>;
-  force: Writable<{
+  velocity: Writable<{
     x: number,
     y: number
   }>
@@ -34,11 +34,11 @@ export default class Topology {
       return [...nodes, {
         data: node,
         pos: writable(new Position(
-          Math.random() * 200,
-          Math.random() * 200
+          Math.random() * 0.0001,
+          Math.random() * 0.0001
         )),
         debug: writable(""),
-        force: writable({ x: 0, y: 0 })
+        velocity: writable({ x: 0, y: 0 })
       }];
     });
   }
@@ -65,36 +65,79 @@ export default class Topology {
     this.height.set(height);
   }
 
+  get_linked_nodes(node_name: string): Topo[] {
+    return get(this.links).
+      map(({ from, to }) =>
+        from === node_name ? to
+          : to === node_name ? from
+            : undefined
+      ).
+      filter(Boolean).
+      map(n_name => get(this.nodes).find(n => n.data.name === n_name)).
+      filter(Boolean) as Topo[]
+  }
 
-  calc_force_linked(n1: Topo, n2: Topo): [number, number] {
-    const n1_pos = get(n1.pos);
-    const n2_pos = get(n2.pos);
+  get_not_linked_nodes(node_name: string): Topo[] {
+    const nodes = get(this.nodes);
+    const linked_nodes = this.get_linked_nodes(node_name);
 
-    const delta = n2_pos.subtract(n1_pos);
+    return nodes
+      .filter(n => !linked_nodes.includes(n) && n.data.name !== node_name);
+  }
 
+
+  calc_force_coil(p1: Position, p2: Position, x0: number, k: number): [number, number] {
+    const delta = p2.subtract(p1);
     const dist = delta.magnitude;
-    const x = dist - 120;
 
-    const force_siz = 0.5 * x;
+    const x = dist - x0;
+
+    const force_siz = k * x;
     const force = delta.multiply(force_siz / dist);
 
     const { x: f_x, y: f_y } = force.components();
     return [f_x, f_y];
   }
-  calc_force_not_linked(n1: Topo, n2: Topo): [number, number] {
-    const n1_pos = get(n1.pos);
-    const n2_pos = get(n2.pos);
 
-    let delta = n2_pos.subtract(n1_pos);
+  calc_force_linked(node: Topo): [number, number] {
+    const node_name = node.data.name;
 
-    const dist = delta.magnitude;
-    const x = dist - 200;
+    const linked_nodes = this.get_linked_nodes(node_name);
 
-    const force_siz = 0.5 * x;
-    const force = delta.multiply(force_siz / dist);
+    const force_linked = linked_nodes.
+      map(n2 => this.calc_force_coil(
+        get(node.pos),
+        get(n2.pos),
+        100,
+        0.3
+      )).
+      reduce((acc, [dx, dy]) =>
+        [acc[0] + dx, acc[1] + dy],
+        [0, 0]
+      ).
+      map(x => linked_nodes.length ? x / linked_nodes.length : 0);
 
-    const { x: f_x, y: f_y } = force.components();
-    return [f_x, f_y];
+
+    return force_linked as [number, number];
+  }
+
+  calc_force_not_linked(node: Topo): [number, number] {
+    const node_name = node.data.name;
+
+    const not_linked_nodes = this.get_not_linked_nodes(node_name);
+
+    const force_not_linked = not_linked_nodes.
+      map(n2 => this.calc_force_coil(
+        get(node.pos), get(n2.pos),
+        250, 0.2
+      )).
+      reduce((acc, [dx, dy]) =>
+        [acc[0] + dx, acc[1] + dy],
+        [0, 0]
+      ).
+      map(x => not_linked_nodes.length ? x / not_linked_nodes.length : 0);
+
+    return force_not_linked as [number, number];
   }
 
   calc_force_avoid_wall(node: Topo): [number, number] {
@@ -121,46 +164,16 @@ export default class Topology {
       force_y = h - border - (y + node_height);
     }
 
-    return [force_x, force_y];
+    return [0.2 * force_x, 0.2 * force_y];
   }
 
-  calc_force(nodes: Topo[], node: Topo) {
-    let node_name = node.data.name;
-
-    let linked_nodes = get(this.links).
-      map(({ from, to }) =>
-        from === node_name ? to
-          : to === node_name ? from
-            : undefined
-      ).
-      filter(Boolean).
-      map(n_name => nodes.find(n => n.data.name === n_name)).
-      filter(Boolean) as Topo[];
-
-    let force_linked = linked_nodes.
-      map(n2 => this.calc_force_linked(node, n2)).
-      reduce((acc, [dx, dy]) =>
-        [acc[0] + dx, acc[1] + dy],
-        [0, 0]
-      ).
-      map(x => linked_nodes.length ? x / linked_nodes.length : 0);
-
-
+  calc_force(node: Topo) {
+    let force_linked = this.calc_force_linked(node);
     let force_avoid_wall = this.calc_force_avoid_wall(node);
-
-    let not_linked_nodes = nodes.filter(n => !linked_nodes.includes(n) && n !== node);
-
-    let force_not_linked = not_linked_nodes.
-      map(n2 => this.calc_force_not_linked(node, n2)).
-      reduce((acc, [dx, dy]) =>
-        [acc[0] + dx, acc[1] + dy],
-        [0, 0]
-      ).
-      map(x => not_linked_nodes.length ? x / not_linked_nodes.length : 0);
-
+    let force_not_linked = this.calc_force_not_linked(node);
 
     let force = [...new Array(2)].map((_, i) => {
-      return 1.2 * (force_linked[i] + force_avoid_wall[i] + force_not_linked[i]);
+      return force_linked[i] + force_avoid_wall[i] + force_not_linked[i];
     });
 
     let force_power = Math.sqrt(force[0] * force[0] + force[1] * force[1]);
@@ -175,16 +188,20 @@ export default class Topology {
     this.ticks.update(count => count + 1);
     this.nodes.update(nodes => {
       const forced_nodes = nodes.map(n => {
-        let force = this.calc_force(nodes, n);
+        let force = this.calc_force(n);
 
-        n.force.update(_ => {
+        n.velocity.update(_ => {
           return {
             x: force[0],
             y: force[1]
           };
         });
 
-        // n.debug.update(_ => `${get(n.data.name)} ${JSON.stringify(get(n.pos).components())}`)
+        n.pos.update(p => {
+          const { x: v_x, y: v_y } = get(n.velocity);
+          const v = new Position(v_x, v_y);
+          return p.add(v);
+        });
 
         return n;
       });
@@ -200,32 +217,23 @@ export default class Topology {
       const p2 = new Position(w / 2, h / 2);
 
       forced_nodes.forEach(n => {
-        const p_f = new Position(get(n.force).x, get(n.force).y);
         n.pos.update(p => {
           const raw_p = p
             .subtract(p1)
-            .add(p_f).add(p2);
-
-          let s: string[] = [`${raw_p}`];
+            .add(p2);
 
           let { x, y } = raw_p.components();
           if (x < 0) {
             x = 0;
-            s.push("x < 0");
           } else if (x > w - 20) {
             x = w - 20;
-            s.push("x > w - 20");
           }
 
           if (y < 0) {
             y = 0;
-            s.push("y < 0");
           } else if (y > h - 20) {
             y = h - 20;
-            s.push("y > h - 20");
           }
-
-          // n.debug.update(_ => s.join(", "));
 
           return new Position(x, y);
         });

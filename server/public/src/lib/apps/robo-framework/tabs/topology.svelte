@@ -79,7 +79,6 @@
   topology.add_link("Robot3-3", "Debugger");
 
   let nodes = topology.get_nodes();
-  let ticks = topology.get_ticks();
   let links = topology.get_links();
 
   onMount(() => {
@@ -88,17 +87,8 @@
       topology.tick();
     }, 1000 / 30);
 
-    const interval2 = setInterval(() => {
-      return;
-      for (let node of $nodes) {
-        let pos = get(node.pos).components();
-        console.log(node.data.name, pos.x, pos.y);
-      }
-    }, 1000 / 1);
-
     return () => {
       clearInterval(interval1);
-      clearInterval(interval2);
     };
   });
 
@@ -112,16 +102,9 @@
 
   $: topology.set_width(width);
   $: topology.set_height(height);
-
-  if (0) {
-    container = document.createElement("div");
-  }
 </script>
 
 <div class="container" bind:this={container}>
-  <!-- ticks: {$ticks} -->
-  <!-- links: {JSON.stringify($links)} <br />
-  nodes: {JSON.stringify($nodes.map((x) => get(x.data.name)))} <br /> -->
   <DraggableArea top={0} left={0} {height} {width} tag="aaaaaa">
     {#each $nodes as node}
       <TopologyNode tag="aaaaaa" {node} />
