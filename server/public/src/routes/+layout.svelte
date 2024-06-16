@@ -39,6 +39,10 @@
     display: none;
   }
 
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
   div.app-bar-showed {
     display: inline-block;
   }

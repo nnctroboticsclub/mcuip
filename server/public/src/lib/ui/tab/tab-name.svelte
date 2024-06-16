@@ -37,6 +37,8 @@
       calc(95% - 15px) 95%,
       5% 95%
     );
+
+    border: 1px solid #888;
   }
 
   button.active {

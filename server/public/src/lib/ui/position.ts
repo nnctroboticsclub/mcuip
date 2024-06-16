@@ -50,4 +50,8 @@ export class Position {
   get magnitude(): number {
     return Math.sqrt(this.x_ * this.x_ + this.y_ * this.y_);
   }
+
+  get angle_rad(): number {
+    return Math.atan2(this.y_, this.x_);
+  }
 }
