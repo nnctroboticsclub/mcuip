@@ -1,21 +1,28 @@
 <script lang="ts">
   import DragTarget from "$lib/dragger/drag_target.svelte";
+  import BreadCrumbContext from "$lib/ui/breadcrumb/breadcrumb";
+  import TopoDevice from "./topo_device.svelte";
   import type { Topo } from "./topology";
 
   export let node: Topo;
   export let tag: string;
 
+  const breadcrumb_ctx = BreadCrumbContext.getContext();
+
   let data = node.data;
-  let v_a = node.velocity;
 
   let debug = node.debug;
   let name = data.name;
 </script>
 
 <DragTarget area_tag={tag} pos={node.pos}>
-  <div class="node">
-    {name}
-    {$debug} <br />
+  <div
+    class="node"
+    on:click={() => {
+      breadcrumb_ctx.add(name, TopoDevice, { node });
+    }}
+  >
+    <!-- {name} <br /> -->
   </div>
 </DragTarget>
 
@@ -29,7 +36,8 @@
 
     flex: 1 1 auto;
 
-    border: 1px solid #ccc;
+    /* border: 1px solid #ccc;
+    border-radius: 5px; */
 
     margin: 10px;
 

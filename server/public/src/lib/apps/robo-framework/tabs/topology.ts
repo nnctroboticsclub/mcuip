@@ -109,7 +109,7 @@ export default class Topology {
         get(node.pos),
         get(n2.pos),
         100,
-        0.3
+        3
       )).
       reduce((acc, [dx, dy]) =>
         [acc[0] + dx, acc[1] + dy],

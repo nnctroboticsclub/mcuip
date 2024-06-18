@@ -14,7 +14,7 @@
   const from = get(nodes).find((node) => node.data.name === from_key) as Topo;
   const to = get(nodes).find((node) => node.data.name === to_key) as Topo;
 
-  const delta = new Position(50, 25);
+  const delta = new Position(10+50, 10+25);
 
   const min = derived([from.pos, to.pos], ([$a, $b]) => $a.min($b).add(delta));
 
@@ -30,7 +30,7 @@
 
 <div class="link" style={$style}>
   <svg>
-    <path d={$svg} stroke="black" />
+    <path d={$svg} stroke="#888" stroke-width="1px" />
   </svg>
 </div>
 

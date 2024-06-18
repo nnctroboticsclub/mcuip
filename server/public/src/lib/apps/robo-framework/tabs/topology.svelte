@@ -61,13 +61,35 @@
     fep_addr: writable("80h"),
   });
 
-  topology.add_link("Robot1", "Ctrl1");
+  const names = [
+    "Robot1",
+    "Robot2",
+    "Robot3-1",
+    "Robot3-2",
+    "Robot3-3",
+    "Ctrl1",
+    "Ctrl2",
+    "Ctrl3",
+    "Debugger",
+  ];
+
+  for (let i = 0; i < names.length; i++) {
+    for (let j = i + 1; j < names.length; j++) {
+      topology.add_link(names[i], names[j]);
+    }
+  }
+
+  /* topology.add_link("Robot1", "Ctrl1");
   topology.add_link("Robot3-1", "Ctrl1");
 
   topology.add_link("Robot2", "Ctrl2");
   topology.add_link("Robot3-2", "Ctrl2");
 
   topology.add_link("Robot3-3", "Ctrl3");
+
+  topology.add_link("Robot1", "Robot3-2");
+  topology.add_link("Ctrl3", "Robot3-1");
+  topology.add_link("Robot2", "Robot3-3");
 
   topology.add_link("Ctrl1", "Debugger");
   topology.add_link("Ctrl2", "Debugger");
@@ -76,7 +98,7 @@
   topology.add_link("Robot2", "Debugger");
   topology.add_link("Robot3-1", "Debugger");
   topology.add_link("Robot3-2", "Debugger");
-  topology.add_link("Robot3-3", "Debugger");
+  topology.add_link("Robot3-3", "Debugger"); */
 
   let nodes = topology.get_nodes();
   let links = topology.get_links();
