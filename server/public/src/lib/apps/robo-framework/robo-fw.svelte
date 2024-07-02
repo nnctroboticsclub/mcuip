@@ -21,11 +21,15 @@
     $ready = true;
 
     setTimeout(async () => {
-      fep.server_uri.set("ws://localhost:8100");
+      const addr = `ws://${globalThis?.location?.hostname ?? "localhost"}:8100`;
+      console.log(`Using FEP Server address: ${addr}`);
+      fep.server_uri.set(addr);
       await fep.connect();
 
       const sock = get(fep.sock);
-      sock?.send(new Uint8Array([0x02, 0x08, 0x55, 0xaa, 0xcc]));
+      sock?.send(
+        new Uint8Array([0x02, 0x07, 0x55, 0xaa, 0xcc, 0x01, 0x00, 0x00, 0x00])
+      );
     }, 200);
 
     return () => {

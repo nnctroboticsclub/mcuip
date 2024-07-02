@@ -22,7 +22,7 @@
       breadcrumb_ctx.add(name, TopoDevice, { node });
     }}
   >
-    <!-- {name} <br /> -->
+    {name} <br />
   </div>
 </DragTarget>
 
@@ -36,8 +36,8 @@
 
     flex: 1 1 auto;
 
-    /* border: 1px solid #ccc;
-    border-radius: 5px; */
+    border: 1px solid #ccc;
+    border-radius: 5px;
 
     margin: 10px;
 

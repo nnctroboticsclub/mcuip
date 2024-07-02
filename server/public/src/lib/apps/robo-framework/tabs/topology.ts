@@ -7,19 +7,20 @@ export type TopologyNode = {
   fep_addr: Writable<string>;
 };
 
+export type Link = {
+  from: string,
+  to: string,
+  label: string | undefined, // undefined: non directional link
+};
 
 export type Topo = {
   data: TopologyNode,
   pos: Writable<Position>,
   debug: Writable<string>;
-  velocity: Writable<{
-    x: number,
-    y: number
-  }>
 };
 export default class Topology {
   nodes: Writable<Topo[]> = writable([]);
-  links: Writable<{ from: string, to: string }[]> = writable([]);
+  links: Writable<Link[]> = writable([]);
   ticks: Writable<number> = writable(0);
 
   width: Writable<number> = writable(0);
@@ -49,11 +50,16 @@ export default class Topology {
 
   public add_link(from: string, to: string) {
     this.links.update(links => {
-      return [...links, { from, to }];
+      return [...links, { from, to, label: undefined }];
+    });
+  }
+  public add_link_uni_directional(from: string, to: string, label: string) {
+    this.links.update(links => {
+      return [...links, { from, to, label }];
     });
   }
 
-  public get_links(): Writable<{ from: string, to: string }[]> {
+  public get_links(): Writable<Link[]> {
     return this.links;
   }
 
@@ -109,7 +115,7 @@ export default class Topology {
         get(node.pos),
         get(n2.pos),
         100,
-        3
+        0.3
       )).
       reduce((acc, [dx, dy]) =>
         [acc[0] + dx, acc[1] + dy],
@@ -190,16 +196,8 @@ export default class Topology {
       const forced_nodes = nodes.map(n => {
         let force = this.calc_force(n);
 
-        n.velocity.update(_ => {
-          return {
-            x: force[0],
-            y: force[1]
-          };
-        });
-
         n.pos.update(p => {
-          const { x: v_x, y: v_y } = get(n.velocity);
-          const v = new Position(v_x, v_y);
+          const v = new Position(force[0], force[1]);
           return p.add(v);
         });
 
@@ -210,6 +208,12 @@ export default class Topology {
         map(n => get(n.pos).components()).
         reduce((acc, { x, y }) => [acc[0] + x, acc[1] + y], [0, 0]).
         map(x => x / forced_nodes.length);
+      /* const { x: mean_x, y: mean_y } = forced_nodes
+        .map(n => get(n.pos))
+        .reduce((a, p) => p.max(p2), new Position(Infinity, Infinity))
+        .max(new Position(50, 50))
+        .components(); */
+
       let w = get(this.width);
       let h = get(this.height);
 
