@@ -8,93 +8,23 @@
 
   let topology = new Topology();
 
-  topology.add_node({
-    name: "Robot1",
-    wake_time: writable(10),
-    fep_addr: writable("01h"),
-  });
+  for (let i = 0; i < 60; i++) {
+    topology.add_node({
+      name: `a${i}`,
+      wake_time: writable(0),
+      fep_addr: writable("01h"),
+    });
+  }
 
-  topology.add_node({
-    name: "Robot2",
-    wake_time: writable(20),
-    fep_addr: writable("02h"),
-  });
+  for (let i = 0; i < 60; i++) {
+    const from_n = Math.floor(Math.random() * (60 - 0.1));
+    const to_n = Math.floor(Math.random() * (60 - 0.1));
 
-  topology.add_node({
-    name: "Robot3-1",
-    wake_time: writable(30),
-    fep_addr: writable("03h"),
-  });
+    const from = `a${from_n}`;
+    const to = `a${to_n}`;
 
-  topology.add_node({
-    name: "Robot3-2",
-    wake_time: writable(40),
-    fep_addr: writable("04h"),
-  });
-
-  topology.add_node({
-    name: "Robot3-3",
-    wake_time: writable(50),
-    fep_addr: writable("05h"),
-  });
-
-  topology.add_node({
-    name: "Ctrl1",
-    wake_time: writable(70),
-    fep_addr: writable("07h"),
-  });
-
-  topology.add_node({
-    name: "Ctrl2",
-    wake_time: writable(80),
-    fep_addr: writable("08h"),
-  });
-
-  topology.add_node({
-    name: "Ctrl3",
-    wake_time: writable(90),
-    fep_addr: writable("09h"),
-  });
-  topology.add_node({
-    name: "Debugger",
-    wake_time: writable(100),
-    fep_addr: writable("80h"),
-  });
-
-  const names = [
-    "Robot1",
-    "Robot2",
-    "Robot3-1",
-    "Robot3-2",
-    "Robot3-3",
-    "Ctrl1",
-    "Ctrl2",
-    "Ctrl3",
-    "Debugger",
-  ];
-
-  /* for (let i = 0; i < names.length; i++) {
-    for (let j = i + 1; j < names.length; j++) {
-      topology.add_link(names[i], names[j]);
-    }
-  } */
-
-  topology.add_link_uni_directional("Ctrl1", "Robot1", "vs");
-  topology.add_link_uni_directional("Ctrl1", "Robot3-1", "vs");
-
-  topology.add_link_uni_directional("Ctrl2", "Robot2", "A");
-  topology.add_link_uni_directional("Ctrl2", "Robot3-2", "A");
-
-  topology.add_link("Robot3-3", "Ctrl3");
-
-  topology.add_link("Ctrl1", "Debugger");
-  topology.add_link("Ctrl2", "Debugger");
-  topology.add_link("Ctrl3", "Debugger");
-  topology.add_link("Robot1", "Debugger");
-  topology.add_link("Robot2", "Debugger");
-  topology.add_link("Robot3-1", "Debugger");
-  topology.add_link("Robot3-2", "Debugger");
-  topology.add_link("Robot3-3", "Debugger");
+    topology.add_link(from, to);
+  }
 
   let nodes = topology.get_nodes();
   let ticks = topology.get_ticks();
@@ -106,7 +36,7 @@
     console.log("Topology mounted");
     const interval1 = setInterval(() => {
       topology.tick();
-    }, 1000 / 20);
+    }, 1000 / 30);
 
     return () => {
       clearInterval(interval1);
@@ -116,19 +46,23 @@
   let container: HTMLDivElement | undefined = undefined;
   let width: number;
   let height: number;
+  console.log("Topo");
   $: {
     width = container?.clientWidth ?? 0;
     height = container?.clientHeight ?? 0;
+
+    console.log(`w${width}, h${height}`);
   }
 
   $: topology.set_width(width);
   $: topology.set_height(height);
 </script>
 
-<div class="container" bind:this={container}>
+<div class="size-full" bind:this={container}>
+  <span class="absolute top-0 left-0">
+    {(($ticks / (new Date().getTime() - start)) * 1000).toFixed(1)} tps <br />
+  </span>
   <DraggableArea top={0} left={0} {height} {width} tag="aaaaaa">
-    {(($ticks / (new Date().getTime() - start)) * 1000).toFixed(1)} tps
-
     {#each $nodes as node}
       <TopologyNode tag="aaaaaa" {node} />
     {/each}
@@ -143,16 +77,3 @@
     {/each}
   </DraggableArea>
 </div>
-
-<style lang="scss">
-  .container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: row;
-
-    flex-wrap: wrap;
-
-    position: relative;
-  }
-</style>

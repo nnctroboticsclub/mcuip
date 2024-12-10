@@ -15,51 +15,32 @@
   const from = get(nodes).find((node) => node.data.name === from_key) as Topo;
   const to = get(nodes).find((node) => node.data.name === to_key) as Topo;
 
-  const delta = new Position(10 + 50, 10 + 25);
+  const delta = new Position(10, 10); // offset
 
-  const min = derived([from.pos, to.pos], ([$a, $b]) => $a.min($b).add(delta));
+  const svg = derived([from.pos, to.pos], ([$f, $t]) => {
+    // Determine the start and end points of the line
+    const f_l1_distance = $f.components().x + $f.components().y;
+    const t_l1_distance = $t.components().x + $t.components().y;
 
-  const style = derived(min, ($max) => $max.getStyle());
+    const start = f_l1_distance < t_l1_distance ? $f : $t;
+    const end = f_l1_distance < t_l1_distance ? $t : $f;
 
-  const transform = derived([from.pos, to.pos, min], ([$f, $t, $min]) => {
-    const $a = $f.subtract($f.min($t)).components();
-    const $b = $t.subtract($f.min($t)).components();
+    const start_point = start.add(delta).components();
+    const end_point = end.add(delta).components();
 
-    const angle = Math.atan2($b.y - $a.y, $b.x - $a.x) * (180 / Math.PI);
+    const commands_line = [
+      `M ${start_point.x.toFixed(0)} ${start_point.y.toFixed(0)}`,
+      `L ${end_point.x.toFixed(0)} ${end_point.y.toFixed(0)}`,
+    ];
 
-    return [`translate(${$a.x}, ${$a.y})`, `rotate(${angle})`].join(" ");
-  });
-
-  const svg = derived([from.pos, to.pos, min], ([$f, $t]) => {
-    const $a = $f.subtract($f.min($t));
-    const $b = $t.subtract($f.min($t));
-
-    const dist = $b.subtract($a).magnitude;
     if (!label) {
-      // uni direction
-      return [`M 0 0`, `L ${dist} 0`].join(" ");
+      return commands_line.join(" ");
     }
 
-    return [`M 0 0`, `L ${dist} 0`, `l -20 10`, `l 0 -20`, `l 20 10`].join(" ");
+    return [...commands_line, `l -20 10`, `l 0 -20`, `l 20 10`].join(" ");
   });
 </script>
 
-<div class="link" style={$style}>
-  <svg>
-    <path
-      d={$svg}
-      stroke="#888"
-      stroke-width="1px"
-      fill=""
-      transform={$transform}
-    />
-  </svg>
-</div>
-
-<style lang="scss">
-  .link {
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-</style>
+<svg class="absolute size-full">
+  <path d={$svg} stroke="#888" stroke-width="1px" fill="" />
+</svg>

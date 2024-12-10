@@ -10,7 +10,6 @@
   import Windows from "$lib/window/windows.svelte";
   import RoboFw from "$lib/apps/robo-framework/robo-fw.svelte";
 
-  let width: number, height: number;
   let window_bk_color = global_state.theme.window.background_color;
 
   patch_console_log();
@@ -30,13 +29,4 @@
   );
 </script>
 
-<div class="container" bind:clientWidth={width} bind:clientHeight={height}>
-  <RoboFw />
-</div>
-
-<style>
-  .container {
-    width: 100%;
-    height: 100%;
-  }
-</style>
+<RoboFw />

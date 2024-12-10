@@ -1,6 +1,7 @@
 <script lang="ts">
   import { global_state } from "../global_state";
   import "ress/ress.css";
+  import "../app.css";
 
   const background = global_state.theme.framework.background_color;
   const title_bar_color = global_state.theme.framework.appbar_color;
@@ -16,7 +17,7 @@
   >
     {$app_name}
   </div>
-  <div class="container"><slot /></div>
+  <div class="flex-1"><slot /></div>
 </main>
 
 <style>
@@ -28,10 +29,6 @@
     bottom: env(safe-area-inset-bottom);
 
     display: flex;
-  }
-
-  div.container {
-    flex: 1 0 auto;
   }
 
   div.app-bar {

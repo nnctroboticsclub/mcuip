@@ -26,6 +26,25 @@ export default class Topology {
   width: Writable<number> = writable(0);
   height: Writable<number> = writable(0);
 
+  config = {
+    near_qq: 0,
+    near_k: 0.7,
+    near_len: 80,
+
+    far_qq: -5e4,
+    far_k: 0,
+    far_len: 300,
+
+    node_w: 80,
+    node_h: 80,
+
+    wall_border: 20,
+    wall_avoid: 0.1,
+
+    force_factor: 1.2,
+
+  }
+
   public get_ticks(): Writable<number> {
     return this.ticks;
   }
@@ -35,11 +54,10 @@ export default class Topology {
       return [...nodes, {
         data: node,
         pos: writable(new Position(
-          Math.random() * 0.0001,
-          Math.random() * 0.0001
+          Math.random() * 100,
+          Math.random() * 100
         )),
         debug: writable(""),
-        velocity: writable({ x: 0, y: 0 })
       }];
     });
   }
@@ -91,10 +109,24 @@ export default class Topology {
       .filter(n => !linked_nodes.includes(n) && n.data.name !== node_name);
   }
 
+  calc_force_coulomb(p1: Position, p2: Position, qq: number): [number, number] {
+    const delta = p2.subtract(p1);
+    const dist = delta.magnitude;
+
+    if (dist == 0) return [0, 0];
+
+    const force_siz = qq / dist / dist;
+    const force = delta.multiply(force_siz / dist);
+
+    const { x: f_x, y: f_y } = force.components();
+    return [f_x, f_y];
+  }
 
   calc_force_coil(p1: Position, p2: Position, x0: number, k: number): [number, number] {
     const delta = p2.subtract(p1);
     const dist = delta.magnitude;
+
+    if (dist == 0) return [0, 0];
 
     const x = dist - x0;
 
@@ -111,12 +143,21 @@ export default class Topology {
     const linked_nodes = this.get_linked_nodes(node_name);
 
     const force_linked = linked_nodes.
-      map(n2 => this.calc_force_coil(
-        get(node.pos),
-        get(n2.pos),
-        100,
-        0.3
-      )).
+      map(n2 => {
+        const f_q = this.calc_force_coulomb(
+          get(node.pos), get(n2.pos),
+          this.config.near_qq
+        );
+
+        const f_c = this.calc_force_coil(
+          get(node.pos),
+          get(n2.pos),
+          this.config.near_len,
+          this.config.near_k
+        );
+
+        return [f_q[0] + f_c[0], f_q[1] + f_c[1]];
+      }).
       reduce((acc, [dx, dy]) =>
         [acc[0] + dx, acc[1] + dy],
         [0, 0]
@@ -133,10 +174,20 @@ export default class Topology {
     const not_linked_nodes = this.get_not_linked_nodes(node_name);
 
     const force_not_linked = not_linked_nodes.
-      map(n2 => this.calc_force_coil(
-        get(node.pos), get(n2.pos),
-        250, 0.2
-      )).
+      map(n2 => {
+        const f_q = this.calc_force_coulomb(
+          get(node.pos), get(n2.pos),
+          this.config.far_qq
+        );
+
+        const f_c = this.calc_force_coil(
+          get(node.pos), get(n2.pos),
+          this.config.far_len,
+          this.config.far_k
+        );
+
+        return [f_q[0] + f_c[0], f_q[1] + f_c[1]];
+      }).
       reduce((acc, [dx, dy]) =>
         [acc[0] + dx, acc[1] + dy],
         [0, 0]
@@ -147,9 +198,7 @@ export default class Topology {
   }
 
   calc_force_avoid_wall(node: Topo): [number, number] {
-    const border = 20;
-    const node_width = 200;
-    const node_height = 100;
+    const border = this.config.wall_border;
 
     const { x, y } = get(node.pos).components();
 
@@ -159,18 +208,18 @@ export default class Topology {
     let force_x = 0;
     if (x < border) {
       force_x = border - x;
-    } else if (x + node_width > w - border) {
-      force_x = w - border - (x + node_width);
+    } else if (x + this.config.node_w > w - border) {
+      force_x = w - border - (x + this.config.node_w);
     }
 
     let force_y = 0;
     if (y < border) {
       force_y = border - y;
-    } else if (y + node_height > h - border) {
-      force_y = h - border - (y + node_height);
+    } else if (y + this.config.node_h > h - border) {
+      force_y = h - border - (y + this.config.node_h);
     }
 
-    return [0.2 * force_x, 0.2 * force_y];
+    return [this.config.wall_avoid * force_x, this.config.wall_avoid * force_y];
   }
 
   calc_force(node: Topo) {
@@ -187,10 +236,37 @@ export default class Topology {
       force = force.map(x => x / force_power * 10);
     }
 
-    return force;
+    return [force[0] * this.config.force_factor, force[1] * this.config.force_factor];
+  }
+
+  check_integrity() {
+    return [...get(this.nodes)]
+      .every(n => {
+        const { x, y } = get(n.pos).components();
+        return !isNaN(x) && !isNaN(y);
+      });
+  }
+
+  replace_random() {
+    this.nodes.update(nodes => {
+      return nodes.map(n => {
+        return {
+          ...n,
+          pos: writable(new Position(
+            Math.random() * 500,
+            Math.random() * 500
+          ))
+        };
+      });
+    });
   }
 
   public tick() {
+    if (!this.check_integrity()) {
+      this.replace_random();
+      return;
+    }
+
     this.ticks.update(count => count + 1);
     this.nodes.update(nodes => {
       const forced_nodes = nodes.map(n => {

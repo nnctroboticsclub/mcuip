@@ -13,33 +13,36 @@
 
   let debug = node.debug;
   let name = data.name;
+
+  const size = 20;
 </script>
 
 <DragTarget area_tag={tag} pos={node.pos}>
   <div
     class="node"
+    style="--size: {size}px;"
     on:click={() => {
-      breadcrumb_ctx.add(name, TopoDevice, { node });
+      // breadcrumb_ctx.add(name, TopoDevice, { node });
     }}
   >
-    {name} <br />
+    <!-- {name} <br /> -->
   </div>
 </DragTarget>
 
 <style lang="scss">
   .node {
-    width: 100px;
-    height: 50px;
+    background-color: #fff;
 
-    line-height: calc(50px / 1);
+    width: var(--size);
+    height: var(--size);
+
+    line-height: calc(50 / 1);
     text-align: center;
 
     flex: 1 1 auto;
 
-    border: 1px solid #ccc;
-    border-radius: 5px;
-
-    margin: 10px;
+    border: 1px solid #aaa;
+    border-radius: 50%;
 
     position: absolute;
     top: var(--y, 200);

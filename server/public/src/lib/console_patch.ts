@@ -24,6 +24,7 @@ export function patch_console_log() {
     "error",
     "warn"
   ];
+
   type targetTypes =
     "log" |
     "info" |

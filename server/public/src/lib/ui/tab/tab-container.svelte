@@ -6,9 +6,10 @@
   export let tag: string;
   export let names: string[];
   export let height: string = "100%";
-  export let style: string = "100%";
+  export let style: string = "";
   export let vertical: boolean = false;
   export let tab_size: string | "auto" = "auto";
+  export let classes: string[] = [];
 
   export let deactivate_node = false;
 
@@ -26,14 +27,24 @@
     $tab_bar_mode_deactivate_node = deactivate_node;
 </script>
 
-<div class="container" style="height: {height}; {style};" class:vertical>
-  <div class="tab-bar" class:show={!$tab_bar_collapsed}>
+<div
+  class="flex tab-container {classes.join(' ')}"
+  style="height: {height}; {style};"
+  class:vertical
+>
+  <div
+    class="tab-bar border-0"
+    style="border-color: #aaa;"
+    class:border-l-[1px]={vertical}
+    class:border-b-[1px]={!vertical}
+    class:show={!$tab_bar_collapsed}
+  >
     {#each names as name}
       <TabName {name} {tab_size} />
     {/each}
   </div>
 
-  <div class="contents">
+  <div class="tab-contents">
     <Button
       style={"margin: 0 auto; " +
         "border: 1px solid #aaa; " +
@@ -65,12 +76,10 @@
 </div>
 
 <style lang="scss">
-  div.container {
+  div.tab-container {
     display: flex;
 
     div.tab-bar {
-      border: 0px solid #aaa;
-
       display: flex;
 
       transition: all 0.75s;
@@ -92,7 +101,6 @@
         &.show {
           margin: 5px 0px;
           padding-bottom: 5px;
-          border-width: 0px 0px 1px 0px;
           height: 50px;
         }
       }
@@ -113,12 +121,10 @@
       }
     }
 
-    div.contents {
+    div.tab-contents {
       position: relative;
       padding: 7px;
       flex: 1 1 auto;
-
-
     }
   }
 </style>
